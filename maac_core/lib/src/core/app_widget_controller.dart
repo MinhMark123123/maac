@@ -48,4 +48,5 @@ class _AppWidgetControllerState extends State<AppWidgetController> {
   Widget build(BuildContext context) {
     return widget.child;
   }
+
 }

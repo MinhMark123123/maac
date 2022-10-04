@@ -8,12 +8,20 @@ class SecondScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppWidgetController.singleController(
-      controller: SecondScreenController(),
+      controller:SecondScreenController(),
       child: Scaffold(
         appBar: AppBar(),
-        body: const Center(
-          child: Text("second"),
+        body: Center(
+          child: Text(
+            '0',
+            style: Theme.of(context).textTheme.headline4,
+          ),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: (){},
+          tooltip: 'Increment',
+          child: const Icon(Icons.add),
+        ), // This
       ),
     );
   }
