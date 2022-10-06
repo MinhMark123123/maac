@@ -1,33 +1,33 @@
 import 'package:flutter/widgets.dart';
 import 'package:maac_core/src/core/app_controller.dart';
 
-class AppWidgetController extends StatefulWidget {
+class View extends StatefulWidget {
   final Widget child;
   final List<AppController>? controllers;
 
-  factory AppWidgetController.singleController({
+  factory View.singleController({
     Key? key,
     required Widget child,
     required AppController controllers,
   }) {
-    return AppWidgetController(
+    return View(
       key: key,
       controllers: [controllers],
       child: child,
     );
   }
 
-  const AppWidgetController({
+  const View({
     Key? key,
     required this.child,
     this.controllers,
   }) : super(key: key);
 
   @override
-  State<AppWidgetController> createState() => _AppWidgetControllerState();
+  State<View> createState() => _ViewState();
 }
 
-class _AppWidgetControllerState extends State<AppWidgetController> {
+class _ViewState extends State<View> {
   @override
   void initState() {
     widget.controllers?.forEach((element) {
