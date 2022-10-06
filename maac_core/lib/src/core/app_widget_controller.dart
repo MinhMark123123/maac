@@ -8,11 +8,11 @@ class AppWidgetController extends StatefulWidget {
   factory AppWidgetController.singleController({
     Key? key,
     required Widget child,
-    required AppController controller,
+    required AppController controllers,
   }) {
     return AppWidgetController(
       key: key,
-      controllers: [controller],
+      controllers: [controllers],
       child: child,
     );
   }
