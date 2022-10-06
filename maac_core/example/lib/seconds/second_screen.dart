@@ -7,8 +7,9 @@ class SecondScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return View.singleController(
-      controllers: SecondScreenController(),
+    return View<SecondScreenController>(
+      controller: SecondScreenController(),
+      setup: (controller) => controller,
       child: Scaffold(
         appBar: AppBar(),
         body: const Center(
