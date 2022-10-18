@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:maac_core/src/core/app_controller.dart';
+import 'package:maac_core/src/controller/app_controller.dart';
 
 class View<T extends AppController> extends StatefulWidget {
   final Widget child;
