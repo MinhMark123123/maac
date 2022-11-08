@@ -1,9 +1,16 @@
 import 'package:flutter/widgets.dart';
 
 abstract class AppController with WidgetsBindingObserver {
+  bool _enableBindAppLifeCycle = false;
+  void turnOnBindAppLifecycle() {
+    _enableBindAppLifeCycle = true;
+  }
+
   @mustCallSuper
   void onInitState() {
-    _bindWidgetLifeCycle(this);
+    if (_enableBindAppLifeCycle) {
+      _bindWidgetLifeCycle(this);
+    }
   }
 
   @mustCallSuper
@@ -11,7 +18,6 @@ abstract class AppController with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print("app state change $state");
     switch (state) {
       case AppLifecycleState.resumed:
         onResumed();

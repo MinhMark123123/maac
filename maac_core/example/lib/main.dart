@@ -1,8 +1,11 @@
 import 'package:example/seconds/second_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(child: MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -32,7 +35,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SecondScreen()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const SecondScreen()));
   }
 
   @override
