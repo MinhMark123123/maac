@@ -1,6 +1,11 @@
-import 'package:example/seconds/second_screen.dart';
+import 'package:example/global.dart';
+import 'package:example/home/home_page.dart';
+import 'package:example/navigation/app_navigate.dart';
+import 'package:example/navigation/routers.dart';
+import 'package:example/seconds_screen/second_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
   runApp(
@@ -13,57 +18,34 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => const SecondScreen()));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+    final routerContext = _router.routerDelegate.navigatorKey.currentContext;
+    return ProviderScope(
+      overrides: [
+        navigationProvider.overrideWithValue(AppNavigate(context: routerContext)),
+      ],
+      child: MaterialApp.router(
+        routerConfig: _router,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
+
+final GoRouter _router = GoRouter(
+  routes: <GoRoute>[
+    GoRoute(
+      path: AppRoutes.home,
+      builder: (BuildContext context, GoRouterState state) {
+        return const MyHomePage();
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.second,
+      builder: (BuildContext context, GoRouterState state) {
+        return const SecondScreen();
+      },
+    ),
+  ],
+);

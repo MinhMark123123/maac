@@ -12,5 +12,7 @@ class SecondScreenUIState {
 import 'package:maac_core/maac_core.dart';
 
 class SecondScreenUIState extends UIState {
-  SecondScreenUIState({required super.buildContext, required super.navigation});
+  SecondScreenUIState({
+    required super.navigation,
+  });
 }

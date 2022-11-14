@@ -1,14 +1,11 @@
 import 'package:flutter/widgets.dart';
 
 abstract class AppController with WidgetsBindingObserver {
-  bool _enableBindAppLifeCycle = false;
-  void turnOnBindAppLifecycle() {
-    _enableBindAppLifeCycle = true;
-  }
+  bool get enableBindAppLifeCycle => false;
 
   @mustCallSuper
   void onInitState() {
-    if (_enableBindAppLifeCycle) {
+    if (enableBindAppLifeCycle) {
       _bindWidgetLifeCycle(this);
     }
   }

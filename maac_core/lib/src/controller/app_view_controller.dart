@@ -10,7 +10,6 @@ class View extends ViewStatefulWidget {
     super.key,
     required super.controllers,
     required this.child,
-    super.enableBindAppLifeCycle = false,
     super.setup,
   });
 
@@ -22,7 +21,6 @@ class View extends ViewStatefulWidget {
   }) {
     return View(
       controllers: [controller],
-      enableBindAppLifeCycle: enableBindAppLifeCycle,
       setup: setup,
       child: child,
     );
@@ -40,9 +38,6 @@ class _ViewState extends ViewState<View> {
 
   @override
   List<AppController> get controllers => widget.controllers;
-
-  @override
-  bool get isEnableBindAppLifeCycle => widget.enableBindAppLifeCycle;
 
   @override
   Function()? get setup => widget.setup;
