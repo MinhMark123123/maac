@@ -18,21 +18,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routerContext = _router.routerDelegate.navigatorKey.currentContext;
-    return ProviderScope(
-      overrides: [
-        navigationProvider.overrideWithValue(AppNavigate(context: routerContext)),
-      ],
-      child: MaterialApp.router(
-        routerConfig: _router,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+    return MaterialApp.router(
+      routerConfig: _router,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
     );
   }
 }
-
+final routeContextDelegateProvider = Provider<BuildContext?>((ref) {
+  return _router.routerDelegate.navigatorKey.currentContext;
+});
 final GoRouter _router = GoRouter(
   routes: <GoRoute>[
     GoRoute(

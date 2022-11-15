@@ -12,23 +12,25 @@ class SecondScreen extends ConsumerWidget {
       controller: ref.read(secondScreenControllerProvider),
       child: Scaffold(
         appBar: AppBar(),
-        body: Column(
-          children: [
-            const Expanded(
-              child: Center(
-                child: CounterText(),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: MaterialButton(
-                onPressed: () {},
-                child: const Text("+"),
-              ),
-            )
-          ],
-        ),
+        body: buildBody(ref),
       ),
+    );
+  }
+
+  Widget buildBody(WidgetRef ref) {
+    return Column(
+      children: [
+        const Expanded(child: Center(child: CounterText())),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: MaterialButton(
+            onPressed: () {
+              ref.read(secondScreenControllerProvider).increaseCounter();
+            },
+            child: const Text("+"),
+          ),
+        )
+      ],
     );
   }
 }
@@ -38,7 +40,7 @@ class CounterText extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(ref.read(secondScreenControllerProvider).ui);
-    return const Text("Your are pressed ");
+    final counterState = ref.watch(ref.read(secondScreenControllerProvider).ui);
+    return Text("Your are pressed ${counterState.counter} ");
   }
 }

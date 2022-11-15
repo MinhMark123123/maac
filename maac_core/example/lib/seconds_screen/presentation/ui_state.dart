@@ -15,4 +15,12 @@ class SecondScreenUIState extends UIState {
   SecondScreenUIState({
     required super.navigation,
   });
+
+  int counter = 0;
+
+  SecondScreenUIState copyWith({int? counter}) {
+    return SecondScreenUIState(
+      navigation: navigation,
+    )..counter = counter ?? this.counter;
+  }
 }

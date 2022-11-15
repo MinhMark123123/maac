@@ -15,7 +15,7 @@ final secondScreenControllerProvider = Provider.autoDispose<SecondScreenControll
 });
 
 class SecondScreenController extends AppController {
-  AutoDisposeStateProvider get ui => _secondScreenUiStateProvider;
+  AutoDisposeStateProvider<SecondScreenUIState> get ui => _secondScreenUiStateProvider;
   final StateController<SecondScreenUIState> uiState;
 
   SecondScreenController({required this.uiState});
@@ -33,6 +33,7 @@ class SecondScreenController extends AppController {
   }
 
   void increaseCounter() {
-    //uiState.counterProvider.state. = uiState.counterProvider.state +1;
+    final counter = uiState.state.counter;
+    uiState.update((state) => state.copyWith(counter: counter + 1));
   }
 }
