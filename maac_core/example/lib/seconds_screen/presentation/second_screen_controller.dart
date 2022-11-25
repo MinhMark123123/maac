@@ -16,6 +16,7 @@ final secondScreenControllerProvider = Provider.autoDispose<SecondScreenControll
 
 class SecondScreenController extends AppController {
   AutoDisposeStateProvider<SecondScreenUIState> get ui => _secondScreenUiStateProvider;
+  ProviderListenable<int> get counterChange => ui.select((value) => value.counter);
   final StateController<SecondScreenUIState> uiState;
 
   SecondScreenController({required this.uiState});

@@ -40,7 +40,7 @@ class CounterText extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final counterState = ref.watch(ref.read(secondScreenControllerProvider).ui);
-    return Text("Your are pressed ${counterState.counter} ");
+    final counterState = ref.watch(ref.read(secondScreenControllerProvider).counterChange);
+    return Text("Your are pressed $counterState ");
   }
 }
