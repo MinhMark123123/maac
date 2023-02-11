@@ -1,7 +1,7 @@
 library maac_core;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/ui/ui.dart';
+export 'src/view_model/view_models.dart';
+export 'src/navigate/navigates.dart';
+export 'src/foundations/foundations.dart';
+export 'src/domain/domains.dart';
