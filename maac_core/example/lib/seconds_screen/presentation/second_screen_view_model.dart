@@ -8,21 +8,7 @@ class SecondScreenViewModel extends ViewModel {
 
   StreamData<int> get uiState => _uiState;
 
-  SecondScreenViewModel() {
-    print("SecondScreenViewModel constructor");
-  }
-
-  @override
-  void onInitState() {
-    super.onInitState();
-    print("on init state");
-  }
-
-  @override
-  void onDispose() {
-    super.onDispose();
-    print("on onDispose");
-  }
+  SecondScreenViewModel() ;
 
   void increaseCounter() {
     _uiState.postValue(_uiState.data + 1);

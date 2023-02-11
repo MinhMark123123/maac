@@ -30,6 +30,5 @@ class MyHomePage extends ConsumerWidget {
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
-    ;
   }
 }

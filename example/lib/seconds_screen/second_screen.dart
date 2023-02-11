@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:example/seconds_screen/presentation/second_screen_view_model.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:maac_with_riverpod/maac_with_riverpod.dart';
 
 class SecondScreen extends ConsumerViewModelWidget<SecondScreenViewModel> {
@@ -11,7 +10,6 @@ class SecondScreen extends ConsumerViewModelWidget<SecondScreenViewModel> {
 
   @override
   Widget buildWidget(BuildContext context, WidgetRef ref, SecondScreenViewModel viewModel) {
-    print("widget build");
     return Scaffold(
       appBar: AppBar(),
       body: buildBody(ref),
