@@ -1,15 +1,11 @@
-import 'package:example/global.dart';
 import 'package:example/navigation/routers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-class MyHomePage extends ConsumerWidget {
-  const MyHomePage({
-    Key? key,
-  }) : super(key: key);
+import 'package:go_router/go_router.dart';
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Home"),
@@ -24,12 +20,12 @@ class MyHomePage extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          ref.read(navigationProvider).push(AppRoutes.second);
+          context.go(AppRoutes.home+AppRoutes.second);
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
-    ;
   }
 }
+

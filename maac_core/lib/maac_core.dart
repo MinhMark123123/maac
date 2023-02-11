@@ -1,6 +1,7 @@
 library maac_core;
 
-export 'src/controller/app_controller.dart';
-export 'src/controller/app_view_controller.dart';
-export 'src/ui/ui_state.dart';
-export 'src/navigate/delegate_navigation.dart';
+export 'src/ui/ui.dart';
+export 'src/view_model/view_models.dart';
+export 'src/navigate/navigates.dart';
+export 'src/foundations/foundations.dart';
+export 'src/domain/domains.dart';
