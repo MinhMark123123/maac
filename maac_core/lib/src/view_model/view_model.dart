@@ -3,9 +3,12 @@ import 'package:async/async.dart';
 import 'package:flutter/widgets.dart';
 import 'package:maac_core/src/view_model/live_data/stream_data.dart';
 import 'package:maac_core/src/view_model/view_model_life_cycle.dart';
+import 'package:visibility_detector/src/visibility_detector.dart';
 
 abstract class ViewModel extends ViewModelLifecycle with WidgetsBindingObserver {
   final List<StreamDataViewModel> _listStreamData = <StreamDataViewModel>[];
+  bool _isFirstInit = true;
+  bool _haseBeenDispose = false;
 
   bool enableBindAppLifeCycle() {
     return false;
@@ -32,9 +35,7 @@ abstract class ViewModel extends ViewModelLifecycle with WidgetsBindingObserver 
       _bindWidgetLifeCycle();
     }
     Future.delayed(Duration.zero, () {
-      if (_enableBindAppLifeCycle) {
-        onResumed();
-      }
+      onResume();
       onReady();
     });
     super.onInitState();
@@ -42,6 +43,7 @@ abstract class ViewModel extends ViewModelLifecycle with WidgetsBindingObserver 
 
   @override
   void onDispose() {
+    _haseBeenDispose = true;
     _resetLife();
     _cancelViewModelScope();
     _resetAppLifeCycleListener();
@@ -87,16 +89,18 @@ abstract class ViewModel extends ViewModelLifecycle with WidgetsBindingObserver 
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        onResumed();
+        onApplicationResumed();
+        onResume();
         break;
       case AppLifecycleState.inactive:
-        onInactive();
+        onApplicationInactive();
         break;
       case AppLifecycleState.paused:
-        onPaused();
+        onPause();
+        onApplicationPaused();
         break;
       case AppLifecycleState.detached:
-        onDetached();
+        onApplicationDetached();
         break;
     }
     super.didChangeAppLifecycleState(state);
@@ -117,6 +121,23 @@ abstract class ViewModel extends ViewModelLifecycle with WidgetsBindingObserver 
   void _closeStreamData() {
     for (var element in _listStreamData) {
       element.close();
+    }
+  }
+
+  void onVisibilityChanged(VisibilityInfo info) {
+    final visibleFraction = info.visibleFraction;
+    if (visibleFraction == 1) {
+      //widget is appear
+      if (!_isFirstInit) {
+        onResume();
+        return;
+      }
+      _isFirstInit = false;
+      return;
+    }
+    if (visibleFraction == 0 && _haseBeenDispose == false) {
+      //widget is not appear
+      onPause();
     }
   }
 }

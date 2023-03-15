@@ -1,6 +1,6 @@
-import 'package:example/seconds_screen/presentation/second_screen_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:maac_core/maac_core.dart';
+import 'manager/second_screen_view_model.dart';
 
 class SecondScreen extends ViewModelWidget<SecondScreenViewModel> {
   const SecondScreen({super.key});
