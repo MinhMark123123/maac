@@ -1,19 +1,31 @@
 import 'package:flutter/foundation.dart';
 
-
 abstract class ViewModelLifecycle {
   @mustCallSuper
-  void onInitState() {}
+  void onInitState() {
+  }
 
   @mustCallSuper
-  void onReady() {}
+  void onReady() {
+  }
 
   @mustCallSuper
-  void onDispose() {}
+  void onDispose() {
+  }
+
+  /// Trigger after widget onReady
+  @mustCallSuper
+  void onResume() {
+  }
+
+  @mustCallSuper
+  void onPause() {
+  }
 
   /// The application is visible and responding to user input.
   @mustCallSuper
-  void onResumed() {}
+  void onApplicationResumed() {
+  }
 
   /// The application is in an inactive state and is not receiving user input.
   ///
@@ -30,7 +42,8 @@ abstract class ViewModelLifecycle {
   ///
   /// Apps in this state should assume that they may be [paused] at any time.
   @mustCallSuper
-  void onInactive() {}
+  void onApplicationInactive() {
+  }
 
   /// The application is not currently visible to the user, not responding to
   /// user input, and running in the background.
@@ -39,7 +52,8 @@ abstract class ViewModelLifecycle {
   /// [PlatformDispatcher.onBeginFrame] and [PlatformDispatcher.onDrawFrame]
   /// callbacks.
   @mustCallSuper
-  void onPaused() {}
+  void onApplicationPaused() {
+  }
 
   /// The application is still hosted on a flutter engine but is detached from
   /// any host views.
@@ -49,5 +63,6 @@ abstract class ViewModelLifecycle {
   /// was first initializes, or after the view being destroyed due to a Navigator
   /// pop.
   @mustCallSuper
-  void onDetached() {}
+  void onApplicationDetached() {
+  }
 }
