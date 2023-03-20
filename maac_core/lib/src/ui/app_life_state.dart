@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:maac_core/maac_core.dart';
+import 'package:maac_core/src/view_model/life_cycle_manager.dart';
 
 abstract class ViewStatefulWidget<T extends ViewModel> extends StatefulWidget {
   const ViewStatefulWidget({
@@ -12,6 +13,9 @@ abstract class ViewStatefulWidget<T extends ViewModel> extends StatefulWidget {
 
 abstract class ViewState<T extends ViewStatefulWidget> extends State<T> {
   late List<ViewModel> viewModels;
+  late LifeCycleManager _lifeCycleManager;
+
+  LifeCycleManager get lifeCycleManager => _lifeCycleManager;
 
   void aWake(){}
 
@@ -20,19 +24,16 @@ abstract class ViewState<T extends ViewStatefulWidget> extends State<T> {
   void initState() {
     viewModels = bindViewModels();
     aWake();
-    for (var element in viewModels) {
-      element.registerWidgetBindLifecycle(widget);
-      executeCondition(element.isValidLifeCycleHolder(widget), () => element.onInitState());
-    }
+    _lifeCycleManager = LifeCycleManager(viewModels);
+    _lifeCycleManager.registerWidgetBindLifecycle(widget);
+    _lifeCycleManager.initState(widget);
     super.initState();
   }
 
   @override
   @mustCallSuper
   void dispose() {
-    for (var element in viewModels) {
-      executeCondition(element.isValidLifeCycleHolder(widget), () => element.onDispose());
-    }
+    _lifeCycleManager.dispose(widget);
     super.dispose();
   }
 
