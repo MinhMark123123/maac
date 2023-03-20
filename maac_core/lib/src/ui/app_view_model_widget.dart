@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:maac_core/src/ui/app_life_state.dart';
+import 'package:maac_core/src/view_model/life_cycle_manager.dart';
 import 'package:maac_core/src/view_model/view_model.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -40,15 +41,11 @@ class _BindViewModelWidgetState extends ViewState<ViewModelWidget> {
 
   @override
   void deactivate() {
-    for (var element in viewModels) {
-      element.onPause();
-    }
+    lifeCycleManager.onDeActive(widget);
     super.deactivate();
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
-    for (var element in viewModels) {
-      element.onVisibilityChanged(info);
-    }
+    lifeCycleManager.onVisibilityChanged(info, widget);
   }
 }

@@ -1,7 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:maac_core/maac_core.dart';
 
-class RiverViewModel<UISTate> extends ViewModel {
+abstract class RiverViewModel<UISTate> extends ViewModel {
   final StateController<UISTate> _uiState;
 
   RiverViewModel({required StateController<UISTate> uiState}) : _uiState = uiState;
