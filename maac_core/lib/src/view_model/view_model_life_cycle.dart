@@ -3,28 +3,29 @@ import 'package:flutter/foundation.dart';
 abstract class ViewModelLifecycle {
   @mustCallSuper
   void onInitState() {
-  }
-
-  @mustCallSuper
-  void onReady() {
+    print("onInitState $runtimeType");
   }
 
   @mustCallSuper
   void onDispose() {
+    print("onDispose $runtimeType");
   }
 
   /// Trigger after widget onReady
   @mustCallSuper
   void onResume() {
+    print("onResume $runtimeType");
   }
 
   @mustCallSuper
   void onPause() {
+    print("onPause $runtimeType");
   }
 
   /// The application is visible and responding to user input.
   @mustCallSuper
   void onApplicationResumed() {
+    print("onApplicationResumed $runtimeType");
   }
 
   /// The application is in an inactive state and is not receiving user input.
@@ -43,6 +44,7 @@ abstract class ViewModelLifecycle {
   /// Apps in this state should assume that they may be [paused] at any time.
   @mustCallSuper
   void onApplicationInactive() {
+    print("onApplicationInactive $runtimeType");
   }
 
   /// The application is not currently visible to the user, not responding to
@@ -53,6 +55,7 @@ abstract class ViewModelLifecycle {
   /// callbacks.
   @mustCallSuper
   void onApplicationPaused() {
+    print("onApplicationPaused $runtimeType");
   }
 
   /// The application is still hosted on a flutter engine but is detached from
@@ -64,5 +67,8 @@ abstract class ViewModelLifecycle {
   /// pop.
   @mustCallSuper
   void onApplicationDetached() {
+    print("onApplicationDetached $runtimeType");
   }
+
+
 }
