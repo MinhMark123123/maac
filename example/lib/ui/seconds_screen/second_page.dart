@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:example/seconds_screen/presentation/second_screen_view_model.dart';
 import 'package:maac_with_riverpod/maac_with_riverpod.dart';
+import 'presentation/second_screen_view_model.dart';
 
-class SecondScreen extends ConsumerViewModelWidget<SecondScreenViewModel> {
-  const SecondScreen({super.key});
+class SecondPage extends ConsumerViewModelWidget<SecondScreenViewModel> {
+  const SecondPage({super.key});
 
   @override
-  AutoDisposeProvider<SecondScreenViewModel> viewModelProvider() => secondScreenControllerProvider;
+  AutoDisposeProvider<SecondScreenViewModel> viewModelProvider() => secondScreenViewModelProvider;
 
   @override
   Widget buildWidget(BuildContext context, WidgetRef ref, SecondScreenViewModel viewModel) {
@@ -45,5 +45,5 @@ class CounterText extends ConsumerViewModelWidget<SecondScreenViewModel> {
   }
 
   @override
-  AutoDisposeProvider<SecondScreenViewModel> viewModelProvider() => secondScreenControllerProvider;
+  AutoDisposeProvider<SecondScreenViewModel> viewModelProvider() => secondScreenViewModelProvider;
 }

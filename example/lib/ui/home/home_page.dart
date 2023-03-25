@@ -1,16 +1,16 @@
-import 'package:example/app_secure_storage.dart';
 import 'package:example/global.dart';
 import 'package:example/navigation/routers.dart';
+import 'package:example/ui/home/presentation/home_page_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:maac_with_riverpod/maac_with_riverpod.dart';
 
-class MyHomePage extends ConsumerWidget {
+class MyHomePage extends ConsumerViewModelWidget<HomePageViewModel> {
   const MyHomePage({
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget buildWidget(BuildContext context, WidgetRef ref, HomePageViewModel viewModel) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Home"),
@@ -32,4 +32,7 @@ class MyHomePage extends ConsumerWidget {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+  @override
+  AutoDisposeProvider<HomePageViewModel> viewModelProvider() => homePageViewModelProvider;
 }

@@ -10,9 +10,6 @@ class SecondScreenViewModel extends ViewModel {
 
   StreamData<int> get uiState => _uiState;
 
-  @override
-  bool enableBindAppLifeCycle() => true;
-
   void increaseCounter() {
     _uiState.postValue(_uiState.data + 1);
   }

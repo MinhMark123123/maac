@@ -22,22 +22,26 @@ abstract class ConsumerViewModelWidget<T extends ViewModel> extends HookConsumer
   //ignore
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = _watchViewModel(ref);
-    final visibilityDetectorKey = useMemoized(() => UniqueKey(), []);
+    if (viewModel.isBoundLifeCycle) {
+      return buildWidget(context, ref, viewModel);
+    }
+    final visibilityDetectorKey = useMemoized(() => UniqueKey());
+    final lifeCycleManager = useMemoized(() => LifeCycleManager([viewModel]));
     useEffect(
       () {
         aWake(ref, viewModel);
-        viewModel.registerWidgetBindLifecycle(this);
-        executeCondition(viewModel.isValidLifeCycleHolder(this), () => viewModel.onInitState());
+        lifeCycleManager.registerWidgetBindLifecycle(this);
+        lifeCycleManager.initState(this);
+        useOnDeActive(() => lifeCycleManager.onDeActive(this));
         return () {
-          executeCondition(viewModel.isValidLifeCycleHolder(this), () => viewModel.onDispose());
+          lifeCycleManager.dispose(this);
         };
       },
       [],
     );
-    useOnDeActive(() => viewModel.onPause());
     return VisibilityDetector(
       key: visibilityDetectorKey,
-      onVisibilityChanged: (info) => viewModel.onVisibilityChanged(info),
+      onVisibilityChanged: (info) => lifeCycleManager.onVisibilityChanged(info, this),
       child: buildWidget(context, ref, viewModel),
     );
   }

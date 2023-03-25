@@ -1,7 +1,6 @@
-import 'package:example/home/home_page.dart';
 import 'package:example/navigation/routers.dart';
-import 'package:example/seconds_screen/second_screen.dart';
 import 'package:example/theme/app_theme.dart';
+import 'package:example/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -37,7 +36,7 @@ final GoRouter _router = GoRouter(
         GoRoute(
           path: AppRoutes.second,
           builder: (BuildContext context, GoRouterState state) {
-            return const SecondScreen();
+            return const SecondPage();
           },
         ),
       ]

@@ -6,9 +6,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 class LifeCycleManager with WidgetsBindingObserver {
   final List<ViewModelLifecycle> lifecycles;
 
-  LifeCycleManager(this.lifecycles){
-    print("LifeCycleManager ()");
-  }
+  LifeCycleManager(this.lifecycles);
 
   Widget? _life;
   bool _isFirstInit = false;
