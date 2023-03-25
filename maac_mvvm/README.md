@@ -11,29 +11,136 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+TODO: maac_mvvm is a package support simple implement the MVVM pattern. The package doesn't wrap any dependency injection inside. It
+just has simply 3 component ViewModel, StreamData, and ViewModelWidget simple clean and very easy to implement.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+#### ViewModelWidget:
+
+It is a place to build ui widgets also the viewModel that it's binding .
+
+#### ViewModel:
+
+Which holds the logic and lifecycle of the widget it's binding
+
+#### StreamData:
+
+Wrapper of stream useful to update ui and automatically cancel in dispose of the view model lifecycle
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+- Install from pub : ```flutter pub add maac_mvvm```
+- Install with Github:
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
 ```dart
-const like = 'sample';
+
+class ExamplePage extends ViewModelWidget<ExampleScreenViewModel> {
+  const ExamplePage({super.key});
+
+  @override
+  ExampleScreenViewModel createViewModel() => ExampleScreenViewModel();
+
+  @override
+  Widget build(BuildContext context, ExampleScreenViewModel viewModel) {
+    return Scaffold(
+      body: Column(
+        children: [
+          _buildCounterDisplay(viewModel),
+          _buildButtonPlus(viewModel),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildButtonPlus(ExampleScreenViewModel viewModel) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: ElevatedButton(
+        onPressed: () {
+          viewModel.increaseCounter();
+        },
+        child: const Text("+"),
+      ),
+    );
+  }
+
+  Expanded _buildCounterDisplay(ExampleScreenViewModel viewModel) {
+    return Expanded(
+      child: Center(
+        child: StreamDataConsumer<int>(
+          streamData: viewModel.uiState,
+          builder: (context, data) {
+            return Text("Your are pressed $data ");
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class ExampleScreenViewModel extends ViewModel {
+  ExampleScreenViewModel();
+
+  late final StreamDataViewModel<int> _uiState = StreamDataViewModel(
+    defaultValue: 0,
+    viewModel: this,
+  );
+
+  StreamData<int> get uiState => _uiState;
+
+  void increaseCounter() {
+    _uiState.postValue(_uiState.data + 1);
+  }
+}
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+### API:
+
+#### ViewModelWidget:
+
+-$aWake
+
+-$build
+
+-$createViewModel
+
+#### ViewModel:
+
+-$onInitState
+
+-$onResume
+
+-$onPause
+
+-$onDispose
+
+-$onApplicationResumed
+
+-$onApplicationInactive
+
+-$onApplicationPaused
+
+-$onApplicationDetached
+
+#### StreamData:
+
+-$data
+
+-$asStream
+
+#### StreamDataViewModel:
+
+-$postValue
+
+-$setValue
+
+-$asStream
+
+-$close
+
+
