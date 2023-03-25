@@ -1,0 +1,23 @@
+name: maac_mvvm
+description: A new Flutter project.
+version: 0.0.1
+homepage:
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+  flutter: ">=3.7.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  async:
+  visibility_detector:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  build_runner:
+  flutter_gen_runner:
+
+flutter:
