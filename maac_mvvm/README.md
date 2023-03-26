@@ -37,14 +37,14 @@ Wrapper of stream useful to update ui and automatically cancel in dispose of the
 
 ```dart
 
-class ExamplePage extends ViewModelWidget<ExampleScreenViewModel> {
+class ExamplePage extends ViewModelWidget<ExamplePageViewModel> {
   const ExamplePage({super.key});
 
   @override
-  ExampleScreenViewModel createViewModel() => ExampleScreenViewModel();
+  ExamplePageViewModel createViewModel() => ExamplePageViewModel();
 
   @override
-  Widget build(BuildContext context, ExampleScreenViewModel viewModel) {
+  Widget build(BuildContext context, ExamplePageViewModel viewModel) {
     return Scaffold(
       body: Column(
         children: [
@@ -55,7 +55,7 @@ class ExamplePage extends ViewModelWidget<ExampleScreenViewModel> {
     );
   }
 
-  Widget _buildButtonPlus(ExampleScreenViewModel viewModel) {
+  Widget _buildButtonPlus(ExamplePageViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: ElevatedButton(
@@ -67,7 +67,7 @@ class ExamplePage extends ViewModelWidget<ExampleScreenViewModel> {
     );
   }
 
-  Expanded _buildCounterDisplay(ExampleScreenViewModel viewModel) {
+  Expanded _buildCounterDisplay(ExamplePageViewModel viewModel) {
     return Expanded(
       child: Center(
         child: StreamDataConsumer<int>(
@@ -81,8 +81,8 @@ class ExamplePage extends ViewModelWidget<ExampleScreenViewModel> {
   }
 }
 
-class ExampleScreenViewModel extends ViewModel {
-  ExampleScreenViewModel();
+class ExamplePageViewModel extends ViewModel {
+  ExamplePageViewModel();
 
   late final StreamDataViewModel<int> _uiState = StreamDataViewModel(
     defaultValue: 0,
