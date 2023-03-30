@@ -1,5 +1,5 @@
 ```mermaid
-graph TD
+flowchart LR
     View -- Binds to --> ViewModel
     ViewModel -- Accesses --> Model
     Model -- Notifies changes --> ViewModel
