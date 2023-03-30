@@ -1,3 +1,5 @@
+.. uml::
+
 @startuml
 class View
 class ViewModel
