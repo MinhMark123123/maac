@@ -9,7 +9,8 @@ flowchart LR
 ![](firstDiagram.svg)
 
 maac_mvvm is a package that supports simple implementation of the MVVM pattern. 
-The package doesn't wrap any dependency injection inside with this, you can choose any framework dependency injection you want. It simply has three components: ViewModel, StreamData, and ViewModelWidget. 
+The package doesn't wrap any dependency injection inside. With this, you can choose any framework dependency injection you want. It 
+simply has three components: ViewModel, StreamData, and ViewModelWidget. 
 
 It's simple, clean, and very easy to implement.
 
