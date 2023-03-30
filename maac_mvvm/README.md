@@ -63,39 +63,7 @@ class ExamplePage extends ViewModelWidget<ExamplePageViewModel> {
 
   @override
   Widget build(BuildContext context, ExamplePageViewModel viewModel) {
-    return Scaffold(
-      body: Column(
-        children: [
-          _buildCounterDisplay(viewModel),
-          _buildButtonPlus(viewModel),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildButtonPlus(ExamplePageViewModel viewModel) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: ElevatedButton(
-        onPressed: () {
-          viewModel.increaseCounter();
-        },
-        child: const Text("+"),
-      ),
-    );
-  }
-
-  Expanded _buildCounterDisplay(ExamplePageViewModel viewModel) {
-    return Expanded(
-      child: Center(
-        child: StreamDataConsumer<int>(
-          streamData: viewModel.uiState,
-          builder: (context, data) {
-            return Text("You have pressed the button $data times.");
-          },
-        ),
-      ),
-    );
+    return BuildYourUiWidget();
   }
 }
 ```
@@ -118,40 +86,7 @@ class SecondPage extends ViewModelWidget<SecondPageViewModel> {
 
   @override
   Widget build(BuildContext context, SecondPageViewModel viewModel) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        children: [
-          _buildCounterDisplay(viewModel),
-          _buildButtonPlus(viewModel),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildButtonPlus(SecondPageViewModel viewModel) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: MaterialButton(
-        onPressed: () {
-          viewModel.increaseCounter();
-        },
-        child: const Text("+"),
-      ),
-    );
-  }
-
-  Expanded _buildCounterDisplay(SecondPageViewModel viewModel) {
-    return Expanded(
-      child: Center(
-        child: StreamDataConsumer(
-          streamData: viewModel.uiState,
-          builder: (context, data) {
-            return Text("Your are pressed $data ");
-          },
-        ),
-      ),
-    );
+    return BuildYourUiWidget();;
   }
 }
 ```
