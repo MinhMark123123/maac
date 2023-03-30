@@ -1,16 +1,36 @@
 import 'package:flutter/foundation.dart';
 
+/// The abstract base class for a ViewModel with lifecycle callbacks in Flutter.
 abstract class ViewModelLifecycle {
+  /// [onInitState] is called only once when the widget has been initialized
+  /// and inserted into the widget tree, before the [build] method of the widget is called.
+  ///
+  /// [onInitState] is equivalent to [initState] of StatefulWidget.
   @mustCallSuper
   void onInitState() {}
 
+  /// [onDispose] is called only once when the widget is disposed from the widget tree,
+  /// to clean up resources such as streams, timers, and tasks that the ViewModel is holding.
+  ///
+  /// [onDispose] is equivalent to [dispose] of StatefulWidget.
   @mustCallSuper
   void onDispose() {}
 
-  /// Trigger after widget onReady
+  /// [onResume] is called when the widget is fully displayed in the foreground.
+  /// [onResume] will be called in the following cases:
+  ///
+  ///- after [onInitState]
+  ///- after [onApplicationResumed] when the user returns to the app from the background
+  ///- after returning and redisplaying after navigating from another screen using the push method.
   @mustCallSuper
   void onResume() {}
 
+  /// [onPause] is called when the widget is no longer fully displayed in the foreground.
+  /// [onPause] will be called in the following cases:
+  ///
+  ///- before [onApplicationPaused] when the user returns to the app from the background
+  ///- when the user moves to another screen and the widget is completely removed
+  /// from the widget tree, then [onDispose] will be called immediately afterwards.
   @mustCallSuper
   void onPause() {}
 
