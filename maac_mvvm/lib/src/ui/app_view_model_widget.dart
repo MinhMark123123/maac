@@ -10,7 +10,7 @@ abstract class ViewModelWidget<T extends ViewModel> extends ViewStatefulWidget {
 
   T createViewModel(BuildContext context);
 
-  void awake(T viewModel) {}
+  void awake(BuildContext context, T viewModel) {}
 
   @override
   // ignore:
@@ -35,7 +35,7 @@ class _BindViewModelWidgetState extends ViewState<ViewModelWidget> {
   @override
   void aWake() {
     super.aWake();
-    widget.awake(viewModels.first);
+    widget.awake(context, viewModels.first);
   }
 
   @override

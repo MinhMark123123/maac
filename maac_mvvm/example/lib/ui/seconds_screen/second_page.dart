@@ -9,7 +9,11 @@ class SecondPage extends ViewModelWidget<SecondPageViewModel> {
 
   @override
   SecondPageViewModel createViewModel(BuildContext context) => SecondPageViewModel();
-
+@override
+  void awake(BuildContext context, SecondPageViewModel viewModel) {
+    // TODO: implement awake
+    super.awake(context, viewModel);
+  }
 
   @override
   Widget build(BuildContext context, SecondPageViewModel viewModel) {
