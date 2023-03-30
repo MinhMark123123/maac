@@ -1,39 +1,109 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+maac_mvvm is a package that supports simple implementation of the MVVM pattern. The package doesn't wrap any dependency injection inside; it simply has three components: ViewModel, StreamData, and ViewModelWidget. It's simple, clean, and very easy to implement.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+### ViewModelWidget
 
-## Getting started
+A place to build UI widgets that the ViewModel is binding to.
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+### ViewModel
+
+Holds the logic and lifecycle of the widget it's binding.
+
+### StreamData
+
+A wrapper of Stream useful to update UI and automatically cancel in the dispose of the ViewModel lifecycle.
+
+## Getting Started
+
+- Install from pub: `flutter pub add maac_mvvm`
+- Install from Github:
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
 ```dart
-const like = 'sample';
+class ExamplePage extends ViewModelWidget<ExamplePageViewModel> {
+  const ExamplePage({Key? key}) : super(key: key);
+
+  @override
+  ExamplePageViewModel createViewModel() => ExamplePageViewModel();
+
+  @override
+  Widget build(BuildContext context, ExamplePageViewModel viewModel) {
+    return Scaffold(
+      body: Column(
+        children: [
+          _buildCounterDisplay(viewModel),
+          _buildButtonPlus(viewModel),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildButtonPlus(ExamplePageViewModel viewModel) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: ElevatedButton(
+        onPressed: () {
+          viewModel.increaseCounter();
+        },
+        child: const Text("+"),
+      ),
+    );
+  }
+
+  Expanded _buildCounterDisplay(ExamplePageViewModel viewModel) {
+    return Expanded(
+      child: Center(
+        child: StreamDataConsumer<int>(
+          streamData: viewModel.uiState,
+          builder: (context, data) {
+            return Text("You have pressed the button $data times.");
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class ExamplePageViewModel extends ViewModel {
+  ExamplePageViewModel();
+
+  late final StreamDataViewModel<int> _uiState = StreamDataViewModel(
+    defaultValue: 0,
+    viewModel: this,
+  );
+
+  StreamData<int> get uiState => _uiState;
+
+  void increaseCounter() {
+    _uiState.postValue(_uiState.data + 1);
+  }
+}
 ```
+## Additional Information
+### API:
+ViewModelWidget
+- `awake`
+- `createViewModel`
+- `build`
 
-## Additional information
+ViewModel
+- `onInitState`
+- `onResume`
+- `onPause`
+- `onDispose`
+- `onApplicationResumed`
+- `onApplicationInactive`
+- `onApplicationPaused`
+- `onApplicationDetached`
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+StreamData
+- `data`
+- `asStream`
+
+StreamDataViewModel
+- `postValue`
+- `setValue`
+- `asStream`
+- `close`

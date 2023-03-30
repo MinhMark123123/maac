@@ -1,7 +1,7 @@
 import 'package:maac_mvvm/maac_mvvm.dart';
 
-class SecondScreenViewModel extends ViewModel {
-  SecondScreenViewModel();
+class SecondPageViewModel extends ViewModel {
+  SecondPageViewModel();
 
   late final StreamDataViewModel<int> _uiState = StreamDataViewModel(
     defaultValue: 0,
