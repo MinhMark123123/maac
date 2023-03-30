@@ -1,6 +1,7 @@
-- maac_mvvm is a package that supports simple implementation of the MVVM pattern. 
+maac_mvvm is a package that supports simple implementation of the MVVM pattern. 
 The package doesn't wrap any dependency injection inside with this, you can choose any framework dependency injection you want. It simply has three components: ViewModel, StreamData, and ViewModelWidget. 
-- It's simple, clean, and very easy to implement.
+
+It's simple, clean, and very easy to implement.
 
 ## Features
 
