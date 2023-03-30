@@ -1,4 +1,4 @@
-TODO: maac_mvvm is a package that supports simple implementation of the MVVM pattern. The package doesn't wrap any dependency injection inside; it simply has three components: ViewModel, StreamData, and ViewModelWidget. It's simple, clean, and very easy to implement.
+maac_mvvm is a package that supports simple implementation of the MVVM pattern. The package doesn't wrap any dependency injection inside; it simply has three components: ViewModel, StreamData, and ViewModelWidget. It's simple, clean, and very easy to implement.
 
 ## Features
 
