@@ -1,17 +1,10 @@
-<!--
-@startuml firstDiagram
-
-class View
-class ViewModel
-class Model
-
-View -> ViewModel : Binds to
-ViewModel -> Model : Accesses
-Model -> ViewModel : Notifies changes
-ViewModel -> View : Updates UI
-
-@enduml
--->
+```mermaid
+graph TD
+    View -- Binds to --> ViewModel
+    ViewModel -- Accesses --> Model
+    Model -- Notifies changes --> ViewModel
+    ViewModel -- Updates UI --> View
+```
 
 ![](firstDiagram.svg)
 
