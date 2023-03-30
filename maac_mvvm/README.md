@@ -1,5 +1,5 @@
-```plantuml
-@startuml
+<div hidden>
+@startuml firstDiagram
 class View
 class ViewModel
 class Model
@@ -9,7 +9,9 @@ ViewModel -> Model : Accesses
 Model -> ViewModel : Notifies changes
 ViewModel -> View : Updates UI
 @enduml
-```
+</div>
+
+![](firstDiagram.svg)
 
 maac_mvvm is a package that supports simple implementation of the MVVM pattern. 
 The package doesn't wrap any dependency injection inside with this, you can choose any framework dependency injection you want. It simply has three components: ViewModel, StreamData, and ViewModelWidget. 
