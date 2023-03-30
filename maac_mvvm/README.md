@@ -1,5 +1,6 @@
-<div hidden>
+<!--
 @startuml firstDiagram
+
 class View
 class ViewModel
 class Model
@@ -8,8 +9,9 @@ View -> ViewModel : Binds to
 ViewModel -> Model : Accesses
 Model -> ViewModel : Notifies changes
 ViewModel -> View : Updates UI
+
 @enduml
-</div>
+-->
 
 ![](firstDiagram.svg)
 
