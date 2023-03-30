@@ -1,3 +1,14 @@
+@startuml
+class View
+class ViewModel
+class Model
+
+View -> ViewModel : Binds to
+ViewModel -> Model : Accesses
+Model -> ViewModel : Notifies changes
+ViewModel -> View : Updates UI
+@enduml
+
 maac_mvvm is a package that supports simple implementation of the MVVM pattern. 
 The package doesn't wrap any dependency injection inside with this, you can choose any framework dependency injection you want. It simply has three components: ViewModel, StreamData, and ViewModelWidget. 
 
