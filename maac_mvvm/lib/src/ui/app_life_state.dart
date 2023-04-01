@@ -20,7 +20,7 @@ abstract class ViewState<T extends ViewStatefulWidget> extends State<T> {
   @override
   @mustCallSuper
   void initState() {
-    viewModels = bindViewModels();
+    viewModels = bindViewModels(context);
     aWake();
     _lifeCycleManager = LifeCycleManager(viewModels);
     _lifeCycleManager.registerWidgetBindLifecycle(widget);
@@ -35,5 +35,5 @@ abstract class ViewState<T extends ViewStatefulWidget> extends State<T> {
     super.dispose();
   }
 
-  List<ViewModel> bindViewModels();
+  List<ViewModel> bindViewModels(BuildContext context);
 }
