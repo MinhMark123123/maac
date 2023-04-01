@@ -40,5 +40,5 @@ class MyHomePage extends ViewModelWidget<HomePageViewModel> {
   }
 
   @override
-  HomePageViewModel createViewModel() => HomePageViewModel();
+  HomePageViewModel createViewModel(BuildContext context) => HomePageViewModel();
 }

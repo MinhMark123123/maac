@@ -3,7 +3,17 @@ import 'package:maac_mvvm/maac_mvvm.dart';
 import 'view_models/second_page_view_model.dart';
 
 class SecondPage extends ViewModelWidget<SecondPageViewModel> {
+
+
   const SecondPage({super.key});
+
+  @override
+  SecondPageViewModel createViewModel(BuildContext context) => SecondPageViewModel();
+@override
+  void awake(BuildContext context, SecondPageViewModel viewModel) {
+    // TODO: implement awake
+    super.awake(context, viewModel);
+  }
 
   @override
   Widget build(BuildContext context, SecondPageViewModel viewModel) {
@@ -42,7 +52,4 @@ class SecondPage extends ViewModelWidget<SecondPageViewModel> {
       ),
     );
   }
-
-  @override
-  SecondPageViewModel createViewModel() => SecondPageViewModel();
 }
