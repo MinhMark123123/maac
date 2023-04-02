@@ -1,41 +1,68 @@
-import 'package:example/navigation/routers.dart';
-import 'package:example/theme/app_theme.dart';
-import 'package:example/ui/home/home_page.dart';
-import 'package:example/ui/seconds_screen/second_page.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:maac_mvvm/maac_mvvm.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: _router,
-      theme: AppTheme.light(),
-      //darkTheme: AppTheme.dark(),
+    return MaterialApp(
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const ExamplePage(),
     );
   }
 }
 
-final GoRouter _router = GoRouter(
-  routes: <GoRoute>[
-    GoRoute(
-        path: AppRoutes.home,
-        builder: (BuildContext context, GoRouterState state) {
-          return  const MyHomePage();
-        },
-        routes: [
-          GoRoute(
-            path: AppRoutes.second,
-            builder: (BuildContext context, GoRouterState state) {
-              return  const SecondPage();
-            },
-          ),
-        ]),
-  ],
-);
+class ExamplePage extends ViewModelWidget<ExamplePageViewModel> {
+  const ExamplePage({super.key});
+
+  @override
+  Widget build(BuildContext context, ExamplePageViewModel viewModel) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'You have pushed the button this many times:',
+            ),
+            StreamDataConsumer(
+              builder: (context, data) {
+                return Text(
+                  '$data',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                );
+              },
+              streamData: viewModel.uiState,
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: viewModel.incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  @override
+  ExamplePageViewModel createViewModel(BuildContext context) => ExamplePageViewModel();
+}
+
+class ExamplePageViewModel extends ViewModel {
+  late final StreamDataViewModel<int> _uiState = StreamDataViewModel(
+    defaultValue: 0,
+    viewModel: this,
+  );
+
+  StreamData<int> get uiState => _uiState;
+
+  void incrementCounter() {
+    _uiState.postValue(_uiState.data + 1);
+  }
+}
