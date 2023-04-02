@@ -1,12 +1,5 @@
-```mermaid
-flowchart LR
-    View -- Binds to --> ViewModel
-    ViewModel -- Accesses --> Model
-    Model -- Notifies changes --> ViewModel
-    ViewModel -- Updates UI --> View
-```
 
-![](firstDiagram.svg)
+![MVVM](resources/mvvm.png)
 
 maac_mvvm is a package that supports simple implementation of the MVVM pattern. 
 The package doesn't wrap any dependency injection inside. With this, you can choose any framework dependency injection you want. It 
@@ -31,7 +24,6 @@ A wrapper of Stream useful to update UI and automatically cancel in the dispose 
 ## Getting Started
 
 - Install from pub: `flutter pub add maac_mvvm`
-- Install from Github:
 
 ## Usage
 ### 1 - Install package 
