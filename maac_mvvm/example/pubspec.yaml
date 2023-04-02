@@ -37,15 +37,10 @@ dependencies:
   #frameworks
   maac_mvvm:
     path: ../../maac_mvvm
-  go_router: ^5.1.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  freezed:
-  build_runner:
-  flutter_gen_runner:
-  json_serializable:
   flutter_lints: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
