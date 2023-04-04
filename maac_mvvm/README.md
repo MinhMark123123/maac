@@ -3,7 +3,7 @@
 
 maac_mvvm is a package that supports simple implementation of the MVVM pattern. 
 The package doesn't wrap any dependency injection inside. With this, you can choose any framework dependency injection you want. It 
-simply has three components: ViewModel, StreamData, and ViewModelWidget. 
+simply has three components: ViewModel, StreamData and ViewModelWidget. 
 
 It's simple, clean, and very easy to implement.
 
@@ -54,9 +54,6 @@ The ViewModelWidget will only contain two methods: createViewModel and build.
 
 We don't need to worry about the other lifecycles of the widget because they will be called automatically corresponding to the ViewModel.
 
-
-
-
 ```dart
 class ExamplePage extends ViewModelWidget<ExamplePageViewModel> {
   const ExamplePage({Key? key}) : super(key: key);
@@ -74,18 +71,18 @@ In case the widget has properties passed in and we need to pass them to the View
 
 The awake method will be called immediately after the createViewModel method of ViewModelWidget and before the onInitState method of the ViewModel. This will be helpful for setting up the necessary data.
 ```dart
-class SecondPage extends ViewModelWidget<SecondPageViewModel> {
+class ExamplePage extends ViewModelWidget<ExamplePageViewModel> {
   final int initValue;
-  const SecondPage({super.key, required this.initValue});
+  const ExamplePage({super.key, required this.initValue});
 
   @override
-  SecondPageViewModel createViewModel(BuildContext context) => SecondPageViewModel();
+  ExamplePage createViewModel(BuildContext context) => ExamplePageViewModel();
 
   @override
-  void awake(BuildContext context, SecondPageViewModel viewModel) => viewModel.setup(initValue);
+  void awake(BuildContext context, ExamplePageViewModel viewModel) => viewModel.setup(initValue);
 
   @override
-  Widget build(BuildContext context, SecondPageViewModel viewModel) {
+  Widget build(BuildContext context, ExamplePageViewModel viewModel) {
     return BuildYourUiWidget();;
   }
 }

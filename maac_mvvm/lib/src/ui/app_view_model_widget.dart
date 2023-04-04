@@ -6,11 +6,16 @@ import 'package:visibility_detector/visibility_detector.dart';
 abstract class ViewModelWidget<T extends ViewModel> extends ViewStatefulWidget {
   const ViewModelWidget({Key? key}) : super(key: key);
 
-  Widget build(BuildContext context, T viewModel);
+  ///The [awake] method will be called immediately after the createViewModel method of ViewModelWidget and before the onInitState method of
+  ///the ViewModel.
+  ///This will be helpful for setting up the necessary data.
+  void awake(BuildContext context, T viewModel) {}
 
+  ///The [createViewModel] method is where you initialize the corresponding ViewModel.
   T createViewModel(BuildContext context);
 
-  void awake(BuildContext context, T viewModel) {}
+  ///The [build] method is where you build the interface
+  Widget build(BuildContext context, T viewModel);
 
   @override
   // ignore:
