@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:example/seconds_screen/presentation/second_screen_view_model.dart';
-import 'package:maac_with_riverpod/maac_with_riverpod.dart';
+import 'package:maac_mvvm_with_riverpod/maac_mvvm_with_riverpod.dart';
 
 class SecondScreen extends ConsumerViewModelWidget<SecondScreenViewModel> {
   const SecondScreen({super.key});

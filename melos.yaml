@@ -1,0 +1,11 @@
+name: maac
+repository: https://github.com/MinhMark123123/maac
+
+packages:
+ - packages/**
+ - examples/
+ - doc/**
+
+scripts:
+  analyze:
+    exec: dart analyze .
