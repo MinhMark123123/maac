@@ -6,7 +6,8 @@ void useOnDeActive(Function() onDeActive, [List<Object?>? keys]) {
 }
 
 class _OnDeActiveHook extends Hook<void> {
-  const _OnDeActiveHook(this.onDeActive, [List<Object?>? keys]) : super(keys: keys);
+  const _OnDeActiveHook(this.onDeActive, [List<Object?>? keys])
+      : super(keys: keys);
 
   final Function() onDeActive;
 
@@ -15,7 +16,7 @@ class _OnDeActiveHook extends Hook<void> {
 }
 
 class _EffectHookState extends HookState<void, _OnDeActiveHook> {
-@override
+  @override
   void deactivate() {
     hook.onDeActive.call();
     super.deactivate();

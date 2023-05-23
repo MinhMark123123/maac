@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:maac_mvvm/maac_mvvm.dart';
 import 'package:maac_mvvm_with_riverpod/src/hook_deactive.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+
 /// A Widget class that inherits from [HookConsumerWidget] and can use hooks and listen to providers
 /// while binding to the corresponding ViewModel.
 ///
@@ -21,7 +22,8 @@ import 'package:visibility_detector/visibility_detector.dart';
 ///   }
 /// }
 /// ```
-abstract class ConsumerViewModelWidget<T extends ViewModel> extends HookConsumerWidget {
+abstract class ConsumerViewModelWidget<T extends ViewModel>
+    extends HookConsumerWidget {
   const ConsumerViewModelWidget({super.key});
 
   /// Provides the current page's ViewModel provider. This provider must be declared in an [AutoDisposeProvider]
@@ -76,7 +78,8 @@ abstract class ConsumerViewModelWidget<T extends ViewModel> extends HookConsumer
     );
     return VisibilityDetector(
       key: visibilityDetectorKey,
-      onVisibilityChanged: (info) => lifeCycleManager.onVisibilityChanged(info, this),
+      onVisibilityChanged: (info) =>
+          lifeCycleManager.onVisibilityChanged(info, this),
       child: buildWidget(context, ref, viewModel),
     );
   }

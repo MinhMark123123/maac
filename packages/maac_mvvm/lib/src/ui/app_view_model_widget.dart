@@ -20,6 +20,8 @@ abstract class ViewModelWidget<T extends ViewModel> extends ViewStatefulWidget {
   @override
   // ignore:
   ViewState createState() => _BindViewModelWidgetState();
+
+
 }
 
 class _BindViewModelWidgetState extends ViewState<ViewModelWidget> {
@@ -35,7 +37,8 @@ class _BindViewModelWidgetState extends ViewState<ViewModelWidget> {
   }
 
   @override
-  List<ViewModel> bindViewModels(BuildContext context) => [widget.createViewModel(context)];
+  List<ViewModel> bindViewModels(BuildContext context) =>
+      [widget.createViewModel(context)];
 
   @override
   void aWake() {

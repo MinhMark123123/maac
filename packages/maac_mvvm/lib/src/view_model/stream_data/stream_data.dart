@@ -76,7 +76,8 @@ abstract class StreamData<T> {
 /// }
 ///```
 class StreamDataViewModel<T> extends StreamData<T> {
-  StreamDataViewModel({required super.defaultValue, required ViewModel viewModel}) {
+  StreamDataViewModel(
+      {required super.defaultValue, required ViewModel viewModel}) {
     viewModel.addStreamData(this);
   }
 

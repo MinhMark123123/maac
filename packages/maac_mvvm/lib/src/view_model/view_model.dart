@@ -26,6 +26,7 @@ abstract class ViewModel extends ViewModelLifecycle {
     markViewModelHasBondLifeCycle();
     super.onInitState();
   }
+
   @override
   void onDispose() {
     _cancelViewModelScope();
@@ -66,6 +67,7 @@ abstract class ViewModel extends ViewModelLifecycle {
       element.close();
     }
   }
+
   bool _isBoundLifeCycle = false;
 
   bool get isBoundLifeCycle => _isBoundLifeCycle;

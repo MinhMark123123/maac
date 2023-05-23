@@ -51,7 +51,8 @@ class ExamplePage extends ViewModelWidget<ExamplePageViewModel> {
   }
 
   @override
-  ExamplePageViewModel createViewModel(BuildContext context) => ExamplePageViewModel();
+  ExamplePageViewModel createViewModel(BuildContext context) =>
+      ExamplePageViewModel();
 }
 
 class ExamplePageViewModel extends ViewModel {

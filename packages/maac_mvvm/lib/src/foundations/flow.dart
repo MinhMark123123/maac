@@ -8,7 +8,7 @@ abstract class Flow<Result, Param> {
 
   Future<void> setupFlow();
 
-  Future<Result?> execute() async{
+  Future<Result?> execute() async {
     if (_completer?.isCompleted ?? true) {
       _completer = Completer<Result?>();
     }

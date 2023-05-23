@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:maac_mvvm/maac_mvvm.dart';
+
 abstract class ViewStatefulWidget<T extends ViewModel> extends StatefulWidget {
   const ViewStatefulWidget({
     Key? key,
@@ -15,7 +16,7 @@ abstract class ViewState<T extends ViewStatefulWidget> extends State<T> {
 
   LifeCycleManager get lifeCycleManager => _lifeCycleManager;
 
-  void aWake(){}
+  void aWake() {}
 
   @override
   @mustCallSuper

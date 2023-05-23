@@ -21,10 +21,12 @@ class ExamplePage extends ConsumerViewModelWidget<ExamplePageViewModel> {
   const ExamplePage({super.key});
 
   @override
-  AutoDisposeProvider<ExamplePageViewModel> viewModelProvider() => exampleViewModelProvider;
+  AutoDisposeProvider<ExamplePageViewModel> viewModelProvider() =>
+      exampleViewModelProvider;
 
   @override
-  Widget buildWidget(BuildContext context, WidgetRef ref, ExamplePageViewModel viewModel) {
+  Widget buildWidget(
+      BuildContext context, WidgetRef ref, ExamplePageViewModel viewModel) {
     return Scaffold(
       body: Center(
         child: Column(
@@ -47,7 +49,8 @@ class ExamplePage extends ConsumerViewModelWidget<ExamplePageViewModel> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: viewModel.incrementCounter,// Call incrementCounter function in ViewModel
+        onPressed: viewModel
+            .incrementCounter, // Call incrementCounter function in ViewModel
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
@@ -55,12 +58,15 @@ class ExamplePage extends ConsumerViewModelWidget<ExamplePageViewModel> {
   }
 }
 
-final _exampleUIStateProvider = StateProvider.autoDispose<ExamplePageUIState>((ref) {
+final _exampleUIStateProvider =
+    StateProvider.autoDispose<ExamplePageUIState>((ref) {
   return ExamplePageUIState();
 });
 
-final exampleViewModelProvider = Provider.autoDispose<ExamplePageViewModel>((ref) {
-  return ExamplePageViewModel(uiState: ref.watch(_exampleUIStateProvider.notifier));
+final exampleViewModelProvider =
+    Provider.autoDispose<ExamplePageViewModel>((ref) {
+  return ExamplePageViewModel(
+      uiState: ref.watch(_exampleUIStateProvider.notifier));
 });
 
 class ExamplePageUIState {
@@ -78,7 +84,8 @@ class ExamplePageUIState {
 class ExamplePageViewModel extends RiverViewModel<ExamplePageUIState> {
   ExamplePageViewModel({required super.uiState});
   // Expose a selector for Widget to listen and update
-  final counterSelector = _exampleUIStateProvider.select((value) => value.counter);
+  final counterSelector =
+      _exampleUIStateProvider.select((value) => value.counter);
 
   void incrementCounter() {
     // Update uiState to reflect the new counter value

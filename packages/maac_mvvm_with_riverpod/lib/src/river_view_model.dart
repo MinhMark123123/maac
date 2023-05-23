@@ -37,7 +37,8 @@ import 'package:maac_mvvm/maac_mvvm.dart';
 abstract class RiverViewModel<UISTate> extends ViewModel {
   final StateController<UISTate> _uiState;
 
-  RiverViewModel({required StateController<UISTate> uiState}) : _uiState = uiState;
+  RiverViewModel({required StateController<UISTate> uiState})
+      : _uiState = uiState;
 
   ///Getter returns the [StateController] used to update the UI state.
   StateController<UISTate> get uiState => _uiState;
