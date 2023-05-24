@@ -1,6 +1,6 @@
 import 'package:example/seconds_screen/presentation/ui_state.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:maac_core/maac_core.dart';
+import 'package:maac_mvvm/maac_mvvm.dart';
 
 final _secondScreenUiStateProvider = StateProvider.autoDispose<SecondScreenUIState>((ref) {
   return SecondScreenUIState();
