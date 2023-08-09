@@ -65,7 +65,7 @@ class ExamplePage extends DependencyViewModelWidget<ExamplePageViewModel> {
         onPressed: sl.get<ExamplePageViewModel>().incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 
@@ -107,7 +107,7 @@ class ExampleAPage extends DependencyViewModelWidget<ExampleAPageViewModel> {
         onPressed: sl.get<ExampleAPageViewModel>().incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
@@ -152,12 +152,8 @@ class ExampleBPage extends DependencyViewModelWidget<ExampleBPageViewModel> {
 }
 
 class ExamplePageViewModel extends ViewModel {
-  late final StreamDataViewModel<int> _uiState = StreamDataViewModel(
-    defaultValue: 0,
-    viewModel: this,
-  );
-
-  StreamData<int> get uiState => _uiState;
+  late final _uiState = 0.mutableData(this);
+  late final uiState = _uiState.streamData;
 
   void incrementCounter() {
     _uiState.postValue(_uiState.data + 1);
@@ -182,12 +178,8 @@ class ExampleAPageViewModel extends ViewModel {
 }
 
 class ExampleBPageViewModel extends ViewModel {
-  late final StreamDataViewModel<int> _uiState = StreamDataViewModel(
-    defaultValue: 0,
-    viewModel: this,
-  );
-
-  StreamData<int> get uiState => _uiState;
+  late final _uiState = 0.mutableData(this);
+  late final uiState = _uiState.streamData;
 
   void incrementCounter() {
     _uiState.postValue(_uiState.data + 1);
