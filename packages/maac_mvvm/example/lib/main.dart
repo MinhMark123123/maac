@@ -30,7 +30,7 @@ class ExamplePage extends ViewModelWidget<ExamplePageViewModel> {
             const Text(
               'You have pushed the button this many times:',
             ),
-            StreamDataConsumer(
+            StreamDataConsumer<int>(
               builder: (context, data) {
                 return Text(
                   '$data',
@@ -56,14 +56,10 @@ class ExamplePage extends ViewModelWidget<ExamplePageViewModel> {
 }
 
 class ExamplePageViewModel extends ViewModel {
-  late final StreamDataViewModel<int> _uiState = StreamDataViewModel(
-    defaultValue: 0,
-    viewModel: this,
-  );
-
-  StreamData<int> get uiState => _uiState;
+  late final _uiState = 0.mutableData(this);
+  late final uiState = _uiState.streamData;
 
   void incrementCounter() {
-    _uiState.postValue(_uiState.data + 1);
+    _uiState.postValue(uiState.data + 1);
   }
 }

@@ -76,8 +76,10 @@ abstract class StreamData<T> {
 /// }
 ///```
 class StreamDataViewModel<T> extends StreamData<T> {
-  StreamDataViewModel(
-      {required super.defaultValue, required ViewModel viewModel}) {
+  StreamDataViewModel({
+    required super.defaultValue,
+    required ViewModel viewModel,
+  }) {
     viewModel.addStreamData(this);
   }
 
@@ -91,6 +93,7 @@ class StreamDataViewModel<T> extends StreamData<T> {
   void postValue(T data) {
     if (data == _data) return;
     _data = data;
+    if (_controller.isClosed) return;
     _sink.add(data);
   }
 
@@ -103,4 +106,15 @@ class StreamDataViewModel<T> extends StreamData<T> {
   Stream<T> asStream() => _stream;
 
   void close() => _controller.close();
+
+  Future<bool> any(bool Function(T element) test) {
+    return _stream.any(test);
+  }
+
+  Stream<T> asBroadcastStream({
+    void Function(StreamSubscription<T> subscription)? onListen,
+    void Function(StreamSubscription<T> subscription)? onCancel,
+  }) {
+    return _stream.asBroadcastStream(onListen: onListen, onCancel: onCancel);
+  }
 }
