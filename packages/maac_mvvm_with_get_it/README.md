@@ -28,12 +28,8 @@ The below ViewModel is a simple ViewModel that hold logic increase counter from 
 class ExamplePageViewModel extends ViewModel {
   ExamplePageViewModel();
 
-  late final StreamDataViewModel<int> _uiState = StreamDataViewModel(
-    defaultValue: 0,
-    viewModel: this,
-  );
-
-  StreamData<int> get uiState => _uiState;
+  late final _uiState = 0.mutableData(this);
+  late final uiState = _uiState.streamData;
 
   void increaseCounter() {
     _uiState.postValue(_uiState.data + 1);
@@ -169,12 +165,8 @@ class ExamplePage extends DependencyViewModelWidget<ExamplePageViewModel> {
   }
 }
 class ExamplePageViewModel extends ViewModel {
-  late final StreamDataViewModel<int> _uiState = StreamDataViewModel(
-    defaultValue: 0,
-    viewModel: this,
-  );
-
-  StreamData<int> get uiState => _uiState;
+  late final _uiState = 0.mutableData(this);
+  late final uiState = _uiState.streamData;
 
   void incrementCounter() {
     _uiState.postValue(_uiState.data + 1);
