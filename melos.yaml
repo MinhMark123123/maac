@@ -1,6 +1,8 @@
 name: maac
 repository: https://github.com/MinhMark123123/maac
 
+sdkPath: /Users/minhnguyen/development/flutter
+
 packages:
  - packages/**
  - examples/
