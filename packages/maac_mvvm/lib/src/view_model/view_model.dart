@@ -18,11 +18,12 @@ import 'package:maac_mvvm/src/view_model/view_model_life_cycle.dart';
 ///
 ///Please refer to [ViewModelLifecycle] for more information.
 abstract class ViewModel extends ViewModelLifecycle {
-  final List<StreamDataViewModel> _listStreamData = <StreamDataViewModel>[];
+  final List<ViewModelLifecycle> _listLifeComponents = <ViewModelLifecycle>[];
   final Map<Key, CancelableOperation> _cancelableOperation = HashMap();
 
   @override
   void onInitState() {
+    _initStateComponent();
     markViewModelHasBondLifeCycle();
     super.onInitState();
   }
@@ -30,7 +31,7 @@ abstract class ViewModel extends ViewModelLifecycle {
   @override
   void onDispose() {
     _cancelViewModelScope();
-    _closeStreamData();
+    _disposeComponent();
     super.onDispose();
   }
 
@@ -58,13 +59,13 @@ abstract class ViewModel extends ViewModelLifecycle {
     }
   }
 
-  void addStreamData(StreamDataViewModel streamDataViewModel) {
-    _listStreamData.add(streamDataViewModel);
+  void addComponents(ViewModelLifecycle lifecycleComponent) {
+    _listLifeComponents.add(lifecycleComponent);
   }
 
-  void _closeStreamData() {
-    for (var element in _listStreamData) {
-      element.close();
+  void _disposeComponent() {
+    for (var element in _listLifeComponents) {
+      element.onDispose();
     }
   }
 
@@ -73,5 +74,11 @@ abstract class ViewModel extends ViewModelLifecycle {
   bool get isBoundLifeCycle => _isBoundLifeCycle;
   void markViewModelHasBondLifeCycle() {
     _isBoundLifeCycle = true;
+  }
+
+  void _initStateComponent() {
+    for (var element in _listLifeComponents) {
+      element.onInitState();
+    }
   }
 }

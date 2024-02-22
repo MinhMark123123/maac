@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:async/async.dart';
 import 'package:maac_mvvm/src/view_model/view_model.dart';
+import 'package:maac_mvvm/src/view_model/view_model_life_cycle.dart';
 
 /// A StreamData class used when updating data state from ViewModel to Widget.
 ///
@@ -75,12 +77,14 @@ abstract class StreamData<T> {
 ///   }
 /// }
 ///```
-class StreamDataViewModel<T> extends StreamData<T> {
+class StreamDataViewModel<T> extends StreamData<T> with ViewModelLifecycle {
+  late final ViewModel _viewModel;
   StreamDataViewModel({
     required super.defaultValue,
     required ViewModel viewModel,
   }) {
-    viewModel.addStreamData(this);
+    _viewModel = viewModel;
+    viewModel.addComponents(this);
   }
 
   final StreamController<T> _controller = StreamController.broadcast();
@@ -88,6 +92,8 @@ class StreamDataViewModel<T> extends StreamData<T> {
   Sink<T> get _sink => _controller.sink;
 
   Stream<T> get _stream => _controller.stream;
+  final List<StreamSubscription> _sourcesSub = [];
+
 
   /// Update [data] while notifying the Widget or listener of the update via stream.
   void postValue(T data) {
@@ -105,7 +111,14 @@ class StreamDataViewModel<T> extends StreamData<T> {
   @override
   Stream<T> asStream() => _stream;
 
-  void close() => _controller.close();
+  @override
+  void onDispose() {
+    _controller.close();
+    for (var element in _sourcesSub) {
+      element.cancel();
+    }
+    super.onDispose();
+  }
 
   Future<bool> any(bool Function(T element) test) {
     return _stream.any(test);
@@ -116,5 +129,38 @@ class StreamDataViewModel<T> extends StreamData<T> {
     void Function(StreamSubscription<T> subscription)? onCancel,
   }) {
     return _stream.asBroadcastStream(onListen: onListen, onCancel: onCancel);
+  }
+
+  StreamData<R> map<R>({
+    required R Function(T data) mapper,
+  }) {
+    final stream = this.asStream();
+    final mapperStream = stream.map((event) => mapper(event));
+    final mapMutableData = StreamDataViewModel(defaultValue: mapper(_data), viewModel: _viewModel);
+    _sourcesSub.add(mapperStream.listen((event) => mapMutableData.postValue(event)));
+    return mapMutableData;
+  }
+}
+
+class MediatorStreamData<T> extends StreamDataViewModel<T> {
+  final List<StreamSubscription> _sourcesSub = [];
+
+  MediatorStreamData({
+    required super.defaultValue,
+    required ViewModel viewModel,
+  }) : super(viewModel: viewModel) {
+    viewModel.addComponents(this);
+  }
+
+  void addSource<G>(Stream<G> source, void Function(G data) onData) {
+    _sourcesSub.add(source.listen((event) => onData(event)));
+  }
+
+  @override
+  void onDispose() {
+    for (var element in _sourcesSub) {
+      element.cancel();
+    }
+    super.onDispose();
   }
 }

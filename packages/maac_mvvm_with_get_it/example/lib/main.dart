@@ -94,11 +94,20 @@ class ExampleAPage extends DependencyViewModelWidget<ExampleAPageViewModel> {
             StreamDataConsumer(
               builder: (context, data) {
                 return Text(
-                  '$data',
+                  "$data",
                   style: Theme.of(context).textTheme.headlineMedium,
                 );
               },
               streamData: viewModel.uiState,
+            ),
+            StreamDataConsumer(
+              builder: (context, data) {
+                return Text(
+                  data,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                );
+              },
+              streamData: viewModel.uiStateMap,
             ),
           ],
         ),
@@ -165,12 +174,12 @@ class ExamplePageViewModel extends ViewModel {
 }
 
 class ExampleAPageViewModel extends ViewModel {
-  late final StreamDataViewModel<int> _uiState = StreamDataViewModel(
-    defaultValue: 0,
-    viewModel: this,
-  );
+  late final _uiState = 0.mutableData(this);
 
   StreamData<int> get uiState => _uiState;
+
+  StreamData<String> get uiStateMap =>
+      _uiState.map(mapper: (data) => "${data + 3}");
 
   void incrementCounter() {
     _uiState.postValue(_uiState.data + 1);
