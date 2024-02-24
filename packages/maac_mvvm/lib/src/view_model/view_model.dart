@@ -1,7 +1,6 @@
 import 'dart:collection';
 import 'package:async/async.dart';
 import 'package:flutter/widgets.dart';
-import 'package:maac_mvvm/src/view_model/stream_data/stream_data.dart';
 import 'package:maac_mvvm/src/view_model/view_model_life_cycle.dart';
 
 ///A class that manages the logic state of a widget and binds it to the widget's lifecycle.

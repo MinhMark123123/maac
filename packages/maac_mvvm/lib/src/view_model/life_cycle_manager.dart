@@ -109,6 +109,9 @@ class LifeCycleManager with WidgetsBindingObserver {
       case AppLifecycleState.detached:
         _onAppLifecycleDetached();
         break;
+      case AppLifecycleState.hidden:
+        _onAppLifecycleHidden();
+        break;
     }
     super.didChangeAppLifecycleState(state);
   }
@@ -136,6 +139,12 @@ class LifeCycleManager with WidgetsBindingObserver {
     for (var element in lifecycles) {
       element.onApplicationResumed();
       element.onResume();
+    }
+  }
+  void _onAppLifecycleHidden() {
+    for (var element in lifecycles) {
+      element.onPause();
+      element.onApplicationHidden();
     }
   }
 

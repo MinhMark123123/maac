@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-02-24
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`maac_mvvm` - `v0.1.5`](#maac_mvvm---v015)
+ - [`maac_mvvm_with_get_it` - `v0.1.2`](#maac_mvvm_with_get_it---v012)
+ - [`maac_mvvm_with_riverpod` - `v0.1.2`](#maac_mvvm_with_riverpod---v012)
+
+---
+
+#### `maac_mvvm` - `v0.1.5`
+
+ - **FEAT**: update transform and combine. ([0dfaffcb](https://github.com/MinhMark123123/maac/commit/0dfaffcb31980170975fbe67ff8872b214aefe8f))
+ - **FEAT**: upgrade version flutter. ([9159d7ab](https://github.com/MinhMark123123/maac/commit/9159d7abae64f149527b16b30e1c10b1408340c8))
+
+#### `maac_mvvm_with_get_it` - `v0.1.2`
+
+ - **FEAT**: update transform and combine. ([0dfaffcb](https://github.com/MinhMark123123/maac/commit/0dfaffcb31980170975fbe67ff8872b214aefe8f))
+ - **FEAT**: upgrade version flutter. ([9159d7ab](https://github.com/MinhMark123123/maac/commit/9159d7abae64f149527b16b30e1c10b1408340c8))
+
+#### `maac_mvvm_with_riverpod` - `v0.1.2`
+
+ - **FEAT**: upgrade version flutter. ([9159d7ab](https://github.com/MinhMark123123/maac/commit/9159d7abae64f149527b16b30e1c10b1408340c8))
+
+
 ## 2023-08-10
 
 ### Changes
