@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -51,8 +52,10 @@ class _BindViewModelWidgetState<T extends ViewModel>
 
   @override
   void aWake() {
-    if (!Platform.environment.containsKey('FLUTTER_TEST') &&
-        !GetIt.instance.isRegistered<T>()) {
+    if(kIsWeb && !GetIt.instance.isRegistered<T>()){
+      GetIt.instance.registerFactory<T>(() => viewModels.first as T);
+    }else if(!Platform.environment.containsKey('FLUTTER_TEST') &&
+        !GetIt.instance.isRegistered<T>()){
       GetIt.instance.registerFactory<T>(() => viewModels.first as T);
     }
     super.aWake();
