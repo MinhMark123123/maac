@@ -1,3 +1,8 @@
+## 0.1.5
+
+ - **FEAT**: update transform and combine. ([0dfaffcb](https://github.com/MinhMark123123/maac/commit/0dfaffcb31980170975fbe67ff8872b214aefe8f))
+ - **FEAT**: upgrade version flutter. ([9159d7ab](https://github.com/MinhMark123123/maac/commit/9159d7abae64f149527b16b30e1c10b1408340c8))
+
 ## 0.1.4
 
  - **FEAT**: upgrade version flutter. ([9159d7ab](https://github.com/MinhMark123123/maac/commit/9159d7abae64f149527b16b30e1c10b1408340c8))
