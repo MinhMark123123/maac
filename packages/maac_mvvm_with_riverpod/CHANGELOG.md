@@ -1,3 +1,7 @@
+## 0.1.2+1
+
+ - Update a dependency to the latest release.
+
 ## 0.1.2
 
  - **FEAT**: upgrade version flutter. ([9159d7ab](https://github.com/MinhMark123123/maac/commit/9159d7abae64f149527b16b30e1c10b1408340c8))

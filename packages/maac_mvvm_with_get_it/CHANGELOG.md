@@ -1,3 +1,7 @@
+## 0.1.2+1
+
+ - Update a dependency to the latest release.
+
 ## 0.1.2
 
  - **FEAT**: update transform and combine. ([0dfaffcb](https://github.com/MinhMark123123/maac/commit/0dfaffcb31980170975fbe67ff8872b214aefe8f))

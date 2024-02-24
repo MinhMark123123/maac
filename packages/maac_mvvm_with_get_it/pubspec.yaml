@@ -1,6 +1,6 @@
 name: maac_mvvm_with_get_it
 description: maac_mvvm_with_get_it is an extension package of maac_mvvm that is used with GetIt.
-version: 0.1.2
+version: 0.1.2+1
 homepage: https://github.com/MinhMark123123/maac
 
 environment:
@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   get_it: ^7.2.0
-  maac_mvvm: ^0.1.5
+  maac_mvvm: ^0.1.6
   visibility_detector: ^0.4.0+2
 
 dev_dependencies:

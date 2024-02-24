@@ -1,3 +1,7 @@
+## 0.1.6
+
+ - **FEAT**: fixed warning and add state lifecycle. ([8fd101b0](https://github.com/MinhMark123123/maac/commit/8fd101b07a5e7a393ed71c66113b6cdb288bdb21))
+
 ## 0.1.5
 
  - **FEAT**: update transform and combine. ([0dfaffcb](https://github.com/MinhMark123123/maac/commit/0dfaffcb31980170975fbe67ff8872b214aefe8f))
