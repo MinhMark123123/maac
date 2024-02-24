@@ -73,4 +73,13 @@ abstract class ViewModelLifecycle {
   /// pop.
   @mustCallSuper
   void onApplicationDetached() {}
+  /// The application is still hosted on a flutter engine but is detached from
+  /// any host views.
+  ///
+  /// When the application is in this state, the engine is running without
+  /// a view. It can either be in the progress of attaching a view when engine
+  /// was first initializes, or after the view being destroyed due to a Navigator
+  /// pop.
+  @mustCallSuper
+  void onApplicationHidden() {}
 }

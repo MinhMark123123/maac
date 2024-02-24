@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:async/async.dart';
 import 'package:maac_mvvm/src/view_model/view_model.dart';
 import 'package:maac_mvvm/src/view_model/view_model_life_cycle.dart';
 
