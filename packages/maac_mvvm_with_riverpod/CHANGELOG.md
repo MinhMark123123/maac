@@ -1,3 +1,7 @@
+## 0.1.2+2
+
+ - **FIX**: useEffect inside HookConsumerWidget call dispose when press re run app. ([3be1befa](https://github.com/MinhMark123123/maac/commit/3be1befab56d9aeca024ec6d21dfad0b530a4b10))
+
 ## 0.1.2+1
 
  - Update a dependency to the latest release.

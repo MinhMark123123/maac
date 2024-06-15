@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-06-15
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`maac_mvvm_with_riverpod` - `v0.1.2+2`](#maac_mvvm_with_riverpod---v0122)
+
+---
+
+#### `maac_mvvm_with_riverpod` - `v0.1.2+2`
+
+ - **FIX**: useEffect inside HookConsumerWidget call dispose when press re run app. ([3be1befa](https://github.com/MinhMark123123/maac/commit/3be1befab56d9aeca024ec6d21dfad0b530a4b10))
+
+
 ## 2024-02-24
 
 ### Changes
