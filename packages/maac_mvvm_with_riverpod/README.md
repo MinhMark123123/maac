@@ -1,4 +1,4 @@
-![MVVM](https://raw.githubusercontent.com/MinhMark123123/maac/main/maac_mvvm/resources/mvvm.png)
+![MVVM](https://github.com/MinhMark123123/maac/blob/main/resources/mvvm.png)
 
 maac_mvvm_with_riverpod is an extension package of maac_mvvm that is used with RiverPod. This 
 package retains the architecture and components of the maac_mvvm package, such as ViewModel, StreamData, ViewModelWidget,
