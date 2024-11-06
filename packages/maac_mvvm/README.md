@@ -1,5 +1,5 @@
 
-![MVVM](https://raw.githubusercontent.com/MinhMark123123/maac/main/maac_mvvm/resources/mvvm.png)
+![MVVM](https://github.com/MinhMark123123/maac/blob/main/resources/mvvm.png)
 
 maac_mvvm is a package that supports simple implementation of the MVVM pattern. 
 The package doesn't wrap any dependency injection inside. With this, you can choose any framework dependency injection you want. It 
