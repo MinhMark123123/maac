@@ -1,3 +1,8 @@
+## 0.2.0
+
+ - **FEAT**: improve ui state. ([354dc335](https://github.com/MinhMark123123/maac/commit/354dc335911765b981584f29378f15c40f1730ef))
+ - **FEAT**: improve readme. ([2bdc461f](https://github.com/MinhMark123123/maac/commit/2bdc461f696c8302af6ce40eb7c004b1050b5b3d))
+
 ## 0.1.6
 
  - **FEAT**: fixed warning and add state lifecycle. ([8fd101b0](https://github.com/MinhMark123123/maac/commit/8fd101b07a5e7a393ed71c66113b6cdb288bdb21))
