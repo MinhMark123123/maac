@@ -1,3 +1,8 @@
+## 0.2.0
+
+ - **FEAT**: improve ui state. ([354dc335](https://github.com/MinhMark123123/maac/commit/354dc335911765b981584f29378f15c40f1730ef))
+ - **FEAT**: improve readme. ([2bdc461f](https://github.com/MinhMark123123/maac/commit/2bdc461f696c8302af6ce40eb7c004b1050b5b3d))
+
 ## 0.1.2+1
 
  - Update a dependency to the latest release.

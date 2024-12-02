@@ -15,6 +15,28 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`maac_mvvm_with_get_it` - `v0.2.0`](#maac_mvvm_with_get_it---v020)
+
+---
+
+#### `maac_mvvm_with_get_it` - `v0.2.0`
+
+ - **FEAT**: improve ui state. ([354dc335](https://github.com/MinhMark123123/maac/commit/354dc335911765b981584f29378f15c40f1730ef))
+ - **FEAT**: improve readme. ([2bdc461f](https://github.com/MinhMark123123/maac/commit/2bdc461f696c8302af6ce40eb7c004b1050b5b3d))
+
+
+## 2024-12-02
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`maac_mvvm` - `v0.2.0`](#maac_mvvm---v020)
  - [`maac_mvvm_with_riverpod` - `v0.1.2+3`](#maac_mvvm_with_riverpod---v0123)
  - [`maac_mvvm_with_get_it` - `v0.1.2+2`](#maac_mvvm_with_get_it---v0122)
