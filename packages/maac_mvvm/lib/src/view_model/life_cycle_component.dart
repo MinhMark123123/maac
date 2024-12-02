@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 /// The abstract base class for a ViewModel with lifecycle callbacks in Flutter.
-abstract class ViewModelLifecycle {
+mixin class LifecycleComponent {
   /// [onInitState] is called only once when the widget has been initialized
   /// and inserted into the widget tree, before the [build] method of the widget is called.
   ///
@@ -73,6 +73,7 @@ abstract class ViewModelLifecycle {
   /// pop.
   @mustCallSuper
   void onApplicationDetached() {}
+
   /// The application is still hosted on a flutter engine but is detached from
   /// any host views.
   ///

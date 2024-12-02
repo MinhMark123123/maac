@@ -60,6 +60,7 @@ abstract class ConsumerViewModelWidget<T extends ViewModel>
 class _BindViewModelWidgetState<T extends ViewModel>
     extends ConsumerState<ConsumerViewModelWidget<T>> {
   final _visibilityDetectorKey = UniqueKey();
+  final _uniqueKey = UniqueKey().toString();
 
   T _watchViewModel(WidgetRef ref) => ref.watch(widget.viewModelProvider());
 
@@ -72,8 +73,8 @@ class _BindViewModelWidgetState<T extends ViewModel>
     final viewModel = _readViewModel(ref);
     widget.awake(ref, viewModel);
     lifeCycleManager = LifeCycleManager([viewModel]);
-    lifeCycleManager.registerWidgetBindLifecycle(widget);
-    lifeCycleManager.initState(widget);
+    lifeCycleManager.registerWidgetBindLifecycle(_uniqueKey);
+    lifeCycleManager.initState(_uniqueKey);
   }
 
   @override
@@ -84,7 +85,7 @@ class _BindViewModelWidgetState<T extends ViewModel>
     }
     return VisibilityDetector(
       onVisibilityChanged: (info) {
-        lifeCycleManager.onVisibilityChanged(info, widget);
+        lifeCycleManager.onVisibilityChanged(info);
       },
       key: _visibilityDetectorKey,
       child: _buildHookConsumer(viewModel),
@@ -100,14 +101,36 @@ class _BindViewModelWidgetState<T extends ViewModel>
   }
 
   @override
+  void activate() {
+    lifeCycleManager.widgetActivate(_uniqueKey);
+    super.activate();
+  }
+
+  @override
+  void didChangeDependencies() {
+    lifeCycleManager.widgetDidChangeDependencies(_uniqueKey);
+    super.didChangeDependencies();
+  }
+
+  @override
   void deactivate() {
-    lifeCycleManager.onDeActive(widget);
+    lifeCycleManager.widgetDeActivate(_uniqueKey);
     super.deactivate();
   }
 
   @override
+  void didUpdateWidget(covariant ConsumerViewModelWidget<T> oldWidget) {
+    lifeCycleManager.widgetDidUpdateWidget(
+      lifeOwnerKey: _uniqueKey,
+      widget: widget,
+      oldWidget: oldWidget,
+    );
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   void dispose() {
-    lifeCycleManager.dispose(widget);
+    lifeCycleManager.dispose(_uniqueKey);
     super.dispose();
   }
 }

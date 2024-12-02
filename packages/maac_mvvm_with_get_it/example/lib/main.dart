@@ -4,11 +4,21 @@ import 'package:maac_mvvm_with_get_it/maac_mvvm_with_get_it.dart';
 
 // This is our global ServiceLocator
 GetIt sl = GetIt.instance;
+var inject = GetIt.instance;
 
-void setupGetIt() {}
+void setupGetIt() {
+  sl.registerSingleton(const SimpleRepository());
+}
+
+void registerViewModels() {
+  registerViewModel(() => ExamplePageViewModel());
+  registerViewModel(() => ExampleAPageViewModel());
+  registerViewModel(() => ExampleBPageViewModel(repository: inject()));
+}
 
 void main() {
   setupGetIt();
+  registerViewModels();
   runApp(const MyApp());
 }
 
@@ -28,10 +38,6 @@ class ExamplePage extends DependencyViewModelWidget<ExamplePageViewModel> {
   const ExamplePage({super.key});
 
   @override
-  ExamplePageViewModel createViewModel(BuildContext context) =>
-      ExamplePageViewModel();
-
-  @override
   Widget build(BuildContext context, ExamplePageViewModel viewModel) {
     return Scaffold(
       appBar: AppBar(title: const Text("Main")),
@@ -44,20 +50,22 @@ class ExamplePage extends DependencyViewModelWidget<ExamplePageViewModel> {
               textAlign: TextAlign.center,
             ),
             StreamDataConsumer(
-              builder: (context, data) {
+              streamData: viewModel.uiState,
+              builder: (context, data, child) {
                 return Text(
                   '$data',
                   style: Theme.of(context).textTheme.headlineMedium,
                 );
               },
-              streamData: viewModel.uiState,
             ),
             ElevatedButton(
-                onPressed: () => _navigateTo(context, const ExampleAPage()),
-                child: const Text("Move to A")),
+              onPressed: () => _navigateTo(context, const ExampleAPage()),
+              child: const Text("Move to A"),
+            ),
             ElevatedButton(
-                onPressed: () => _navigateTo(context, const ExampleBPage()),
-                child: const Text("Move to B")),
+              onPressed: () => _navigateTo(context, const ExampleBPage()),
+              child: const Text("Move to B"),
+            ),
           ],
         ),
       ),
@@ -69,16 +77,13 @@ class ExamplePage extends DependencyViewModelWidget<ExamplePageViewModel> {
     );
   }
 
-  Future<dynamic> _navigateTo(BuildContext context, Widget page) =>
-      Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+  Future<dynamic> _navigateTo(BuildContext context, Widget page) {
+    return Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+  }
 }
 
 class ExampleAPage extends DependencyViewModelWidget<ExampleAPageViewModel> {
   const ExampleAPage({super.key});
-
-  @override
-  ExampleAPageViewModel createViewModel(BuildContext context) =>
-      ExampleAPageViewModel();
 
   @override
   Widget build(BuildContext context, ExampleAPageViewModel viewModel) {
@@ -92,7 +97,7 @@ class ExampleAPage extends DependencyViewModelWidget<ExampleAPageViewModel> {
               'You have pushed the button this many times:',
             ),
             StreamDataConsumer(
-              builder: (context, data) {
+              builder: (context, data, _) {
                 return Text(
                   "$data",
                   style: Theme.of(context).textTheme.headlineMedium,
@@ -101,7 +106,7 @@ class ExampleAPage extends DependencyViewModelWidget<ExampleAPageViewModel> {
               streamData: viewModel.uiState,
             ),
             StreamDataConsumer(
-              builder: (context, data) {
+              builder: (context, data, _) {
                 return Text(
                   data,
                   style: Theme.of(context).textTheme.headlineMedium,
@@ -125,22 +130,24 @@ class ExampleBPage extends DependencyViewModelWidget<ExampleBPageViewModel> {
   const ExampleBPage({super.key});
 
   @override
-  ExampleBPageViewModel createViewModel(BuildContext context) =>
-      ExampleBPageViewModel();
-
-  @override
   Widget build(BuildContext context, ExampleBPageViewModel viewModel) {
     return Scaffold(
-      appBar: AppBar(title: const Text("A")),
+      appBar: AppBar(title: const Text("B")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            StreamDataConsumer(
+              streamData: viewModel.dataApi,
+              builder: (context, data, child) {
+                return Text(data);
+              },
+            ),
             const Text(
               'You have pushed the button this many times:',
             ),
             StreamDataConsumer(
-              builder: (context, data) {
+              builder: (context, data, child) {
                 return Text(
                   '$data',
                   style: Theme.of(context).textTheme.headlineMedium,
@@ -178,19 +185,48 @@ class ExampleAPageViewModel extends ViewModel {
 
   StreamData<int> get uiState => _uiState;
 
-  StreamData<String> get uiStateMap =>
-      _uiState.map(mapper: (data) => "${data + 3}");
+  StreamData<String> get uiStateMap => _uiState.map(
+        mapper: (data) => "${data + 3}",
+      );
+
+  void incrementCounter() {
+    _uiState.postValue(_uiState.data + 1);
+  }
+
+}
+
+class ExampleBPageViewModel extends ViewModel {
+  final SimpleRepository _repository;
+
+  ExampleBPageViewModel({required SimpleRepository repository})
+      : _repository = repository;
+
+  late final _uiState = 0.mutableData(this);
+
+  StreamData<int> get uiState => _uiState.streamData;
+
+  late final _dataApi = "".mutableData(this);
+
+  StreamData<String> get dataApi => _dataApi.streamData;
+
+  @override
+  void onInitState() {
+    super.onInitState();
+    Future.delayed(Duration.zero, () {
+      _repository.fakeFetch().then((data) => _dataApi.postValue(data));
+    });
+  }
 
   void incrementCounter() {
     _uiState.postValue(_uiState.data + 1);
   }
 }
 
-class ExampleBPageViewModel extends ViewModel {
-  late final _uiState = 0.mutableData(this);
-  late final uiState = _uiState.streamData;
+class SimpleRepository {
+  const SimpleRepository();
 
-  void incrementCounter() {
-    _uiState.postValue(_uiState.data + 1);
+  Future<String> fakeFetch() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    return "Hello there!";
   }
 }

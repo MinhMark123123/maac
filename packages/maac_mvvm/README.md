@@ -15,7 +15,7 @@ A place to build UI widgets that the ViewModel is binding to.
 
 ### ViewModel
 
-Holds the logic and lifecycle of the widget it's binding.
+Automatic handling of ViewModel initialization, resumption, pausing, and disposal.
 
 ### StreamData
 
@@ -75,7 +75,7 @@ class ExamplePage extends ViewModelWidget<ExamplePageViewModel> {
   ExamplePage createViewModel(BuildContext context) => ExamplePageViewModel();
 
   @override
-  void awake(BuildContext context, ExamplePageViewModel viewModel) => viewModel.setup(initValue);
+  void awake(WrapperContext wrapperContext, ExamplePageViewModel viewModel) => viewModel.setup(initValue);
 
   @override
   Widget build(BuildContext context, ExamplePageViewModel viewModel) {

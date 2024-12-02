@@ -2,6 +2,12 @@
 # maac
 ![maac_mvvm](https://github.com/MinhMark123123/maac/blob/main/resources/mvvm.png)
 
+| Package                 | Version                                                                                                                                                                                          |
+|-------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| maac_mvvm               | [![pub package](https://img.shields.io/pub/v/maac_mvvm.svg?label=maac_mvvm&color=blue)](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm)                                     |
+| maac_mvvm_with_get_it   | [![pub package](https://img.shields.io/pub/v/maac_mvvm_with_get_it.svg?label=maac_mvvm_with_get_it&color=blue)](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm_with_get_it) |
+| maac_mvvm_with_riverpod | [![pub package](https://img.shields.io/pub/v/riverpod.svg?label=maac_mvvm_with_riverpod&color=blue)](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm_with_riverpod)          |
+
 **A collection of MVVM implementations using different state management solutions.**
 
 This repository contains three packages, each demonstrating a different approach to implementing the Model-View-ViewModel (MVVM) architecture:

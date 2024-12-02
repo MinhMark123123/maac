@@ -20,9 +20,6 @@ class SecondScreenViewModel extends ViewModel {
 
   SecondScreenViewModel({required this.uiState}) ;
 
-  @override
-  bool enableBindAppLifeCycle() => true;
-
   void increaseCounter() {
     final counter = uiState.state.counter;
     uiState.update((state) => state.copyWith(counter: counter + 1));
