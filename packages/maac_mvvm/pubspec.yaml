@@ -2,22 +2,22 @@ name: maac_mvvm
 description: maac_mvvm is a package supporting easy MVVM pattern implementation without any dependency injection wrapping, allowing freedom of choice.
 version: 0.1.6
 homepage: https://github.com/MinhMark123123/maac
+repository: https://github.com/MinhMark123123/maac
+issue_tracker: https://github.com/MinhMark123123/maac/issues
 
 environment:
-  sdk: ">=2.19.4 <4.0.0"
-  flutter: ">=3.7.0"
+  sdk: ^3.5.4
 
 dependencies:
   flutter:
     sdk: flutter
-  async: ^2.11.0
+  async: any
   visibility_detector: ^0.4.0+2
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  mockito: ^5.4.4
   build_runner:
-  flutter_gen_runner:
 
 flutter:

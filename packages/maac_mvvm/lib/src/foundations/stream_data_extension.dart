@@ -8,6 +8,7 @@ extension StreamDataViewModelExtensionGeneric<T> on T {
     );
   }
 }
-extension StreamDataExtension<T> on StreamDataViewModel<T>{
+
+extension StreamDataExtension<T> on StreamDataViewModel<T> {
   StreamData<T> get streamData => this;
 }

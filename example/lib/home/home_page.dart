@@ -14,10 +14,10 @@ class MyHomePage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text("Home"),
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
+          children: <Widget>[
             Text('Hi there:'),
           ],
         ),

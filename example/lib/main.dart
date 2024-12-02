@@ -17,7 +17,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: _router,
       theme: AppTheme.light(),
-      //darkTheme: AppTheme.dark(),
     );
   }
 }
@@ -28,19 +27,17 @@ final routeContextDelegateProvider = Provider<BuildContext?>((ref) {
 final GoRouter _router = GoRouter(
   routes: <GoRoute>[
     GoRoute(
-      path: AppRoutes.home,
-      builder: (BuildContext context, GoRouterState state) {
-        return const MyHomePage();
-      },
-      routes: [
-        GoRoute(
-          path: AppRoutes.second,
-          builder: (BuildContext context, GoRouterState state) {
-            return const SecondPage();
-          },
-        ),
-      ]
-    ),
-
+        path: AppRoutes.home,
+        builder: (BuildContext context, GoRouterState state) {
+          return const MyHomePage();
+        },
+        routes: [
+          GoRoute(
+            path: AppRoutes.second,
+            builder: (BuildContext context, GoRouterState state) {
+              return const SecondPage();
+            },
+          ),
+        ]),
   ],
 );

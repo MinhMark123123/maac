@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:maac_mvvm/src/view_model/view_model.dart';
-import 'package:maac_mvvm/src/view_model/view_model_life_cycle.dart';
+import 'package:maac_mvvm/src/view_model/life_cycle_component.dart';
 
 /// A StreamData class used when updating data state from ViewModel to Widget.
 ///
@@ -75,8 +75,9 @@ abstract class StreamData<T> {
 ///   }
 /// }
 ///```
-class StreamDataViewModel<T> extends StreamData<T> with ViewModelLifecycle {
+class StreamDataViewModel<T> extends StreamData<T> with LifecycleComponent {
   late final ViewModel _viewModel;
+
   StreamDataViewModel({
     required super.defaultValue,
     required ViewModel viewModel,
@@ -91,7 +92,6 @@ class StreamDataViewModel<T> extends StreamData<T> with ViewModelLifecycle {
 
   Stream<T> get _stream => _controller.stream;
   final List<StreamSubscription> _sourcesSub = [];
-
 
   /// Update [data] while notifying the Widget or listener of the update via stream.
   void postValue(T data) {
@@ -134,15 +134,18 @@ class StreamDataViewModel<T> extends StreamData<T> with ViewModelLifecycle {
   }) {
     final stream = this.asStream();
     final mapperStream = stream.map((event) => mapper(event));
-    final mapMutableData = StreamDataViewModel(defaultValue: mapper(_data), viewModel: _viewModel);
-    _sourcesSub.add(mapperStream.listen((event) => mapMutableData.postValue(event)));
+    final mapMutableData = StreamDataViewModel(
+      defaultValue: mapper(_data),
+      viewModel: _viewModel,
+    );
+    _sourcesSub.add(
+      mapperStream.listen((event) => mapMutableData.postValue(event)),
+    );
     return mapMutableData;
   }
 }
 
 class MediatorStreamData<T> extends StreamDataViewModel<T> {
-  final List<StreamSubscription> _sourcesSub = [];
-
   MediatorStreamData({
     required super.defaultValue,
     required ViewModel viewModel,

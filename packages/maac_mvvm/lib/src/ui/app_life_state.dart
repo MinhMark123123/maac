@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:maac_mvvm/maac_mvvm.dart';
 
-abstract class ViewStatefulWidget<T extends ViewModel> extends StatefulWidget {
+abstract class ViewStatefulWidget extends StatefulWidget {
   const ViewStatefulWidget({
     Key? key,
   }) : super(key: key);
@@ -11,30 +11,66 @@ abstract class ViewStatefulWidget<T extends ViewModel> extends StatefulWidget {
 }
 
 abstract class ViewState<T extends ViewStatefulWidget> extends State<T> {
-  late List<ViewModel> viewModels;
-  late LifeCycleManager _lifeCycleManager;
+  List<ViewModel>? _viewModels;
+  LifeCycleManager? _lifeCycleManager;
+  final String _uniqueKey = UniqueKey().toString();
+  String get uniqueKey => _uniqueKey;
 
-  LifeCycleManager get lifeCycleManager => _lifeCycleManager;
+  List<ViewModel> get viewModels {
+    _viewModels ??= bindViewModels();
+    return _viewModels!;
+  }
+
+  LifeCycleManager get lifeCycleManager {
+    _lifeCycleManager ??= LifeCycleManager(viewModels);
+    return _lifeCycleManager!;
+  }
 
   void aWake() {}
 
   @override
+  void activate() {
+    lifeCycleManager.widgetActivate(_uniqueKey);
+    super.activate();
+  }
+
+  @override
+  void deactivate() {
+    lifeCycleManager.widgetDeActivate(_uniqueKey);
+    super.deactivate();
+  }
+
+  @override
+  void didUpdateWidget(covariant T oldWidget) {
+    lifeCycleManager.widgetDidUpdateWidget(
+      lifeOwnerKey: _uniqueKey,
+      widget: widget,
+      oldWidget: oldWidget,
+    );
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void didChangeDependencies() {
+    lifeCycleManager.widgetDidChangeDependencies(_uniqueKey);
+    super.didChangeDependencies();
+  }
+
+  @override
   @mustCallSuper
   void initState() {
-    viewModels = bindViewModels(context);
     aWake();
-    _lifeCycleManager = LifeCycleManager(viewModels);
-    _lifeCycleManager.registerWidgetBindLifecycle(widget);
-    _lifeCycleManager.initState(widget);
+    lifeCycleManager.registerWidgetBindLifecycle(_uniqueKey);
+    lifeCycleManager.initState(_uniqueKey);
     super.initState();
   }
 
   @override
   @mustCallSuper
   void dispose() {
-    _lifeCycleManager.dispose(widget);
+    lifeCycleManager.dispose(_uniqueKey);
     super.dispose();
   }
 
-  List<ViewModel> bindViewModels(BuildContext context);
+  List<ViewModel> bindViewModels();
 }

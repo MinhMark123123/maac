@@ -21,6 +21,11 @@ class ExamplePage extends ViewModelWidget<ExamplePageViewModel> {
   const ExamplePage({super.key});
 
   @override
+  ExamplePageViewModel createViewModel() {
+    return ExamplePageViewModel();
+  }
+
+  @override
   Widget build(BuildContext context, ExamplePageViewModel viewModel) {
     return Scaffold(
       body: Center(
@@ -31,7 +36,7 @@ class ExamplePage extends ViewModelWidget<ExamplePageViewModel> {
               'You have pushed the button this many times:',
             ),
             StreamDataConsumer<int>(
-              builder: (context, data) {
+              builder: (context, data, child) {
                 return Text(
                   '$data',
                   style: Theme.of(context).textTheme.headlineMedium,
@@ -49,10 +54,6 @@ class ExamplePage extends ViewModelWidget<ExamplePageViewModel> {
       ),
     );
   }
-
-  @override
-  ExamplePageViewModel createViewModel(BuildContext context) =>
-      ExamplePageViewModel();
 }
 
 class ExamplePageViewModel extends ViewModel {

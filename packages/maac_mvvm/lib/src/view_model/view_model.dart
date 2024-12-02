@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'package:async/async.dart';
 import 'package:flutter/widgets.dart';
-import 'package:maac_mvvm/src/view_model/view_model_life_cycle.dart';
+import 'package:maac_mvvm/src/view_model/life_cycle_component.dart';
 
 ///A class that manages the logic state of a widget and binds it to the widget's lifecycle.
 ///
@@ -15,9 +15,9 @@ import 'package:maac_mvvm/src/view_model/view_model_life_cycle.dart';
 ///- onApplicationPaused
 ///- onApplicationDetached
 ///
-///Please refer to [ViewModelLifecycle] for more information.
-abstract class ViewModel extends ViewModelLifecycle {
-  final List<ViewModelLifecycle> _listLifeComponents = <ViewModelLifecycle>[];
+///Please refer to [LifecycleComponent] for more information.
+abstract class ViewModel with LifecycleComponent {
+  final List<LifecycleComponent> _listLifeComponents = <LifecycleComponent>[];
   final Map<Key, CancelableOperation> _cancelableOperation = HashMap();
 
   @override
@@ -36,7 +36,7 @@ abstract class ViewModel extends ViewModelLifecycle {
 
   Future<G> viewModelScope<G>(Future<G> Function() future, {Key? key}) async {
     final requestKey = key ?? UniqueKey();
-    _cancelByKey(requestKey);
+    cancelByKey(requestKey);
     final cancelable = CancelableOperation<G>.fromFuture(
       future(),
     );
@@ -51,14 +51,14 @@ abstract class ViewModel extends ViewModelLifecycle {
     _cancelableOperation.clear();
   }
 
-  void _cancelByKey(Key key) {
+  void cancelByKey(Key key) {
     if (_cancelableOperation.containsKey(key)) {
       _cancelableOperation[key]?.cancel();
       _cancelableOperation.remove(key);
     }
   }
 
-  void addComponents(ViewModelLifecycle lifecycleComponent) {
+  void addComponents(LifecycleComponent lifecycleComponent) {
     _listLifeComponents.add(lifecycleComponent);
   }
 
@@ -71,6 +71,7 @@ abstract class ViewModel extends ViewModelLifecycle {
   bool _isBoundLifeCycle = false;
 
   bool get isBoundLifeCycle => _isBoundLifeCycle;
+
   void markViewModelHasBondLifeCycle() {
     _isBoundLifeCycle = true;
   }

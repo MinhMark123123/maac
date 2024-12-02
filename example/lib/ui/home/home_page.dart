@@ -2,7 +2,6 @@ import 'package:example/global.dart';
 import 'package:example/navigation/routers.dart';
 import 'package:example/ui/home/presentation/home_page_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:maac_mvvm_with_riverpod/maac_mvvm_with_riverpod.dart';
 
 class MyHomePage extends ConsumerViewModelWidget<HomePageViewModel> {
