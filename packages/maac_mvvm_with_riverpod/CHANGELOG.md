@@ -1,3 +1,8 @@
+## 0.2.0
+
+ - **FEAT**: improve ui state. ([354dc335](https://github.com/MinhMark123123/maac/commit/354dc335911765b981584f29378f15c40f1730ef))
+ - **FEAT**: improve readme. ([2bdc461f](https://github.com/MinhMark123123/maac/commit/2bdc461f696c8302af6ce40eb7c004b1050b5b3d))
+
 ## 0.1.2+2
 
  - **FIX**: useEffect inside HookConsumerWidget call dispose when press re run app. ([3be1befa](https://github.com/MinhMark123123/maac/commit/3be1befab56d9aeca024ec6d21dfad0b530a4b10))

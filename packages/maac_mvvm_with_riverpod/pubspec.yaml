@@ -1,6 +1,6 @@
 name: maac_mvvm_with_riverpod
 description: maac_mvvm_with_riverpod is an extension package of maac_mvvm that is used with RiverPod.
-version: 0.1.2+2
+version: 0.2.0
 homepage: https://github.com/MinhMark123123/maac
 repository: https://github.com/MinhMark123123/maac
 issue_tracker: https://github.com/MinhMark123123/maac/issues
