@@ -1,18 +1,44 @@
 import 'package:flutter/widgets.dart';
 import 'package:maac_mvvm/src/ui/app_life_state.dart';
+import 'package:maac_mvvm/src/ui/awake_context.dart';
 import 'package:maac_mvvm/src/view_model/view_model.dart';
-import 'package:visibility_detector/visibility_detector.dart';
+import 'package:maac_mvvm/src/ui/base_state.dart';
+
+abstract class ViewModelsWidget extends ViewStatefulWidget {
+  const ViewModelsWidget({super.key});
+
+  ///The [awake] method will be called immediately after the createViewModel method of ViewModelsWidget and before the onInitState method of
+  ///the ViewModels.
+  ///This will be helpful for setting up the necessary data.
+  void awake(
+    WrapperContext wrapperContext,
+    List<ViewModel> viewModels,
+  ) {}
+
+  ///The [createViewModels] method is where you initialize the corresponding ViewModels.
+  List<ViewModel> createViewModels();
+
+  ///The [build] method is where you build the interface
+  Widget build(BuildContext context, List<ViewModel> viewModels);
+
+  @override
+  // ignore:
+  ViewState createState() => _BindViewModelsWidgetState();
+}
 
 abstract class ViewModelWidget<T extends ViewModel> extends ViewStatefulWidget {
-  const ViewModelWidget({Key? key}) : super(key: key);
+  const ViewModelWidget({super.key});
 
   ///The [awake] method will be called immediately after the createViewModel method of ViewModelWidget and before the onInitState method of
   ///the ViewModel.
   ///This will be helpful for setting up the necessary data.
-  void awake(BuildContext context, T viewModel) {}
+  void awake(
+    WrapperContext wrapperContext,
+    T viewModel,
+  ) {}
 
   ///The [createViewModel] method is where you initialize the corresponding ViewModel.
-  T createViewModel(BuildContext context);
+  T createViewModel();
 
   ///The [build] method is where you build the interface
   Widget build(BuildContext context, T viewModel);
@@ -20,39 +46,40 @@ abstract class ViewModelWidget<T extends ViewModel> extends ViewStatefulWidget {
   @override
   // ignore:
   ViewState createState() => _BindViewModelWidgetState();
-
-
 }
 
-class _BindViewModelWidgetState extends ViewState<ViewModelWidget> {
-  final _visibilityDetectorKey = UniqueKey();
-
+///Single Viewmodel state [ViewModelWidget]
+class _BindViewModelWidgetState extends BaseViewModelState<ViewModelWidget> {
   @override
-  Widget build(BuildContext context) {
-    return VisibilityDetector(
-      onVisibilityChanged: _onVisibilityChanged,
-      key: _visibilityDetectorKey,
-      child: widget.build(context, viewModels.first),
-    );
-  }
-
-  @override
-  List<ViewModel> bindViewModels(BuildContext context) =>
-      [widget.createViewModel(context)];
+  List<ViewModel> bindViewModels() => [widget.createViewModel()];
 
   @override
   void aWake() {
     super.aWake();
-    widget.awake(context, viewModels.first);
+    widget.awake(
+      WrapperContext(context: context, lifeCycleManager: lifeCycleManager),
+      viewModels.first,
+    );
   }
 
   @override
-  void deactivate() {
-    lifeCycleManager.onDeActive(widget);
-    super.deactivate();
+  Widget get childBuilder => widget.build(context, viewModels.first);
+}
+
+///Multiple ViewModels state [ViewModelsWidget]
+class _BindViewModelsWidgetState extends BaseViewModelState<ViewModelsWidget> {
+  @override
+  List<ViewModel> bindViewModels() => widget.createViewModels();
+
+  @override
+  void aWake() {
+    super.aWake();
+    widget.awake(
+      WrapperContext(context: context, lifeCycleManager: lifeCycleManager),
+      viewModels,
+    );
   }
 
-  void _onVisibilityChanged(VisibilityInfo info) {
-    lifeCycleManager.onVisibilityChanged(info, widget);
-  }
+  @override
+  Widget get childBuilder => widget.build(context, viewModels);
 }

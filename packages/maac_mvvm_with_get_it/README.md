@@ -1,8 +1,8 @@
-![MVVM](https://raw.githubusercontent.com/MinhMark123123/maac/main/maac_mvvm/resources/mvvm.png)
+![MVVM](https://github.com/MinhMark123123/maac/blob/main/resources/mvvm.png)
 
-maac_mvvm_with_get_it is an extension package of maac_mvvm that is used with RiverPod. This
+maac_mvvm_with_get_it is an extension package of maac_mvvm that is used with GetIt. This
 package retains the architecture and components of the maac_mvvm package, such as ViewModel, StreamData, ViewModelWidget,
-and adds additional components that support RiverPod is DependencyViewModelWidget .
+and adds additional components that support GetIt is DependencyViewModelWidget .
 
 It's simple, clean, and very easy to implement.
 
@@ -20,9 +20,36 @@ A place to build UI widgets that the ViewModel is binding to also support depend
 ## Usage
 ### 1 - Install package
 `flutter pub add maac_mvvm_with_get_it`
-### 2 - Create your ViewModel
-With this package we create a ViewModel that inherits from RiverViewModel to manage the logic and lifecycle of the widget. This
-ViewModel will have access to the state and the methods defined in RiverViewModel, as well as the ones defined in maac_mvvm's ViewModel.
+### 2 - Setup GetIt
+Before using the package, register your dependencies and ViewModels in GetIt:
+```dart
+import 'package:get_it/get_it.dart';
+import 'package:maac_mvvm_with_get_it/maac_mvvm_with_get_it.dart';
+
+final GetIt sl = GetIt.instance;
+
+void setupGetIt() {
+  //setup your GetIt dependencies injection.
+}
+
+void registerViewModels() {
+  // Registers a factory function for creating `ExamplePageViewModel` instances.
+  // When a widget requests this ViewModel, The package will:
+  // 1. Call this factory function to create a new instance.
+  // 2. Inject this instance into the widget's and auto unregister when the widget dispose.
+  registerViewModel(() => ExamplePageViewModel()); 
+}
+
+void main() {
+  setupGetIt();
+  registerViewModels();
+  runApp(const MyApp());
+}
+```
+
+### 3 - Create your ViewModel
+With this package we create a ViewModel to automatic handling of initialization, resumption, pausing, and disposal. This
+ViewModel will have access to the state and the methods as well as the ones defined in maac_mvvm's ViewModel.
 The below ViewModel is a simple ViewModel that hold logic increase counter from widget
 ```dart
 class ExamplePageViewModel extends ViewModel {
@@ -36,7 +63,7 @@ class ExamplePageViewModel extends ViewModel {
   }
 }
 ```
-### 3 - Create your Widget bind's with ViewModel
+### 4 - Create your Widget bind's with ViewModel
 The DependencyViewModelWidget will only contain two methods: createViewModel and build.
 
 - The buildWidget method is where you build the interface
@@ -48,9 +75,6 @@ corresponding to the ViewModel.
 ```dart
 class ExamplePage extends DependencyViewModelWidget<ExamplePageViewModel> {
   const ExamplePage({Key? key}) : super(key: key);
-
-  @override
-  ExamplePageViewModel createViewModel(BuildContext context) => ExamplePageViewModel();
 
   @override
   Widget build(BuildContext context, ExamplePageViewModel viewModel) {
@@ -67,10 +91,7 @@ class ExamplePage extends DependencyViewModelWidget<ExamplePageViewModel> {
   const ExamplePage({super.key, required this.initValue});
 
   @override
-  ExamplePage createViewModel(BuildContext context) => ExamplePageViewModel();
-
-  @override
-  void awake(BuildContext context, ExamplePageViewModel viewModel) => viewModel.setup(initValue);
+  void awake(WrapperContext wrapperContext, ExamplePageViewModel viewModel) => viewModel.setup(initValue);
 
   @override
   Widget build(BuildContext context, ExamplePageViewModel viewModel) {
@@ -78,7 +99,7 @@ class ExamplePage extends DependencyViewModelWidget<ExamplePageViewModel> {
   }
 }
 ```
-### 4 - Listen to data changes from ViewModel
+### 5 - Listen to data changes from ViewModel
 Listen to data changes from ViewModel and update UI with StreamDataConsumer.
 
 A StreamDataConsumer is a widget that listens to changes in a data stream and updates its UI accordingly. It can be used to display data from a ViewModel and update the UI whenever the data changes.
@@ -109,8 +130,13 @@ void setupGetIt() {
   //setup your GetIt dependencies injection.
 }
 
+void registerViewModels(){
+  registerViewModel(() => ExamplePageViewModel());
+}
+
 void main() {
   setupGetIt();
+  registerViewModels();
   runApp(const MyApp());
 }
 
@@ -128,9 +154,6 @@ class MyApp extends StatelessWidget {
 
 class ExamplePage extends DependencyViewModelWidget<ExamplePageViewModel> {
   const ExamplePage({super.key});
-
-  @override
-  ExamplePageViewModel createViewModel(BuildContext context) => ExamplePageViewModel();
 
   @override
   Widget build(BuildContext context, ExamplePageViewModel viewModel) {

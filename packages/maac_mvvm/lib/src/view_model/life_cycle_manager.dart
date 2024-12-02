@@ -1,33 +1,33 @@
 import 'package:flutter/widgets.dart';
 import 'package:maac_mvvm/src/foundations/executor.dart';
-import 'package:maac_mvvm/src/view_model/view_model_life_cycle.dart';
+import 'package:maac_mvvm/src/view_model/life_cycle_component.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class LifeCycleManager with WidgetsBindingObserver {
-  final List<ViewModelLifecycle> lifecycles;
+  final List<LifecycleComponent> lifecycles;
 
   LifeCycleManager(this.lifecycles);
 
-  Widget? _life;
+  String? _lifeOwnerKey;
   bool _isFirstInit = false;
   bool _hasBeenDispose = false;
 
-  void registerWidgetBindLifecycle(Widget lifeOwner) {
-    if (_life != null) return;
-    _life = lifeOwner;
+  void registerWidgetBindLifecycle(String lifeOwnerKey) {
+    if (_lifeOwnerKey != null) return;
+    _lifeOwnerKey = lifeOwnerKey;
   }
 
   void _removeBindingWidgetObserver() {
     WidgetsBinding.instance.removeObserver(this);
   }
 
-  bool isValidLifeCycleHolder(Widget lifeOwner) {
-    if (_life == null) return false;
-    return _life == lifeOwner;
+  bool isValidLifeCycleHolder(String lifeOwnerKey) {
+    if (_lifeOwnerKey == null) return false;
+    return _lifeOwnerKey == lifeOwnerKey;
   }
 
-  void initState(Widget widget) {
-    executeCondition(isValidLifeCycleHolder(widget), () {
+  void initState(String lifeOwnerKey) {
+    executeCondition(isValidLifeCycleHolder(lifeOwnerKey), () {
       _isFirstInit = true;
       _bindWidgetLifeCycle();
       _doInitState();
@@ -47,8 +47,8 @@ class LifeCycleManager with WidgetsBindingObserver {
     }
   }
 
-  void dispose(Widget widget) {
-    executeCondition(isValidLifeCycleHolder(widget), () {
+  void dispose(String lifeOwnerKey) {
+    executeCondition(isValidLifeCycleHolder(lifeOwnerKey), () {
       _hasBeenDispose = true;
       _resetAppLifeCycleListener();
       _resetLife();
@@ -60,12 +60,7 @@ class LifeCycleManager with WidgetsBindingObserver {
     for (var element in lifecycles) {
       element.onDispose();
     }
-  }
-
-  void onDeActive(Widget widget) {
-    executeCondition(isValidLifeCycleHolder(widget), () {
-      _doPause();
-    });
+    _onDisposeSubscribes?.forEach((e) => e.call());
   }
 
   void _doPause() {
@@ -74,7 +69,7 @@ class LifeCycleManager with WidgetsBindingObserver {
     }
   }
 
-  void onVisibilityChanged(VisibilityInfo info, Widget widget) {
+  void onVisibilityChanged(VisibilityInfo info) {
     final visibleFraction = info.visibleFraction;
     if (visibleFraction == 1) {
       //widget is appear
@@ -141,6 +136,7 @@ class LifeCycleManager with WidgetsBindingObserver {
       element.onResume();
     }
   }
+
   void _onAppLifecycleHidden() {
     for (var element in lifecycles) {
       element.onPause();
@@ -157,6 +153,69 @@ class LifeCycleManager with WidgetsBindingObserver {
   }
 
   void _resetLife() {
-    _life = null;
+    _lifeOwnerKey = null;
+  }
+
+  List<Function()>? _onActiveSubscribes;
+  List<Function()>? _onOnDeActiveSubscribes;
+  List<Function()>? _onDidChangeDependenciesSubscribes;
+  List<Function<T extends Widget>(T oldWidget)>? _onDidUpdateSubscribes;
+  List<Function()>? _onDisposeSubscribes;
+
+  void onActive(Function() actionOnActive) {
+    _onActiveSubscribes ??= [];
+    _onActiveSubscribes?.add(actionOnActive);
+  }
+
+  void onDeActive(Function() actionOnDeActive) {
+    _onOnDeActiveSubscribes ??= [];
+    _onOnDeActiveSubscribes?.add(actionOnDeActive);
+  }
+
+  void onDidChangeDependencies(
+    Function() actionOnDidChangeDependencies,
+  ) {
+    _onDidChangeDependenciesSubscribes ??= [];
+    _onDidChangeDependenciesSubscribes?.add(actionOnDidChangeDependencies);
+  }
+
+  void onDidUpdate(
+    Function<T extends Widget>(T oldWidget) actionOnDidUpdate,
+  ) {
+    _onDidUpdateSubscribes ??= [];
+    _onDidUpdateSubscribes?.add(actionOnDidUpdate);
+  }
+
+  void onDispose(Function() actionOnDispose) {
+    _onDisposeSubscribes ??= [];
+    _onDisposeSubscribes?.add(actionOnDispose);
+  }
+
+  void widgetActivate(String lifeOwnerKey) {
+    executeCondition(isValidLifeCycleHolder(lifeOwnerKey), () {
+      _onActiveSubscribes?.forEach((a) => a.call());
+    });
+  }
+
+  void widgetDeActivate(String lifeOwnerKey) {
+    executeCondition(isValidLifeCycleHolder(lifeOwnerKey), () {
+      _onOnDeActiveSubscribes?.forEach((a) => a.call());
+    });
+  }
+
+  void widgetDidChangeDependencies(String lifeOwnerKey) {
+    executeCondition(isValidLifeCycleHolder(lifeOwnerKey), () {
+      _onDidChangeDependenciesSubscribes?.forEach((a) => a.call());
+    });
+  }
+
+  void widgetDidUpdateWidget<T extends Widget>({
+    required String lifeOwnerKey,
+    required Widget widget,
+    required covariant T oldWidget,
+  }) {
+    executeCondition(isValidLifeCycleHolder(lifeOwnerKey), () {
+      _onDidUpdateSubscribes?.forEach((a) => a.call(oldWidget));
+    });
   }
 }
