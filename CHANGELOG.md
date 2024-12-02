@@ -15,6 +15,36 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`maac_mvvm` - `v0.2.0+1`](#maac_mvvm---v0201)
+ - [`maac_mvvm_with_riverpod` - `v0.2.0+1`](#maac_mvvm_with_riverpod---v0201)
+ - [`maac_mvvm_with_get_it` - `v0.2.0+1`](#maac_mvvm_with_get_it---v0201)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `maac_mvvm_with_riverpod` - `v0.2.0+1`
+ - `maac_mvvm_with_get_it` - `v0.2.0+1`
+
+---
+
+#### `maac_mvvm` - `v0.2.0+1`
+
+ - **FIX**: async version. ([b8a0e3c7](https://github.com/MinhMark123123/maac/commit/b8a0e3c78896112956e9575c8eee88f3260e50bb))
+
+
+## 2024-12-02
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`maac_mvvm_with_riverpod` - `v0.2.0`](#maac_mvvm_with_riverpod---v020)
 
 ---

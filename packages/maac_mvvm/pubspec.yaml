@@ -1,6 +1,6 @@
 name: maac_mvvm
 description: maac_mvvm is a package supporting easy MVVM pattern implementation without any dependency injection wrapping, allowing freedom of choice.
-version: 0.2.0
+version: 0.2.0+1
 homepage: https://github.com/MinhMark123123/maac
 repository: https://github.com/MinhMark123123/maac
 issue_tracker: https://github.com/MinhMark123123/maac/issues

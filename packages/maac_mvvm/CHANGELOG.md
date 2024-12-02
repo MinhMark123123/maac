@@ -1,3 +1,7 @@
+## 0.2.0+1
+
+ - **FIX**: async version. ([b8a0e3c7](https://github.com/MinhMark123123/maac/commit/b8a0e3c78896112956e9575c8eee88f3260e50bb))
+
 ## 0.2.0
 
  - **FEAT**: improve ui state. ([354dc335](https://github.com/MinhMark123123/maac/commit/354dc335911765b981584f29378f15c40f1730ef))

@@ -1,3 +1,7 @@
+## 0.2.0+1
+
+ - Update a dependency to the latest release.
+
 ## 0.2.0
 
  - **FEAT**: improve ui state. ([354dc335](https://github.com/MinhMark123123/maac/commit/354dc335911765b981584f29378f15c40f1730ef))
