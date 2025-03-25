@@ -1,6 +1,6 @@
 name: maac_mvvm_with_riverpod
 description: maac_mvvm_with_riverpod is an extension package of maac_mvvm that is used with RiverPod.
-version: 0.2.0+1
+version: 0.2.0+2
 homepage: https://github.com/MinhMark123123/maac
 repository: https://github.com/MinhMark123123/maac
 issue_tracker: https://github.com/MinhMark123123/maac/issues
@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
   hooks_riverpod: ^2.5.1
   flutter_hooks: ^0.20.5
-  maac_mvvm: ^0.2.0+1
+  maac_mvvm: ^0.2.1
   visibility_detector: ^0.4.0+2
 
 dev_dependencies:

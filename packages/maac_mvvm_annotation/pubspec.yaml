@@ -1,6 +1,6 @@
 name: maac_mvvm_annotation
 description: Annotation of the maac_mvvm and maac_mvvm_generator
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/MinhMark123123/maac
 repository: https://github.com/MinhMark123123/maac
 issue_tracker: https://github.com/MinhMark123123/maac/issues
@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.16.0
-  maac_mvvm: ^0.2.0+1
+  maac_mvvm: ^0.2.1
 
 dev_dependencies:
   flutter_test:

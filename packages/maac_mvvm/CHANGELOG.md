@@ -1,3 +1,7 @@
+## 0.2.1
+
+ - **FEAT**: add package annotation and auto generate code. ([abd7488f](https://github.com/MinhMark123123/maac/commit/abd7488f596e1ebf34a49c9ed25aaf0a656dd529))
+
 ## 0.2.0+1
 
  - **FIX**: async version. ([b8a0e3c7](https://github.com/MinhMark123123/maac/commit/b8a0e3c78896112956e9575c8eee88f3260e50bb))

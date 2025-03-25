@@ -3,6 +3,53 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-03-25
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`maac_mvvm` - `v0.2.1`](#maac_mvvm---v021)
+ - [`maac_mvvm_annotation` - `v0.0.2`](#maac_mvvm_annotation---v002)
+ - [`maac_mvvm_generator` - `v0.0.2`](#maac_mvvm_generator---v002)
+ - [`maac_mvvm_with_get_it` - `v0.2.1`](#maac_mvvm_with_get_it---v021)
+ - [`maac_mvvm_with_riverpod` - `v0.2.0+2`](#maac_mvvm_with_riverpod---v0202)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `maac_mvvm_with_riverpod` - `v0.2.0+2`
+
+---
+
+#### `maac_mvvm` - `v0.2.1`
+
+ - **FEAT**: add package annotation and auto generate code. ([abd7488f](https://github.com/MinhMark123123/maac/commit/abd7488f596e1ebf34a49c9ed25aaf0a656dd529))
+
+#### `maac_mvvm_annotation` - `v0.0.2`
+
+ - **FIX**: fix pub points. ([6a184d23](https://github.com/MinhMark123123/maac/commit/6a184d2349a644e2dd18d362b354875a025a14f9))
+ - **FEAT**: add license. ([80330a94](https://github.com/MinhMark123123/maac/commit/80330a94788928db88d5ddc848cda3f6708a4d60))
+ - **FEAT**: add package annotation and auto generate code. ([abd7488f](https://github.com/MinhMark123123/maac/commit/abd7488f596e1ebf34a49c9ed25aaf0a656dd529))
+
+#### `maac_mvvm_generator` - `v0.0.2`
+
+ - **FIX**: fix pub points. ([6a184d23](https://github.com/MinhMark123123/maac/commit/6a184d2349a644e2dd18d362b354875a025a14f9))
+ - **FEAT**: add license. ([80330a94](https://github.com/MinhMark123123/maac/commit/80330a94788928db88d5ddc848cda3f6708a4d60))
+ - **FEAT**: add package annotation and auto generate code. ([abd7488f](https://github.com/MinhMark123123/maac/commit/abd7488f596e1ebf34a49c9ed25aaf0a656dd529))
+
+#### `maac_mvvm_with_get_it` - `v0.2.1`
+
+ - **FEAT**: add package annotation and auto generate code. ([abd7488f](https://github.com/MinhMark123123/maac/commit/abd7488f596e1ebf34a49c9ed25aaf0a656dd529))
+
+
 ## 2024-12-02
 
 ### Changes

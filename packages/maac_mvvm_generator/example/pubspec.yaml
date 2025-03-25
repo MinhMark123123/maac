@@ -12,8 +12,8 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   get_it: ^8.0.2
-  maac_mvvm: ^0.2.0+1
-  maac_mvvm_annotation: ^0.0.1
+  maac_mvvm: ^0.2.1
+  maac_mvvm_annotation: ^0.0.2
 
 dev_dependencies:
   flutter_test:
