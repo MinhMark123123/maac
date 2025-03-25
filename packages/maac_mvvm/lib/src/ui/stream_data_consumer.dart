@@ -11,14 +11,12 @@ import 'package:maac_mvvm/maac_mvvm.dart';
 /// Parameters:
 ///   - BuildContext context: The build context in which the widget is built.
 ///   - Data data: The latest data emitted by the Stream.
-///   - Widget? child: An optional child widget to be passed to the builder function.
 ///
 /// Returns:
 ///   - A Widget that is built with the provided data and optional child.
 typedef DataConsumerBuilder<Data> = Widget Function(
   BuildContext context,
   Data data,
-  Widget? child,
 );
 
 /// A stateless widget that listens to a stream of data (`StreamData`) and
@@ -56,8 +54,6 @@ class StreamDataConsumer<Data> extends StatefulWidget {
 }
 
 class _StreamDataConsumerState<Data> extends State<StreamDataConsumer<Data>> {
-  Widget? cachedChild;
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Data>(
@@ -65,13 +61,7 @@ class _StreamDataConsumerState<Data> extends State<StreamDataConsumer<Data>> {
       stream: widget.streamData.asStream(),
       builder: (context, snapshot) {
         final data = snapshot.data ?? widget.streamData.data;
-
-        // Only update `cachedChild` if the new data is different
-        if (cachedChild == null || snapshot.hasData) {
-          cachedChild = widget.builder(context, data, cachedChild);
-        }
-
-        return cachedChild!;
+        return widget.builder(context, data);
       },
     );
   }
