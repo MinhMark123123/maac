@@ -51,7 +51,7 @@ class ExamplePage extends DependencyViewModelWidget<ExamplePageViewModel> {
             ),
             StreamDataConsumer(
               streamData: viewModel.uiState,
-              builder: (context, data, child) {
+              builder: (context, data) {
                 return Text(
                   '$data',
                   style: Theme.of(context).textTheme.headlineMedium,
@@ -97,7 +97,10 @@ class ExampleAPage extends DependencyViewModelWidget<ExampleAPageViewModel> {
               'You have pushed the button this many times:',
             ),
             StreamDataConsumer(
-              builder: (context, data, _) {
+              builder: (
+                context,
+                data,
+              ) {
                 return Text(
                   "$data",
                   style: Theme.of(context).textTheme.headlineMedium,
@@ -106,7 +109,10 @@ class ExampleAPage extends DependencyViewModelWidget<ExampleAPageViewModel> {
               streamData: viewModel.uiState,
             ),
             StreamDataConsumer(
-              builder: (context, data, _) {
+              builder: (
+                context,
+                data,
+              ) {
                 return Text(
                   data,
                   style: Theme.of(context).textTheme.headlineMedium,
@@ -139,7 +145,7 @@ class ExampleBPage extends DependencyViewModelWidget<ExampleBPageViewModel> {
           children: <Widget>[
             StreamDataConsumer(
               streamData: viewModel.dataApi,
-              builder: (context, data, child) {
+              builder: (context, data) {
                 return Text(data);
               },
             ),
@@ -147,7 +153,7 @@ class ExampleBPage extends DependencyViewModelWidget<ExampleBPageViewModel> {
               'You have pushed the button this many times:',
             ),
             StreamDataConsumer(
-              builder: (context, data, child) {
+              builder: (context, data) {
                 return Text(
                   '$data',
                   style: Theme.of(context).textTheme.headlineMedium,
@@ -192,7 +198,6 @@ class ExampleAPageViewModel extends ViewModel {
   void incrementCounter() {
     _uiState.postValue(_uiState.data + 1);
   }
-
 }
 
 class ExampleBPageViewModel extends ViewModel {

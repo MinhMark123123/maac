@@ -1,0 +1,27 @@
+name: maac_mvvm_generator
+description: generator of the maac_mvvm
+version: 0.0.1
+homepage: https://github.com/MinhMark123123/maac
+repository: https://github.com/MinhMark123123/maac
+issue_tracker: https://github.com/MinhMark123123/maac/issues
+
+environment:
+  sdk: '>=3.4.3 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  source_gen: ^2.0.0
+  build: ^2.0.0
+  maac_mvvm_annotation: ^0.1.0
+  analyzer: ^7.3.0
+  maac_mvvm: ^0.2.0+1
+dev_dependencies:
+  test: ^1.21.0
+  flutter_lints: ^3.0.0
+  build_runner: ^2.4.15
+  build_test: ^2.1.0
+  mockito: ^5.4.4
+
+flutter:

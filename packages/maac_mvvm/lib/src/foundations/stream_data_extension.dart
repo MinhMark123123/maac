@@ -7,6 +7,14 @@ extension StreamDataViewModelExtensionGeneric<T> on T {
       viewModel: viewModel,
     );
   }
+
+  ///shorten name
+  StreamDataViewModel<T> mtd(ViewModel viewModel) {
+    return StreamDataViewModel<T>(
+      defaultValue: this,
+      viewModel: viewModel,
+    );
+  }
 }
 
 extension StreamDataExtension<T> on StreamDataViewModel<T> {

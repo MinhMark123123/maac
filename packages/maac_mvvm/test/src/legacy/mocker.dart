@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:maac_mvvm/maac_mvvm.dart';
 import 'package:mockito/annotations.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+
 import 'mocker.mocks.dart';
 
 @GenerateNiceMocks([
@@ -99,10 +100,7 @@ Widget mockStreamWidget(StreamData<int> mockStream,
     {bool Function(int value)? useCache}) {
   return StreamDataConsumer<int>(
     streamData: mockStream,
-    builder: (context, data, child) {
-      if (useCache != null && useCache.call(data) && child != null) {
-        return child;
-      }
+    builder: (context, data) {
       return Text('Value: $data', textDirection: TextDirection.ltr);
     },
   );

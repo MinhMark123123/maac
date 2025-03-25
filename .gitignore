@@ -3,6 +3,7 @@
 .idea/
 .vscode/*
 .melos_tool/*
+.idx/flutter/
 # Files and directories created by pub
 .dart_tool/
 android/

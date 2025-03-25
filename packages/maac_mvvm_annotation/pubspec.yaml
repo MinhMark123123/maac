@@ -1,0 +1,24 @@
+name: maac_mvvm_annotation
+description: annotation of the maac_mvvm
+version: 0.0.1
+homepage: https://github.com/MinhMark123123/maac
+repository: https://github.com/MinhMark123123/maac
+issue_tracker: https://github.com/MinhMark123123/maac/issues
+
+environment:
+  sdk: '>=3.4.3 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  meta: ^1.16.0
+  maac_mvvm: ^0.2.0+1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  mockito: ^5.4.4
+  reflectable: ^4.0.12
+flutter:

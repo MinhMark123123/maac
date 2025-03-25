@@ -36,7 +36,7 @@ class ExamplePage extends ViewModelWidget<ExamplePageViewModel> {
               'You have pushed the button this many times:',
             ),
             StreamDataConsumer<int>(
-              builder: (context, data, child) {
+              builder: (context, data) {
                 return Text(
                   '$data',
                   style: Theme.of(context).textTheme.headlineMedium,
