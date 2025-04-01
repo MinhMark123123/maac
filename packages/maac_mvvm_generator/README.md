@@ -30,12 +30,8 @@ flutter pub add dev:maac_mvvm_generator
 ## Usage
 First let change current code : 
 ```dart 
-import 'package:maac_mvvm_annotation/maac_mvvm_annotation.dart';
 import 'package:maac_mvvm/maac_mvvm.dart';
-//define part generated
-part 'example_view_model.g.dart';
 
-BindableViewModel()
 class ExampleViewModel extends ViewModel { 
 
   late final _count = 0.mutableData(this);
