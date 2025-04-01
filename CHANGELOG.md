@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-04-01
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`maac_mvvm_generator` - `v0.0.2+1`](#maac_mvvm_generator---v0021)
+
+---
+
+#### `maac_mvvm_generator` - `v0.0.2+1`
+
+ - **FIX**: update readme. ([05ab66d6](https://github.com/MinhMark123123/maac/commit/05ab66d60b1d50efe99418c7d4ec91ad6b04188a))
+
+
 ## 2025-03-25
 
 ### Changes

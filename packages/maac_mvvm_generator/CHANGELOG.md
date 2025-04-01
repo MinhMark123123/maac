@@ -1,3 +1,7 @@
+## 0.0.2+1
+
+ - **FIX**: update readme. ([05ab66d6](https://github.com/MinhMark123123/maac/commit/05ab66d60b1d50efe99418c7d4ec91ad6b04188a))
+
 ## 0.0.2
 
  - **FIX**: fix pub points. ([6a184d23](https://github.com/MinhMark123123/maac/commit/6a184d2349a644e2dd18d362b354875a025a14f9))

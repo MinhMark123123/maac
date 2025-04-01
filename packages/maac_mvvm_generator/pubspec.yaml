@@ -1,6 +1,6 @@
 name: maac_mvvm_generator
 description: Automates maac_mvvm setup by generating extensions with stream data getters for annotated fields.
-version: 0.0.2
+version: 0.0.2+1
 homepage: https://github.com/MinhMark123123/maac
 repository: https://github.com/MinhMark123123/maac
 issue_tracker: https://github.com/MinhMark123123/maac/issues
