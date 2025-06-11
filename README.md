@@ -7,8 +7,8 @@
 | maac_mvvm               | [![pub package](https://img.shields.io/pub/v/maac_mvvm.svg?label=maac_mvvm&color=blue)](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm)                                     |
 | maac_mvvm_with_get_it   | [![pub package](https://img.shields.io/pub/v/maac_mvvm_with_get_it.svg?label=maac_mvvm_with_get_it&color=blue)](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm_with_get_it) |
 | maac_mvvm_with_riverpod | [![pub package](https://img.shields.io/pub/v/riverpod.svg?label=maac_mvvm_with_riverpod&color=blue)](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm_with_riverpod)          |
-| maac_mvvm_annotation | [![pub package](https://img.shields.io/pub/v/riverpod.svg?label=maac_mvvm_annotation&color=blue)](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm_annotation)          |
-| maac_mvvm_generator | [![pub package](https://img.shields.io/pub/v/riverpod.svg?label=maac_mvvm_generator&color=blue)](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm_generator)          |
+| maac_mvvm_annotation | [![pub package](https://img.shields.io/pub/v/maac_mvvm_annotation.svg?label=maac_mvvm_annotation&color=blue)](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm_annotation)          |
+| maac_mvvm_generator | [![pub package](https://img.shields.io/pub/v/maac_mvvm_generator.svg?label=maac_mvvm_generator&color=blue)](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm_generator)          |
 
 **A collection of MVVM implementations using different state management solutions.**
 
