@@ -1,3 +1,7 @@
+## 0.2.1+1
+
+ - Update README.md
+
 ## 0.2.1
 
  - **FEAT**: add package annotation and auto generate code. ([abd7488f](https://github.com/MinhMark123123/maac/commit/abd7488f596e1ebf34a49c9ed25aaf0a656dd529))

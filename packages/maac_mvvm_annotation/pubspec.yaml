@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.16.0
-  maac_mvvm: ^0.2.1
+  maac_mvvm: ^0.2.1+1
 
 dev_dependencies:
   flutter_test:

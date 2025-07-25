@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`maac_mvvm` - `v0.2.1+1`](#maac_mvvm---v0211)
+
+---
+
+#### `maac_mvvm` - `v0.2.1+1`
+
+ - Update README.md
+
+
+## 2025-07-25
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`maac_mvvm_with_get_it` - `v0.2.1+1`](#maac_mvvm_with_get_it---v0211)
 
 ---
