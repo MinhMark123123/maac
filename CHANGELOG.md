@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-07-25
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`maac_mvvm_with_get_it` - `v0.2.1+1`](#maac_mvvm_with_get_it---v0211)
+
+---
+
+#### `maac_mvvm_with_get_it` - `v0.2.1+1`
+
+ - **FIX**: fix get view model ([#45](https://github.com/MinhMark123123/maac/issues/45)). ([541ee4d2](https://github.com/MinhMark123123/maac/commit/541ee4d2f83b2b077f180ea6083759378df9a932))
+
+
 ## 2025-04-01
 
 ### Changes

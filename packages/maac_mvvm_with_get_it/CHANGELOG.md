@@ -1,3 +1,7 @@
+## 0.2.1+1
+
+ - **FIX**: fix get view model ([#45](https://github.com/MinhMark123123/maac/issues/45)). ([541ee4d2](https://github.com/MinhMark123123/maac/commit/541ee4d2f83b2b077f180ea6083759378df9a932))
+
 ## 0.2.1
 
  - **FEAT**: add package annotation and auto generate code. ([abd7488f](https://github.com/MinhMark123123/maac/commit/abd7488f596e1ebf34a49c9ed25aaf0a656dd529))
