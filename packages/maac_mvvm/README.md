@@ -163,7 +163,8 @@ class ExamplePageViewModel extends ViewModel {
   }
 }
 ```
-#### Simplified Setup with Helper Packages (Optional)
+### Simplified Setup with Helper Packages (Optional)
+
 If the code examples above seem a bit verbose for your liking, you can further simplify the setup process by leveraging these three helper packages:
 - [maac_mvvm_with_get_it](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm_with_get_it)
 - [maac_mvvm_annotation](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm_annotation)
