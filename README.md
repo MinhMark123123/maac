@@ -44,7 +44,7 @@ Each package demonstrates a different approach to MVVM:
 
 - [maac_mvvm_with_get_it](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm_with_get_it): Implements dependency injection with get_it for better separation of concerns, allowing for more scalable and testable code.
 
-- [maac_mvvm_with_riverpod](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm_with_riverpod): Uses riverpod, a powerful state management solution, which provides more granular control and makes it easier to handle complex state changes and reactive updates in the app.
+- [maac_mvvm_with_riverpod](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm_with_riverpod): If you are familiar with Riverpod, Riverpod offers excellent performance and flexibility.
 
 ***Choosing a State Management Solution***
 
