@@ -1,3 +1,7 @@
+## 0.0.3
+
+ - adapt source_gen: ^3.0.0
+
 ## 0.0.2+1
 
  - **FIX**: update readme. ([05ab66d6](https://github.com/MinhMark123123/maac/commit/05ab66d60b1d50efe99418c7d4ec91ad6b04188a))

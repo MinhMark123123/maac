@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-07-27
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`maac_mvvm_generator` - `v0.0.3`](#maac_mvvm_generator---v003)
+
+---
+
+#### `maac_mvvm_generator` - `v0.0.3`
+
+ - adapt source_gen: ^3.0.0
+
+
 ## 2025-07-25
 
 ### Changes
