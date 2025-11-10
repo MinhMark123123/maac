@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:maac_mvvm/maac_mvvm.dart';
 import 'package:maac_mvvm_with_get_it/src/src.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 import 'package:mockito/annotations.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import 'test_config.mocks.dart';
 
@@ -48,8 +48,7 @@ class ExampleSecondViewModel extends ViewModel {
   StreamData<int> get uiState => _uiState;
 }
 
-class DependencyViewModelWidgetTest
-    extends DependencyViewModelWidget<MockExampleViewModel> {
+class DependencyViewModelWidgetTest extends DependencyViewModelWidget<MockExampleViewModel> {
   const DependencyViewModelWidgetTest({super.key});
 
   @override
@@ -68,8 +67,8 @@ class DependencyViewModelsWidgetTest extends DependencyViewModelsWidget {
 
   @override
   List<ViewModel> createViewModels() => [
-        getViewModel<MockExampleViewModel>(),
-        getViewModel<MockExampleSecondViewModel>(),
+        injectViewModel<MockExampleViewModel>(),
+        injectViewModel<MockExampleSecondViewModel>(),
       ];
 
   @override
