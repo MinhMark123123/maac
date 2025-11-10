@@ -1,3 +1,7 @@
+## 0.2.1+2
+
+ - **FIX**: handles cases like hot reload or navigation where a new widget/viewModel ([#47](https://github.com/MinhMark123123/maac/issues/47)). ([cd59c431](https://github.com/MinhMark123123/maac/commit/cd59c431248aa76096ada3f30cbad7a8c30c3ec6))
+
 ## 0.2.1+1
 
  - **FIX**: fix get view model ([#45](https://github.com/MinhMark123123/maac/issues/45)). ([541ee4d2](https://github.com/MinhMark123123/maac/commit/541ee4d2f83b2b077f180ea6083759378df9a932))

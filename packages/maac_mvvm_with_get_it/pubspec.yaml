@@ -1,6 +1,6 @@
 name: maac_mvvm_with_get_it
 description: maac_mvvm_with_get_it is an extension package of maac_mvvm that is used with GetIt.
-version: 0.2.1+1
+version: 0.2.1+2
 homepage: https://github.com/MinhMark123123/maac
 repository: https://github.com/MinhMark123123/maac
 issue_tracker: https://github.com/MinhMark123123/maac/issues
