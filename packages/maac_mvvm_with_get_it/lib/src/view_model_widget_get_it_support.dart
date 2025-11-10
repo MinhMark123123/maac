@@ -13,8 +13,7 @@ import 'package:maac_mvvm_with_get_it/src/get.dart';
 ///
 /// This class can be extended to create widgets that are bound to a single
 /// ViewModel instance.
-abstract class DependencyViewModelWidget<T extends ViewModel>
-    extends ViewModelWidget<T> {
+abstract class DependencyViewModelWidget<T extends ViewModel> extends ViewModelWidget<T> {
   const DependencyViewModelWidget({super.key});
 
   @override
@@ -85,9 +84,7 @@ abstract class DependencyViewModelsWidget extends ViewModelsWidget {
 /// - The ViewModel is properly registered in a `GetIt` scope.
 /// - The widget's `awake` method is called with the proper context.
 /// - The ViewModel is unregistered when the widget is disposed.
-class _BindViewModelWidgetState<T extends ViewModel>
-    extends BaseViewModelState<DependencyViewModelWidget>
-    with _ViewModelGetMixin {
+class _BindViewModelWidgetState<T extends ViewModel> extends BaseViewModelState<DependencyViewModelWidget> with _ViewModelGetMixin {
   @override
   List<ViewModel> bindViewModels() => [widget.createViewModel()];
 
@@ -110,8 +107,8 @@ class _BindViewModelWidgetState<T extends ViewModel>
 
   @override
   void dispose() {
-    handleUnRegisterViewModel<T>(instance: viewModel);
     super.dispose();
+    handleUnRegisterViewModel<T>(instance: viewModel);
   }
 }
 
@@ -123,8 +120,7 @@ class _BindViewModelWidgetState<T extends ViewModel>
 /// - All ViewModels are properly registered in a `GetIt` scope.
 /// - The widget's `awake` method is called with the proper context.
 /// - All ViewModels are unregistered when the widget is disposed.
-class _BindViewModelsWidgetState
-    extends BaseViewModelState<DependencyViewModelsWidget> {
+class _BindViewModelsWidgetState extends BaseViewModelState<DependencyViewModelsWidget> {
   @override
   List<ViewModel> bindViewModels() => widget.createViewModels();
 
@@ -162,13 +158,19 @@ mixin _ViewModelGetMixin {
   /// Registers a ViewModel in the `GetIt` container as a singleton if it is not
   /// already registered.
   void handleRegisterViewModel<T extends ViewModel>({required T viewModel}) {
-    if (GetIt.instance.isRegistered<T>(instance: viewModel)) return;
-    //register
+    // Unregister any existing instance of the same type before registering a new one.
+    // This handles cases like hot reload or navigation where a new widget/viewModel
+    // replaces an old one.
+    if (GetIt.instance.isRegistered<T>()) {
+      GetIt.instance.unregister<T>();
+    }
     GetIt.instance.registerSingleton<T>(viewModel);
   }
 
   /// Unregisters a ViewModel from the `GetIt` container.
   void handleUnRegisterViewModel<T extends ViewModel>({required T instance}) {
-    GetIt.instance.unregister(instance: instance);
+    if (GetIt.instance.isRegistered<T>(instance: instance)) {
+      GetIt.instance.unregister<T>(instance: instance);
+    }
   }
 }
