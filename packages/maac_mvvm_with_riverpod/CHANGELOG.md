@@ -1,3 +1,7 @@
+## 0.2.1
+
+ - **FEAT**: overhaul architecture add documentation and enhance examples (#48).
+
 ## 0.2.0+2
 
  - Update a dependency to the latest release.

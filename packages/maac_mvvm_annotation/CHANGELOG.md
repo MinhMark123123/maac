@@ -1,3 +1,7 @@
+## 0.0.3
+
+ - **FEAT**: overhaul architecture add documentation and enhance examples (#48).
+
 ## 0.0.2
 
  - **FIX**: fix pub points. ([6a184d23](https://github.com/MinhMark123123/maac/commit/6a184d2349a644e2dd18d362b354875a025a14f9))

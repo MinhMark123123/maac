@@ -1,6 +1,6 @@
 name: maac_mvvm_generator
 description: Automates maac_mvvm setup by generating extensions with stream data getters for annotated fields.
-version: 0.0.3
+version: 0.0.4
 homepage: https://github.com/MinhMark123123/maac
 repository: https://github.com/MinhMark123123/maac
 issue_tracker: https://github.com/MinhMark123123/maac/issues
@@ -16,9 +16,9 @@ dependencies:
     sdk: flutter
   source_gen: ^4.2.3
   build: ^4.0.6
-  maac_mvvm_annotation: ^0.0.2
+  maac_mvvm_annotation: ^0.0.3
   analyzer: ^10.0.1
-  maac_mvvm: ^0.2.1+1
+  maac_mvvm: ^0.2.2
 dev_dependencies:
   test: ^1.25.0
   flutter_lints: ^6.0.0

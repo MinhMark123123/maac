@@ -1,3 +1,7 @@
+## 0.0.4
+
+ - **FEAT**: overhaul architecture add documentation and enhance examples (#48).
+
 ## 0.0.3
 
  - adapt source_gen: ^3.0.0

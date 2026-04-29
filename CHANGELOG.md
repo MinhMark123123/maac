@@ -3,6 +3,47 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-04-29
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`maac_mvvm` - `v0.2.2`](#maac_mvvm---v022)
+ - [`maac_mvvm_annotation` - `v0.0.3`](#maac_mvvm_annotation---v003)
+ - [`maac_mvvm_generator` - `v0.0.4`](#maac_mvvm_generator---v004)
+ - [`maac_mvvm_with_get_it` - `v0.2.2`](#maac_mvvm_with_get_it---v022)
+ - [`maac_mvvm_with_riverpod` - `v0.2.1`](#maac_mvvm_with_riverpod---v021)
+
+---
+
+#### `maac_mvvm` - `v0.2.2`
+
+ - **FEAT**: overhaul architecture add documentation and enhance examples (#48).
+
+#### `maac_mvvm_annotation` - `v0.0.3`
+
+ - **FEAT**: overhaul architecture add documentation and enhance examples (#48).
+
+#### `maac_mvvm_generator` - `v0.0.4`
+
+ - **FEAT**: overhaul architecture add documentation and enhance examples (#48).
+
+#### `maac_mvvm_with_get_it` - `v0.2.2`
+
+ - **FEAT**: overhaul architecture add documentation and enhance examples (#48).
+
+#### `maac_mvvm_with_riverpod` - `v0.2.1`
+
+ - **FEAT**: overhaul architecture add documentation and enhance examples (#48).
+
+
 ## 2025-11-10
 
 ### Changes

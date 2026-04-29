@@ -1,3 +1,7 @@
+## 0.2.2
+
+ - **FEAT**: overhaul architecture add documentation and enhance examples (#48).
+
 ## 0.2.1+2
 
  - **FIX**: handles cases like hot reload or navigation where a new widget/viewModel ([#47](https://github.com/MinhMark123123/maac/issues/47)). ([cd59c431](https://github.com/MinhMark123123/maac/commit/cd59c431248aa76096ada3f30cbad7a8c30c3ec6))

@@ -1,3 +1,7 @@
+## 0.2.2
+
+ - **FEAT**: overhaul architecture add documentation and enhance examples (#48).
+
 ## 0.2.1+1
 
  - Update README.md
