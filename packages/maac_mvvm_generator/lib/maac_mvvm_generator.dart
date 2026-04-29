@@ -1,3 +1,3 @@
-library maac_mvvm_generator;
+library;
 
 export 'builder.dart';

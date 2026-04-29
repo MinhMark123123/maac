@@ -1,3 +1,3 @@
-library maa_mvvm_with_riverpod;
+library;
 
 export 'src/src.dart';

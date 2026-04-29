@@ -1,37 +1,44 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
 # maac_mvvm_annotation
-The `maac_mvvm_annotation` package is part of the [maac_mvvm](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm). This annotation package is the backbone of the [maac_mvvm](https://github.com/MinhMark123123/maac/tree/main/packages/maac_mvvm), providing annotations that help reduce boiterlplate code by generator code extension.
----
-![MAAC_MVVM_ANNOTATION](https://github.com/MinhMark123123/maac/blob/main/resources/mvvm.png)
+
+[![pub package](https://img.shields.io/pub/v/maac_mvvm_annotation.svg)](https://pub.dev/packages/maac_mvvm_annotation)
+
+This package provides the essential annotations (`@BindableViewModel`, `@Bind`) that power the MAAC code generation system.
 
 ---
 
-## Features
+## 🚀 Key Features
 
-*   **@BindableViewModel:** Annotate classes as ViewModels, signifying their role in managing the UI's state and logic and containt fields annotated with @Bind.
-*   **@Bind:** This annotation is signals that the field should be
-automatically bound to a corresponding property in the that is annotated with @BindableViewModel.
-## Getting Started 🏁
-### Prerequisites
-Before you begin, ensure that you have Flutter SDK installed in your development environment.
-### Installation
-Add `maac_mvvm_annotation` to your `pubspec.yaml` file:
+- **Declarative Binding**: Mark fields for automatic state exposure.
+- **Zero Runtime Overhead**: All logic is handled at build time.
 
-## Usage
+---
 
-add the import statement to your file:
+## 📖 Usage
 
 ```dart
-import 'package:maac_mvvm_annotation/maac_mvvm_annotation.dart';
+@BindableViewModel()
+class MyViewModel extends ViewModel {
+  @Bind()
+  late final _count = 0.mtd(this); // Generates count stream getter
+
+  void increment() => _count.postValue(_count.data + 1);
+}
 ```
+
+---
+
+## 🧭 Documentation
+
+For detailed API specifications, installation guides, and tutorials, please visit our centralized documentation hub:
+
+👉 [**MAAC Documentation Hub**](https://github.com/MinhMark123123/maac/blob/main/docs/README.md)
+
+### Specific Guides:
+- ✨ [**Annotation API Specification**](https://github.com/MinhMark123123/maac/blob/main/docs/spec_annotations.md)
+- 🚀 [**Quick Start Guide**](https://github.com/MinhMark123123/maac/blob/main/docs/README.md#quick-start)
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please visit the [main repository](https://github.com/MinhMark123123/maac) for more information.

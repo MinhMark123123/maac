@@ -1,6 +1,7 @@
-import 'package:example/mock/mock_class.dart';
 import 'package:maac_mvvm/maac_mvvm.dart';
 import 'package:maac_mvvm_annotation/maac_mvvm_annotation.dart';
+
+import 'mock/mock_class.dart';
 
 part 'example_view_model.g.dart';
 

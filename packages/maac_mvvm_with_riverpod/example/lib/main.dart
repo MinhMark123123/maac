@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:maac_mvvm_with_riverpod/maac_mvvm_with_riverpod.dart';
 
 void main() {
@@ -21,36 +22,28 @@ class ExamplePage extends ConsumerViewModelWidget<ExamplePageViewModel> {
   const ExamplePage({super.key});
 
   @override
-  AutoDisposeProvider<ExamplePageViewModel> viewModelProvider() =>
-      exampleViewModelProvider;
+  ProviderListenable<ExamplePageViewModel> viewModelProvider() => exampleViewModelProvider;
 
   @override
-  Widget buildWidget(
-      BuildContext context, WidgetRef ref, ExamplePageViewModel viewModel) {
+  Widget buildWidget(BuildContext context, WidgetRef ref, ExamplePageViewModel viewModel) {
     return Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
+            const Text('You have pushed the button this many times:'),
             // Listen to counterSelector to update UI
             Consumer(
               builder: (context, ref, child) {
                 final counter = ref.watch(viewModel.counterSelector);
-                return Text(
-                  '$counter',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                );
+                return Text('$counter', style: Theme.of(context).textTheme.headlineMedium);
               },
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: viewModel
-            .incrementCounter, // Call incrementCounter function in ViewModel
+        onPressed: viewModel.incrementCounter, // Call incrementCounter function in ViewModel
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
@@ -58,15 +51,12 @@ class ExamplePage extends ConsumerViewModelWidget<ExamplePageViewModel> {
   }
 }
 
-final _exampleUIStateProvider =
-    StateProvider.autoDispose<ExamplePageUIState>((ref) {
+final _exampleUIStateProvider = StateProvider.autoDispose<ExamplePageUIState>((ref) {
   return ExamplePageUIState();
 });
 
-final exampleViewModelProvider =
-    Provider.autoDispose<ExamplePageViewModel>((ref) {
-  return ExamplePageViewModel(
-      uiState: ref.watch(_exampleUIStateProvider.notifier));
+final exampleViewModelProvider = Provider.autoDispose<ExamplePageViewModel>((ref) {
+  return ExamplePageViewModel(uiState: ref.watch(_exampleUIStateProvider.notifier));
 });
 
 class ExamplePageUIState {
@@ -75,17 +65,14 @@ class ExamplePageUIState {
   ExamplePageUIState({this.counter = 0});
 
   ExamplePageUIState copyWith({int? counter}) {
-    return ExamplePageUIState(
-      counter: counter ?? this.counter,
-    );
+    return ExamplePageUIState(counter: counter ?? this.counter);
   }
 }
 
 class ExamplePageViewModel extends RiverViewModel<ExamplePageUIState> {
   ExamplePageViewModel({required super.uiState});
   // Expose a selector for Widget to listen and update
-  final counterSelector =
-      _exampleUIStateProvider.select((value) => value.counter);
+  final counterSelector = _exampleUIStateProvider.select((value) => value.counter);
 
   void incrementCounter() {
     // Update uiState to reflect the new counter value

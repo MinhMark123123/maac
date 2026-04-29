@@ -6,20 +6,15 @@ import 'package:visibility_detector/visibility_detector.dart';
 /// that needs visibility detection and dependency injection using GetIt.
 /// This class leverages a unique visibility detector key for each instance,
 /// enabling scoped dependency management based on visibility changes.
-abstract class BaseViewModelState<T extends ViewStatefulWidget>
-    extends ViewState<T> {
+abstract class BaseViewModelState<T extends ViewStatefulWidget> extends ViewState<T> {
   final _visibilityDetectorKey = UniqueKey();
 
   /// Unique key used for visibility detection and scope identification.
-  get visibilityDetectorKey => _visibilityDetectorKey;
+  UniqueKey get visibilityDetectorKey => _visibilityDetectorKey;
 
   @override
   Widget build(BuildContext context) {
-    return VisibilityDetector(
-      onVisibilityChanged: _onVisibilityChanged,
-      key: _visibilityDetectorKey,
-      child: childBuilder,
-    );
+    return VisibilityDetector(onVisibilityChanged: _onVisibilityChanged, key: _visibilityDetectorKey, child: childBuilder);
   }
 
   /// Callback triggered when the visibility of the widget changes.

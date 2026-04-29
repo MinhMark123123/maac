@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/misc.dart';
 import 'package:maac_mvvm/maac_mvvm.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -11,7 +12,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 ///   const ExamplePage({super.key});
 ///
 ///   @override
-///   AutoDisposeProvider<ExamplePageViewModel> viewModelProvider() => exampleViewModelProvider;
+///   ProviderListenable<ExamplePageViewModel> viewModelProvider() => exampleViewModelProvider;
 ///
 ///   @override
 ///   Widget buildWidget(BuildContext context, WidgetRef ref, ExamplePageViewModel viewModel) {
@@ -20,12 +21,11 @@ import 'package:visibility_detector/visibility_detector.dart';
 ///   }
 /// }
 /// ```
-abstract class ConsumerViewModelWidget<T extends ViewModel>
-    extends ConsumerStatefulWidget {
+abstract class ConsumerViewModelWidget<T extends ViewModel> extends ConsumerStatefulWidget {
   const ConsumerViewModelWidget({super.key});
 
-  /// Provides the current page's ViewModel provider. This provider must be declared in an [AutoDisposeProvider]
-  /// to ensure that the ViewModel will be disposed and there will be no memory leaks when the corresponding binding widget is removed from the widget tree.
+  /// Provides the current page's ViewModel provider. This provider must be declared as a [ProviderListenable]
+  /// (e.g., using Provider.autoDispose or NotifierProvider.autoDispose)
   ///
   /// ```dart
   /// final exampleViewModelProvider = Provider.autoDispose<ExamplePageViewModel>((ref) {
@@ -35,10 +35,10 @@ abstract class ConsumerViewModelWidget<T extends ViewModel>
   ///   const ExamplePage({super.key});
   ///
   ///   @override
-  ///   AutoDisposeProvider<ExamplePageViewModel> viewModelProvider() => exampleViewModelProvider;
+  ///   ProviderListenable<ExamplePageViewModel> viewModelProvider() => exampleViewModelProvider;
   ///}
   /// ```
-  AutoDisposeProvider<T> viewModelProvider();
+  ProviderListenable<T> viewModelProvider();
 
   ///The [awake] method will be called immediately after the createViewModel method of ViewModelWidget and before the onInitState method of
   ///the ViewModel.
@@ -57,8 +57,7 @@ abstract class ConsumerViewModelWidget<T extends ViewModel>
   }
 }
 
-class _BindViewModelWidgetState<T extends ViewModel>
-    extends ConsumerState<ConsumerViewModelWidget<T>> {
+class _BindViewModelWidgetState<T extends ViewModel> extends ConsumerState<ConsumerViewModelWidget<T>> {
   final _visibilityDetectorKey = UniqueKey();
   final _uniqueKey = UniqueKey().toString();
 
@@ -120,11 +119,7 @@ class _BindViewModelWidgetState<T extends ViewModel>
 
   @override
   void didUpdateWidget(covariant ConsumerViewModelWidget<T> oldWidget) {
-    lifeCycleManager.widgetDidUpdateWidget(
-      lifeOwnerKey: _uniqueKey,
-      widget: widget,
-      oldWidget: oldWidget,
-    );
+    lifeCycleManager.widgetDidUpdateWidget(lifeOwnerKey: _uniqueKey, widget: widget, oldWidget: oldWidget);
     super.didUpdateWidget(oldWidget);
   }
 

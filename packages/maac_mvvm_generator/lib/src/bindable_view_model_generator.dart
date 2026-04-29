@@ -1,4 +1,5 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:maac_mvvm_annotation/maac_mvvm_annotation.dart';
 import 'package:source_gen/source_gen.dart';
@@ -9,68 +10,72 @@ import 'package:source_gen/source_gen.dart';
 /// annotation and, for each such class, it generates an extension that
 /// provides getters for fields annotated with `@Bind`. These getters
 /// expose the `StreamData` associated with the bound fields.
-class BindableViewModelGenerator extends GeneratorForAnnotation<BindableViewModel> {
+class BindableViewModelGenerator
+    extends GeneratorForAnnotation<BindableViewModel> {
+  static const _bindChecker = TypeChecker.fromUrl(
+    'package:maac_mvvm_annotation/src/maac_mvvm_annotation_source.dart#Bind',
+  );
+
   @override
   dynamic generateForAnnotatedElement(
-    Element2 element,
+    Element element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) {
     // Check if the element is a class
-    if (element is! ClassElement2) {
+    if (element is! ClassElement) {
       return null;
     }
-    // Cast the element to ClassElement2 for easier access to its properties
-    final classElement2 = element;
+    // Cast the element to ClassElement for easier access to its properties
+    final classElement = element;
     // Extract fields with the @Bind annotation
-    final bindableFields = extractBindableFields(classElement2);
+    final bindableFields = extractBindableFields(classElement);
     // Generate code for each bindable field
     final generatedFieldCode = bindableFields.map((field) {
-      return generateFieldCode(classElement2, field);
+      return generateFieldCode(classElement, field);
     }).join();
     // Build the extension if there is at least one field
     if (generatedFieldCode.isNotEmpty) {
-      return buildExtension(classElement2, generatedFieldCode);
+      return buildExtension(classElement, generatedFieldCode);
     }
     return null;
   }
 
   /// Extracts fields with the `@Bind` annotation.
-  List<FieldElement2> extractBindableFields(ClassElement2 classElement) {
-    final fields = classElement.firstFragment.fields2.map((e) => e.element);
+  List<FieldElement> extractBindableFields(ClassElement classElement) {
+    final fields = classElement.fields;
     return fields.where(isBindableField).toList();
   }
 
   /// Checks if a field is annotated with `@Bind`.
-  bool isBindableField(FieldElement2 field) {
-    if (field.metadata2.annotations.isEmpty) {
-      return false;
-    }
-    return field.metadata2.annotations.any(
-      (e) => e.computeConstantValue()?.toString().contains("Bind") ?? false,
-    );
+  bool isBindableField(FieldElement field) {
+    return _bindChecker.hasAnnotationOf(field);
   }
 
   /// Generates the code for a single bindable field.
-  String generateFieldCode(ClassElement2 classElement, FieldElement2 field) {
+  String generateFieldCode(ClassElement classElement, FieldElement field) {
     // Validate field name (must be private)
     validateFieldName(classElement, field);
-    if (field.name3 == null) return "";
+    final name = field.name!;
     // Derive public field name
-    final publicFieldName = field.name3!.substring(1);
+    final publicFieldName = name.substring(1);
 
     // Get the type of the field
-    final fieldType = field.type.getDisplayString();
-    final genericType = extractTypeArgument(fieldType);
+    final fieldType = field.type;
+    String genericType = 'dynamic';
+    if (fieldType is InterfaceType && fieldType.typeArguments.isNotEmpty) {
+      genericType = fieldType.typeArguments.first.getDisplayString();
+    }
     // Build the getter
-    final getter = buildGetter(genericType, field.name3!, publicFieldName);
+    final getter = buildGetter(genericType, name, publicFieldName);
 
     return getter;
   }
 
   /// Validates that the field name is private.
-  void validateFieldName(ClassElement2 classElement, FieldElement2 field) {
-    if (field.name3?.startsWith('_') == false) {
+  void validateFieldName(ClassElement classElement, FieldElement field) {
+    final name = field.name;
+    if (name == null || name.startsWith('_') == false) {
       throw InvalidGenerationSourceError(
         '`@Bind` should only be used on private fields (starting with an underscore).',
         element: classElement,
@@ -93,17 +98,11 @@ class BindableViewModelGenerator extends GeneratorForAnnotation<BindableViewMode
   }
 
   /// Builds the extension for the class.
-  String buildExtension(ClassElement2 classElement, String generatedFieldCode) {
+  String buildExtension(ClassElement classElement, String generatedFieldCode) {
     return '''
-      extension \$${classElement.name3} on ${classElement.name3} {
+      extension \$${classElement.name} on ${classElement.name} {
         $generatedFieldCode
       }
     ''';
-  }
-
-  /// Extracts the type argument from a generic type string.
-  String extractTypeArgument(String input) {
-    final match = RegExp(r'<(.+)>$').firstMatch(input);
-    return match?.group(1) ?? '';
   }
 }
