@@ -1,35 +1,50 @@
-name: example
+name: maac_example
 description: A new Flutter project.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.19.4 <4.0.0"
-  flutter: ">=3.7.0"
+  sdk: ^3.11.5
+  flutter: ">=1.17.0"
+
+resolution: workspace
 
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  json_annotation: ^4.9.0
   async:
 
 
   cupertino_icons: ^1.0.2
-  hooks_riverpod: ^2.0.2
   freezed_annotation:
-  intl: ^0.17.0
-  #route navigation
-  go_router: ^5.1.5
-  maac_mvvm: ^0.1.3
-  maac_mvvm_with_riverpod: ^0.1.0
+  intl: ^0.20.2
+  # network
+  dio: ^5.1.1
+  retrofit: ^4.0.1
+  # di
+  get_it: ^9.2.1
+  # route navigation
+  go_router: ^17.2.2
+  url_launcher: ^6.3.1
+  maac_mvvm: ^0.2.1+1
+  maac_mvvm_annotation: ^0.0.2
+  maac_mvvm_with_get_it: ^0.2.1+2
+  maac_mvvm_with_riverpod: ^0.2.0+2
 dev_dependencies:
+  maac_mvvm_generator: ^0.0.3
+  retrofit_generator: ^10.2.5
+  json_serializable: ^6.6.2
   flutter_test:
     sdk: flutter
   freezed:
-  build_runner:
+  build_runner: ^2.4.9
   flutter_gen_runner:
-  json_serializable:
-  flutter_lints: ^2.0.0
+  flutter_lints: ^6.0.0
+
 
 flutter:
   generate: true

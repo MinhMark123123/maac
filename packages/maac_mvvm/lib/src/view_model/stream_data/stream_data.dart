@@ -132,7 +132,7 @@ class StreamDataViewModel<T> extends StreamData<T> with LifecycleComponent {
   StreamData<R> map<R>({
     required R Function(T data) mapper,
   }) {
-    final stream = this.asStream();
+    final stream = asStream();
     final mapperStream = stream.map((event) => mapper(event));
     final mapMutableData = StreamDataViewModel(
       defaultValue: mapper(_data),

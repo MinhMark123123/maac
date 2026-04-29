@@ -1,67 +1,52 @@
 # maac_mvvm_generator
 
-`maac_mvvm_generator` is a powerful code generator designed for the [maac_mvvm](https://pub.dev/packages/maac_mvvm) package.
+[![pub package](https://img.shields.io/pub/v/maac_mvvm_generator.svg)](https://pub.dev/packages/maac_mvvm_generator)
 
-## Description
+A powerful code generator that automates the creation of state getters for MAAC ViewModels, drastically reducing boilerplate code.
 
-`maac_mvvm_generator` streamlines the development process by automatically generating necessary code, thereby significantly reducing boilerplate when working with the [maac_mvvm](https://pub.dev/packages/maac_mvvm) package.
+---
 
-## Features
+## 🚀 Key Features
 
-*   Reduces boilerplate code for creating ViewModel with maac_mvvm components.
-*   Easy integration with the [maac_mvvm](https://pub.dev/packages/maac_mvvm) package.
+- **Boilerplate Elimination**: Automatically generates read-only `StreamData` getters from mutable private fields.
+- **BuildRunner Integration**: Seamlessly works with the standard Flutter build pipeline.
 
-![Coverage](coverage_badge.svg)
-    
+---
 
-## Getting started
+## 📖 Usage
 
-1.  Add `maac_mvvm_annotation` to your `dependencies:`
-```
-flutter pub add maac_mvvm_annotation
-```
+### 1. Add dependencies to your `pubspec.yaml`
 
-2.  Add `maac_mvvm_generator` to your `dev_dependencies`:
-```
-flutter pub add dev:maac_mvvm_generator
-```
-    
-
-## Usage
-First let change current code : 
-```dart 
-import 'package:maac_mvvm/maac_mvvm.dart';
-
-class ExampleViewModel extends ViewModel { 
-
-  late final _count = 0.mutableData(this);
-
-  StreamData<int> get count => _count.streamData;
-  
-  void incrementCounter() => _count.postValue(_count.data + 1);
-}
-
-````
-
-to 
-
-```dart
-import 'package:maac_mvvm_annotation/maac_mvvm_annotation.dart';
-import 'package:maac_mvvm/maac_mvvm.dart';
-
-part 'example_view_model.g.dart';
-
-@BindableViewModel()
-class ExampleViewModel extends ViewModel {
-  @Bind()
-  late final _count = 0.mutableData(this);
-
-  void incrementCounter() => _count.postValue(_count.data + 1);
-}
+```yaml
+dev_dependencies:
+  maac_mvvm_generator: any
+  build_runner: any
 ```
 
-then run : 
+### 2. Run the generator
+
+```bash
+dart run build_runner build
 ```
-flutter pub run build_runner build --delete-conflicting-outputs
-```
-The `StreamData<int> get count => _count.streamData;` will be generated in `example_view_model.g.dart`.
+
+### 3. Generated Code Benefit
+
+The generator will turn your private `_field` with `@Bind()` into a public `field` stream getter in a `.g.dart` file.
+
+---
+
+## 🧭 Documentation
+
+For detailed API specifications, installation guides, and tutorials, please visit our centralized documentation hub:
+
+👉 [**MAAC Documentation Hub**](https://github.com/MinhMark123123/maac/blob/main/docs/README.md)
+
+### Specific Guides:
+- ⚙️ [**Generator Specification**](https://github.com/MinhMark123123/maac/blob/main/docs/spec_annotations.md#generator-maac_mvvm_generator)
+- 🚀 [**Quick Start Guide**](https://github.com/MinhMark123123/maac/blob/main/docs/README.md#quick-start)
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please visit the [main repository](https://github.com/MinhMark123123/maac) for more information.

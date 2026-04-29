@@ -1,43 +1,33 @@
-import 'package:example/navigation/routers.dart';
-import 'package:example/theme/app_theme.dart';
-import 'package:example/ui/ui.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:maac_example/data/injection.dart';
+import 'package:maac_example/theme/app_theme.dart';
+
+import 'navigation/app_router.dart';
 
 void main() {
-  runApp(const ProviderScope(child: MyApp()));
+  WidgetsFlutterBinding.ensureInitialized();
+  configureDependencies();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: _router,
-      theme: AppTheme.light(),
+      title: 'MAAC Ecosystem Demo',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('en', 'US'), Locale('vi', 'VN')],
+      routerConfig: appRouter,
     );
   }
 }
-
-final routeContextDelegateProvider = Provider<BuildContext?>((ref) {
-  return _router.routerDelegate.navigatorKey.currentContext;
-});
-final GoRouter _router = GoRouter(
-  routes: <GoRoute>[
-    GoRoute(
-        path: AppRoutes.home,
-        builder: (BuildContext context, GoRouterState state) {
-          return const MyHomePage();
-        },
-        routes: [
-          GoRoute(
-            path: AppRoutes.second,
-            builder: (BuildContext context, GoRouterState state) {
-              return const SecondPage();
-            },
-          ),
-        ]),
-  ],
-);
