@@ -426,4 +426,80 @@ void main() {
       expect(singleFlight.isRunning, isFalse);
     });
   });
+
+  group('WorkflowRunner progress / current step Tests', () {
+    test('Should expose an empty, current-step-less snapshot before run() is called', () {
+      final runner = WorkflowRunner<TestContext>(steps: [LogStep('step1'), LogStep('step2')]);
+
+      expect(runner.progress.value.currentStepId, isNull);
+      expect(runner.progress.value.stepStatuses, isEmpty);
+    });
+
+    test('Should track the current step and mark every step success as the workflow completes', () async {
+      final context = TestContext();
+      final runner = WorkflowRunner<TestContext>(steps: [LogStep('step1'), LogStep('step2')]);
+
+      final snapshots = <WorkflowProgress>[];
+      runner.progress.addListener(() => snapshots.add(runner.progress.value));
+
+      await runner.run(context);
+
+      // First snapshot resets both steps to pending with no current step.
+      expect(
+        snapshots.first.stepStatuses,
+        equals({'step1': StepStatus.pending, 'step2': StepStatus.pending}),
+      );
+      expect(snapshots.first.currentStepId, isNull);
+
+      // Each step was reported as the current, running step at some point.
+      expect(
+        snapshots.any((s) => s.currentStepId == 'step1' && s.statusOf('step1') == StepStatus.running),
+        isTrue,
+      );
+      expect(
+        snapshots.any((s) => s.currentStepId == 'step2' && s.statusOf('step2') == StepStatus.running),
+        isTrue,
+      );
+
+      final last = runner.progress.value;
+      expect(last.currentStepId, isNull);
+      expect(last.statusOf('step1'), equals(StepStatus.success));
+      expect(last.statusOf('step2'), equals(StepStatus.success));
+    });
+
+    test('Should mark the failed step and roll back completed steps, then clear currentStepId', () async {
+      final context = TestContext();
+      final runner = WorkflowRunner<TestContext>(steps: [LogStep('step1'), FailingStep()]);
+
+      await runner.run(context);
+
+      final progress = runner.progress.value;
+      expect(progress.currentStepId, isNull);
+      expect(progress.statusOf('step1'), equals(StepStatus.rollbackSuccess));
+      expect(progress.statusOf('failing'), equals(StepStatus.failed));
+    });
+
+    test('Should reset progress to pending at the start of every run() call', () async {
+      final runner = WorkflowRunner<TestContext>(steps: [LogStep('step1')]);
+      await runner.run(TestContext());
+      expect(runner.progress.value.statusOf('step1'), equals(StepStatus.success));
+
+      final runFuture = runner.run(TestContext());
+      // run() executes synchronously up to its first `await`, so the reset is
+      // already visible before this second call itself is awaited.
+      expect(runner.progress.value.statusOf('step1'), equals(StepStatus.pending));
+      await runFuture;
+      expect(runner.progress.value.statusOf('step1'), equals(StepStatus.success));
+    });
+
+    test('SingleFlightWorkflowRunner.progress forwards the wrapped runner\'s progress', () async {
+      final inner = WorkflowRunner<TestContext>(steps: [LogStep('step1')]);
+      final singleFlight = SingleFlightWorkflowRunner<TestContext>(inner);
+
+      await singleFlight.run(TestContext());
+
+      expect(singleFlight.progress.value.statusOf('step1'), equals(StepStatus.success));
+      expect(identical(singleFlight.progress, inner.progress), isTrue);
+    });
+  });
 }

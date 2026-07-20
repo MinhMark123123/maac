@@ -29,6 +29,7 @@ In modern Flutter applications, business processes such as **multi-step signup f
   * `WorkflowStepGroup` to embed a whole sub-pipeline as a single step, so large flows compose out of smaller, named, independently testable ones.
 * **🛑 Integrated Cancellation**: Simple cancellation tokens to abort workflows mid-flight when a user navigates away or manually cancels.
 * **🔂 Single-Flight Execution**: `SingleFlightWorkflowRunner` guarantees at most one run of a workflow is ever active at a time, cancelling the previous one whenever a new one starts.
+* **📍 Live Step Progress**: `WorkflowRunner.progress` exposes a `ValueListenable<WorkflowProgress>` with the currently executing step id and the last known status of every step — drive a stepper/progress bar UI without hand-rolling counters in `WorkflowListener`.
 * **📊 Auditing & Telemetry**: Lifecycle hooks (`WorkflowListener`) to seamlessly bind global loading indicators, telemetry, or debug logging.
 
 ---
@@ -201,6 +202,7 @@ class SignupViewModel extends ViewModel {
   void onDispose() {
     // Automatically abort running workflows if user exits the screen and ViewModel disposes
     _cancellationToken.cancel();
+    _signupWorkflow.dispose();
     super.onDispose();
   }
 }
@@ -273,6 +275,41 @@ inner steps first, then reports the failure up as if `profile_setup` itself were
 failed step. If `profile_setup` succeeds but `SendWelcomeEmailStep` fails afterwards,
 the parent rolls the group back too — which rolls back every inner step it ran, in
 reverse order, same LIFO contract as the top-level runner.
+
+---
+
+## 📍 Tracking the Current Step & Per-Step Status
+
+Every `WorkflowRunner` exposes a `progress` `ValueListenable<WorkflowProgress>`, updated
+synchronously as the run proceeds — no extra wiring through `WorkflowListener` required.
+`WorkflowProgress` holds the id of the step currently executing (`currentStepId`, `null`
+before the run starts or after it finishes) and the last known `StepStatus` of every step
+reached so far (`pending`, `running`, `success`, `failed`, `skipped`, `rollbackRunning`,
+`rollbackSuccess`, or `rollbackFailed`).
+
+```dart
+final signupWorkflow = WorkflowRunner<SignupContext>(steps: [...]);
+
+// Feed it straight into a ValueListenableBuilder to render a step indicator:
+ValueListenableBuilder<WorkflowProgress>(
+  valueListenable: signupWorkflow.progress,
+  builder: (context, progress, _) {
+    return Row(
+      children: [
+        for (final step in signupWorkflow.steps)
+          _StepDot(status: progress.statusOf(step.id) ?? StepStatus.pending),
+      ],
+    );
+  },
+);
+```
+
+`WorkflowRunner` is reused across multiple `run()` calls in the usual pattern (declared
+once in a ViewModel), so `progress` resets to `pending` for every step at the start of
+each new run — it always reflects the most recent run, never a stale one. Call
+`WorkflowRunner.dispose()` from `onDispose()` to release the underlying `ValueNotifier`,
+same as any other `ChangeNotifier`-based resource. `SingleFlightWorkflowRunner.progress`
+forwards straight to the wrapped runner's progress, so it works there too.
 
 ---
 

@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart';
+
 import 'cancellation_token.dart';
+import 'progress.dart';
 import 'result.dart';
 import 'step.dart';
 
@@ -30,7 +33,27 @@ class WorkflowRunner<TContext> {
   final List<WorkflowStep<TContext>> steps;
   final WorkflowListener<TContext>? listener;
 
+  final ValueNotifier<WorkflowProgress> _progress = ValueNotifier(const WorkflowProgress());
+
+  /// Live snapshot of which step is currently executing and the last known
+  /// status of every step reached so far. Reset to all-[StepStatus.pending]
+  /// at the start of every [run] call, so a [WorkflowRunner] reused across
+  /// multiple runs always reflects the most recent one.
+  ValueListenable<WorkflowProgress> get progress => _progress;
+
   WorkflowRunner({required this.steps, this.listener});
+
+  void _markStep(String stepId, StepStatus status, {bool isCurrent = false}) {
+    final statuses = Map<String, StepStatus>.from(_progress.value.stepStatuses)..[stepId] = status;
+    _progress.value = _progress.value.copyWith(
+      stepStatuses: statuses,
+      currentStepId: isCurrent ? stepId : _progress.value.currentStepId,
+    );
+  }
+
+  /// Releases the [progress] notifier. Call once the runner is no longer
+  /// needed, e.g. from a ViewModel's `onDispose`.
+  void dispose() => _progress.dispose();
 
   Future<WorkflowResult<TContext>> run(
     TContext context, {
@@ -39,6 +62,10 @@ class WorkflowRunner<TContext> {
     final token = cancellationToken ?? CancellationToken();
     final completedSteps = <WorkflowStep<TContext>>[];
     final stepHistory = <WorkflowStepEvent>[];
+
+    _progress.value = WorkflowProgress(
+      stepStatuses: {for (final step in steps) step.id: StepStatus.pending},
+    );
 
     listener?.onWorkflowStart(context);
 
@@ -50,6 +77,7 @@ class WorkflowRunner<TContext> {
         final canExecute = await step.canRun(context);
         if (!canExecute) {
           stepHistory.add(WorkflowStepEvent(stepId: step.id, status: StepStatus.skipped));
+          _markStep(step.id, StepStatus.skipped);
           listener?.onStepSkip(step.id, context);
           continue;
         }
@@ -57,6 +85,7 @@ class WorkflowRunner<TContext> {
         // 2. Trigger step start lifecycle events
         listener?.onStepStart(step.id, context);
         stepHistory.add(WorkflowStepEvent(stepId: step.id, status: StepStatus.running));
+        _markStep(step.id, StepStatus.running, isCurrent: true);
 
         // 3. Execute core step logic
         final result = await step.execute(context, token);
@@ -67,19 +96,23 @@ class WorkflowRunner<TContext> {
           case StepSuccess():
             completedSteps.add(step);
             stepHistory.add(WorkflowStepEvent(stepId: step.id, status: StepStatus.success));
+            _markStep(step.id, StepStatus.success);
             listener?.onStepSuccess(step.id, context);
-            
+
           case StepFailure(:final error, :final stackTrace):
             stepHistory.add(WorkflowStepEvent(stepId: step.id, status: StepStatus.failed, error: error));
+            _markStep(step.id, StepStatus.failed);
             listener?.onStepFailure(step.id, error, stackTrace, context);
             throw StepExecutionException(step: step, error: error, stackTrace: stackTrace);
-            
+
           case StepSkipped():
             stepHistory.add(WorkflowStepEvent(stepId: step.id, status: StepStatus.skipped));
+            _markStep(step.id, StepStatus.skipped);
             listener?.onStepSkip(step.id, context);
         }
       }
 
+      _progress.value = _progress.value.copyWith(clearCurrentStepId: true);
       listener?.onWorkflowSuccess(context);
       return WorkflowSuccess(context: context, history: stepHistory);
 
@@ -91,16 +124,21 @@ class WorkflowRunner<TContext> {
       for (final step in completedSteps.reversed) {
         try {
           listener?.onStepRollbackStart(step.id, context);
-          stepHistory.add(WorkflowStepEvent(stepId: step.id, status: StepStatus.running)); // Log rollback state
+          stepHistory.add(WorkflowStepEvent(stepId: step.id, status: StepStatus.rollbackRunning));
+          _markStep(step.id, StepStatus.rollbackRunning, isCurrent: true);
           await step.rollback(context);
           stepHistory.add(WorkflowStepEvent(stepId: step.id, status: StepStatus.rollbackSuccess));
+          _markStep(step.id, StepStatus.rollbackSuccess);
           listener?.onStepRollbackSuccess(step.id, context);
         } catch (rollbackErr) {
           rollbackErrors[step.id] = rollbackErr;
           stepHistory.add(WorkflowStepEvent(stepId: step.id, status: StepStatus.rollbackFailed, error: rollbackErr));
+          _markStep(step.id, StepStatus.rollbackFailed);
           listener?.onStepRollbackFailure(step.id, rollbackErr, context);
         }
       }
+
+      _progress.value = _progress.value.copyWith(clearCurrentStepId: true);
 
       if (e is WorkflowCancelledException || token.isCancelled) {
         return WorkflowCancelled(context: context, history: stepHistory);

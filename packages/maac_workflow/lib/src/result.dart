@@ -51,8 +51,19 @@ class WorkflowCancelled<TContext> extends WorkflowResult<TContext> {
   const WorkflowCancelled({required super.context, required super.history});
 }
 
-/// The execution status of a workflow step, useful for audit logging and analytics.
-enum StepStatus { running, success, failed, skipped, rollbackSuccess, rollbackFailed }
+/// The execution status of a workflow step, useful for audit logging, analytics,
+/// and driving a live step indicator UI via [WorkflowRunner.progress].
+enum StepStatus {
+  /// The step hasn't been reached yet.
+  pending,
+  running,
+  success,
+  failed,
+  skipped,
+  rollbackRunning,
+  rollbackSuccess,
+  rollbackFailed,
+}
 
 class WorkflowStepEvent {
   final String stepId;

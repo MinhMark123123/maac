@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart';
+
 import 'cancellation_token.dart';
+import 'progress.dart';
 import 'result.dart';
 import 'runner.dart';
 
@@ -22,6 +25,9 @@ class SingleFlightWorkflowRunner<TContext> {
 
   /// Whether a run is currently in flight.
   bool get isRunning => _activeToken != null && !_activeToken!.isCancelled;
+
+  /// Live snapshot of the current run's step statuses. See [WorkflowRunner.progress].
+  ValueListenable<WorkflowProgress> get progress => runner.progress;
 
   /// Cancels any run currently in flight, then starts a new one.
   Future<WorkflowResult<TContext>> run(TContext context) {

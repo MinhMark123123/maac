@@ -1,6 +1,7 @@
 library maac_workflow;
 
 export 'src/cancellation_token.dart';
+export 'src/progress.dart';
 export 'src/result.dart';
 export 'src/step.dart';
 export 'src/runner.dart';
