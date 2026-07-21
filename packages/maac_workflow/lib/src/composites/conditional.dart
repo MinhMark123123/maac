@@ -20,7 +20,7 @@ class ConditionalStep<TContext> extends WorkflowStep<TContext> {
   }
 
   @override
-  Future<StepResult<void>> execute(TContext context, CancellationToken token) {
+  Future<StepResult> execute(TContext context, CancellationToken token) {
     return step.execute(context, token);
   }
 

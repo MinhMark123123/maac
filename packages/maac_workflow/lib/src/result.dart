@@ -1,20 +1,25 @@
 /// Represents the result of an individual step execution.
-sealed class StepResult<T> {
+///
+/// Steps don't return typed values here — `rollback(context)` only ever
+/// receives the shared `TContext`, so any data a step produces has to live on
+/// `context` anyway for rollback to see it. A step reports success/failure/skip
+/// through this type; it carries its output by writing typed fields onto
+/// `context`, not through a generic result value.
+sealed class StepResult {
   const StepResult();
 }
 
-class StepSuccess<T> extends StepResult<T> {
-  final T value;
-  const StepSuccess(this.value);
+class StepSuccess extends StepResult {
+  const StepSuccess();
 }
 
-class StepFailure<T> extends StepResult<T> {
+class StepFailure extends StepResult {
   final Object error;
   final StackTrace stackTrace;
   const StepFailure(this.error, [this.stackTrace = StackTrace.empty]);
 }
 
-class StepSkipped<T> extends StepResult<T> {
+class StepSkipped extends StepResult {
   const StepSkipped();
 }
 

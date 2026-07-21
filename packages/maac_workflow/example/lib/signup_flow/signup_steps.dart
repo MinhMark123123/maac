@@ -15,7 +15,7 @@ class BasicInfoStep extends WorkflowStep<SignupContext> {
   String get description => 'Interactive Form: Fill in Email & Password';
 
   @override
-  Future<StepResult<void>> execute(SignupContext context, CancellationToken token) async {
+  Future<StepResult> execute(SignupContext context, CancellationToken token) async {
     viewModel.logEvent('Step 1 [Basic Info]: Showing basic details screen...');
     viewModel.setWizardScreen(SignupScreen.basicInfo);
 
@@ -25,7 +25,7 @@ class BasicInfoStep extends WorkflowStep<SignupContext> {
 
     token.throwIfCancelled();
     viewModel.logEvent('Step 1 [Basic Info]: Completed. Email: ${context.email}');
-    return const StepSuccess(null);
+    return const StepSuccess();
   }
 }
 
@@ -41,7 +41,7 @@ class CreateAccountStep extends WorkflowStep<SignupContext> {
   String get description => 'Background API: Provisioning User ID on server';
 
   @override
-  Future<StepResult<void>> execute(SignupContext context, CancellationToken token) async {
+  Future<StepResult> execute(SignupContext context, CancellationToken token) async {
     viewModel.logEvent('Step 2 [Create Account API]: Call database to provision user account...');
     viewModel.setWizardScreen(SignupScreen.loadingBackend);
 
@@ -53,7 +53,7 @@ class CreateAccountStep extends WorkflowStep<SignupContext> {
 
     context.userId = 'usr_mock_${DateTime.now().millisecondsSinceEpoch % 100000}';
     viewModel.logEvent('Step 2 [Create Account API]: Success. Assigned ID: ${context.userId}');
-    return const StepSuccess(null);
+    return const StepSuccess();
   }
 
   @override
@@ -83,7 +83,7 @@ class OptionalDetailsStep extends WorkflowStep<SignupContext> {
   }
 
   @override
-  Future<StepResult<void>> execute(SignupContext context, CancellationToken token) async {
+  Future<StepResult> execute(SignupContext context, CancellationToken token) async {
     viewModel.logEvent('Step 3 [Optional Details]: Showing avatar & referral screen...');
     viewModel.setWizardScreen(SignupScreen.optionalDetails);
 
@@ -91,8 +91,10 @@ class OptionalDetailsStep extends WorkflowStep<SignupContext> {
     await completer.future;
 
     token.throwIfCancelled();
-    viewModel.logEvent('Step 3 [Optional Details]: Completed. Avatar: ${context.avatarUrl ?? "None"}, Referral: ${context.referralCode ?? "None"}');
-    return const StepSuccess(null);
+    viewModel.logEvent(
+      'Step 3 [Optional Details]: Completed. Avatar: ${context.avatarUrl ?? "None"}, Referral: ${context.referralCode ?? "None"}',
+    );
+    return const StepSuccess();
   }
 }
 
@@ -108,7 +110,7 @@ class SubmitRegistrationStep extends WorkflowStep<SignupContext> {
   String get description => 'Interactive Form: Final Review & Publish';
 
   @override
-  Future<StepResult<void>> execute(SignupContext context, CancellationToken token) async {
+  Future<StepResult> execute(SignupContext context, CancellationToken token) async {
     viewModel.logEvent('Step 4 [Submit Registration]: Showing review screen...');
     viewModel.setWizardScreen(SignupScreen.reviewScreen);
 
@@ -130,6 +132,6 @@ class SubmitRegistrationStep extends WorkflowStep<SignupContext> {
 
     context.isRegistered = true;
     viewModel.logEvent('Step 4 [Submit Registration]: Finished successfully!');
-    return const StepSuccess(null);
+    return const StepSuccess();
   }
 }

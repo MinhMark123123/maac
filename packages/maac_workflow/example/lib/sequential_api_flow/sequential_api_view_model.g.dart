@@ -22,4 +22,8 @@ extension $SequentialApiViewModel on SequentialApiViewModel {
   /// This getter is used to access the stream of data
   /// associated with the private field _forceSyncError.
   StreamData<bool> get forceSyncError => _forceSyncError.streamData;
+
+  /// This getter is used to access the stream of data
+  /// associated with the private field _forceDenyPermission.
+  StreamData<bool> get forceDenyPermission => _forceDenyPermission.streamData;
 }

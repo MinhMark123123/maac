@@ -14,14 +14,14 @@ class FetchConfigStep extends WorkflowStep<ApiContext> {
   String get description => 'Background API: Fetch app remote configurations';
 
   @override
-  Future<StepResult<void>> execute(ApiContext context, CancellationToken token) async {
+  Future<StepResult> execute(ApiContext context, CancellationToken token) async {
     viewModel.logEvent('Step 1 [Fetch Config]: Retrieving configurations...');
     await Future.delayed(const Duration(milliseconds: 1000));
     token.throwIfCancelled();
 
-    context.configFetched = true;
-    viewModel.logEvent('Step 1 [Fetch Config]: Successfully downloaded JSON configs.');
-    return const StepSuccess(null);
+    context.config = const RemoteConfig(apiVersion: 'v3.4.0', maintenanceMode: false);
+    viewModel.logEvent('Step 1 [Fetch Config]: Downloaded configs (apiVersion=${context.config!.apiVersion}).');
+    return const StepSuccess();
   }
 }
 
@@ -36,7 +36,7 @@ class FetchUserProfileStep extends WorkflowStep<ApiContext> {
   String get description => 'Background API: Fetch profile (with optional Timeout decorator)';
 
   @override
-  Future<StepResult<void>> execute(ApiContext context, CancellationToken token) async {
+  Future<StepResult> execute(ApiContext context, CancellationToken token) async {
     viewModel.logEvent('Step 2 [Fetch User Profile]: Fetching user metadata...');
 
     // Simulate delay. If forceProfileDelay is true, simulate a long response (e.g. 5 seconds)
@@ -50,9 +50,9 @@ class FetchUserProfileStep extends WorkflowStep<ApiContext> {
       elapsed += interval;
     }
 
-    context.profileFetched = true;
-    viewModel.logEvent('Step 2 [Fetch User Profile]: Successfully loaded user profile.');
-    return const StepSuccess(null);
+    context.profile = const UserProfile(displayName: 'Jane Doe', tier: 'gold');
+    viewModel.logEvent('Step 2 [Fetch User Profile]: Loaded profile (${context.profile!.displayName}, tier=${context.profile!.tier}).');
+    return const StepSuccess();
   }
 }
 
@@ -67,7 +67,7 @@ class SyncDataStep extends WorkflowStep<ApiContext> {
   String get description => 'Background API: Sync local caches with remote (with Auto-Retry)';
 
   @override
-  Future<StepResult<void>> execute(ApiContext context, CancellationToken token) async {
+  Future<StepResult> execute(ApiContext context, CancellationToken token) async {
     context.syncAttempts++;
     viewModel.logEvent('Step 3 [Sync Data]: Syncing files. Attempt #${context.syncAttempts}...');
 
@@ -79,8 +79,8 @@ class SyncDataStep extends WorkflowStep<ApiContext> {
       return StepFailure(Exception('Sync failed (forced sync failure)'));
     }
 
-    context.dataSynced = true;
-    viewModel.logEvent('Step 3 [Sync Data]: Sync finalized successfully!');
-    return const StepSuccess(null);
+    context.syncReport = SyncReport(syncedRecords: 128, syncedAt: DateTime.now());
+    viewModel.logEvent('Step 3 [Sync Data]: Sync finalized (${context.syncReport!.syncedRecords} records).');
+    return const StepSuccess();
   }
 }

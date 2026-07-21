@@ -12,7 +12,10 @@ class SequentialApiFlowPage extends DependencyViewModelWidget<SequentialApiViewM
     return Scaffold(
       backgroundColor: const Color(0xFF0F0F12),
       appBar: AppBar(
-        title: const Text('Sequential API & Decorators Showcase', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+        title: const Text(
+          'Sequential API & Decorators Showcase',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
         backgroundColor: const Color(0xFF16161B),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -34,89 +37,163 @@ class SequentialApiFlowPage extends DependencyViewModelWidget<SequentialApiViewM
                 child: Padding(
                   padding: const EdgeInsets.all(28.0),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Text(
-                        'Decorators Dashboard',
-                        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Configure custom decorators on steps. We wrap Profile fetch in a Timeout decorator, and Sync data in a Retry decorator.',
-                        style: TextStyle(color: Colors.grey, fontSize: 13),
-                      ),
-                      const SizedBox(height: 20),
-                      _StepTracker(viewModel: viewModel),
-                      const Divider(color: Colors.white10, height: 32),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const Text(
+                                'Decorators Dashboard',
+                                style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Configure custom decorators on steps. We wrap Profile fetch in a Timeout decorator, and Sync data in a Retry decorator.',
+                                style: TextStyle(color: Colors.grey, fontSize: 13),
+                              ),
+                              const SizedBox(height: 20),
+                              _StepTracker(viewModel: viewModel),
+                              const Divider(color: Colors.white10, height: 32),
 
-                      // Timeout Config
-                      const Text('Step 2: Timeout Settings', style: TextStyle(color: Colors.cyanAccent, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 8),
-                      StreamDataConsumer<bool>(
-                        streamData: viewModel.forceTimeout,
-                        builder: (context, val) {
-                          return SwitchListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: const Text('Simulate Slow Profiler Response', style: TextStyle(color: Colors.white, fontSize: 15)),
-                            subtitle: const Text('Forces Profile API to take 5 seconds.', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                            value: val,
-                            onChanged: viewModel.setForceTimeout,
-                            activeColor: Colors.cyanAccent,
-                          );
-                        },
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Timeout Limit (seconds):', style: TextStyle(color: Colors.white70)),
-                          DropdownButton<int>(
-                            dropdownColor: const Color(0xFF1E1E28),
-                            value: viewModel.timeoutLimitSeconds,
-                            style: const TextStyle(color: Colors.cyanAccent),
-                            items: [2, 3, 5, 8].map((e) => DropdownMenuItem(value: e, child: Text('$e seconds'))).toList(),
-                            onChanged: (v) {
-                              if (v != null) viewModel.timeoutLimitSeconds = v;
-                            },
+                              // Timeout Config
+                              const Text(
+                                'Step 2: Timeout Settings',
+                                style: TextStyle(color: Colors.cyanAccent, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              StreamDataConsumer<bool>(
+                                streamData: viewModel.forceTimeout,
+                                builder: (context, val) {
+                                  return SwitchListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    title: const Text(
+                                      'Simulate Slow Profiler Response',
+                                      style: TextStyle(color: Colors.white, fontSize: 15),
+                                    ),
+                                    subtitle: const Text(
+                                      'Forces Profile API to take 5 seconds.',
+                                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                                    ),
+                                    value: val,
+                                    onChanged: viewModel.setForceTimeout,
+                                    activeColor: Colors.cyanAccent,
+                                  );
+                                },
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text('Timeout Limit (seconds):', style: TextStyle(color: Colors.white70)),
+                                  DropdownButton<int>(
+                                    dropdownColor: const Color(0xFF1E1E28),
+                                    value: viewModel.timeoutLimitSeconds,
+                                    style: const TextStyle(color: Colors.cyanAccent),
+                                    items: [2, 3, 5, 8].map((e) => DropdownMenuItem(value: e, child: Text('$e seconds'))).toList(),
+                                    onChanged: (v) {
+                                      if (v != null) viewModel.timeoutLimitSeconds = v;
+                                    },
+                                  ),
+                                ],
+                              ),
+
+                              const Divider(color: Colors.white10, height: 32),
+
+                              // Retry Config
+                              const Text(
+                                'Step 3: Auto-Retry Settings',
+                                style: TextStyle(color: Colors.cyanAccent, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              StreamDataConsumer<bool>(
+                                streamData: viewModel.forceSyncError,
+                                builder: (context, val) {
+                                  return SwitchListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    title: const Text(
+                                      'Simulate Network Errors on Sync',
+                                      style: TextStyle(color: Colors.white, fontSize: 15),
+                                    ),
+                                    subtitle: const Text('Forces Sync API to crash.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                                    value: val,
+                                    onChanged: viewModel.setForceSyncError,
+                                    activeColor: Colors.cyanAccent,
+                                  );
+                                },
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text('Max Retry Attempts:', style: TextStyle(color: Colors.white70)),
+                                  DropdownButton<int>(
+                                    dropdownColor: const Color(0xFF1E1E28),
+                                    value: viewModel.retryAttempts,
+                                    style: const TextStyle(color: Colors.cyanAccent),
+                                    items: [2, 3, 5].map((e) => DropdownMenuItem(value: e, child: Text('$e attempts'))).toList(),
+                                    onChanged: (v) {
+                                      if (v != null) viewModel.retryAttempts = v;
+                                    },
+                                  ),
+                                ],
+                              ),
+
+                              const Divider(color: Colors.white10, height: 32),
+
+                              // Independent runner demo
+                              const Text(
+                                'Bonus: Independent Runner',
+                                style: TextStyle(color: Colors.cyanAccent, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 4),
+                              const Text(
+                                'A second WorkflowRunner<NotificationPermissionContext> on the same screen — a different '
+                                'TContext than the pipeline above. The ViewModel doesn\'t implement WorkflowListener itself, '
+                                'so both runners coexist via separate listener adapters.',
+                                style: TextStyle(color: Colors.grey, fontSize: 12),
+                              ),
+                              const SizedBox(height: 8),
+                              StreamDataConsumer<bool>(
+                                streamData: viewModel.forceDenyPermission,
+                                builder: (context, val) {
+                                  return SwitchListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    title: const Text('Force Deny Permission', style: TextStyle(color: Colors.white, fontSize: 14)),
+                                    value: val,
+                                    onChanged: viewModel.setForceDenyPermission,
+                                    activeColor: Colors.cyanAccent,
+                                  );
+                                },
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: OutlinedButton.icon(
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: Colors.cyanAccent,
+                                        side: const BorderSide(color: Colors.cyanAccent),
+                                      ),
+                                      onPressed: viewModel.requestNotificationPermission,
+                                      icon: const Icon(Icons.notifications_active_outlined),
+                                      label: const Text('Request Permission'),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  ValueListenableBuilder<WorkflowProgress>(
+                                    valueListenable: viewModel.notificationProgress,
+                                    builder: (context, progress, _) {
+                                      return _StepDot(
+                                        label: 'Push',
+                                        status: progress.statusOf('request_notification_permission') ?? StepStatus.pending,
+                                        isCurrent: progress.currentStepId == 'request_notification_permission',
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-
-                      const Divider(color: Colors.white10, height: 32),
-
-                      // Retry Config
-                      const Text('Step 3: Auto-Retry Settings', style: TextStyle(color: Colors.cyanAccent, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 8),
-                      StreamDataConsumer<bool>(
-                        streamData: viewModel.forceSyncError,
-                        builder: (context, val) {
-                          return SwitchListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: const Text('Simulate Network Errors on Sync', style: TextStyle(color: Colors.white, fontSize: 15)),
-                            subtitle: const Text('Forces Sync API to crash.', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                            value: val,
-                            onChanged: viewModel.setForceSyncError,
-                            activeColor: Colors.cyanAccent,
-                          );
-                        },
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Max Retry Attempts:', style: TextStyle(color: Colors.white70)),
-                          DropdownButton<int>(
-                            dropdownColor: const Color(0xFF1E1E28),
-                            value: viewModel.retryAttempts,
-                            style: const TextStyle(color: Colors.cyanAccent),
-                            items: [2, 3, 5].map((e) => DropdownMenuItem(value: e, child: Text('$e attempts'))).toList(),
-                            onChanged: (v) {
-                              if (v != null) viewModel.retryAttempts = v;
-                            },
-                          ),
-                        ],
-                      ),
-
-                      const Spacer(),
-
                       // Actions
                       StreamDataConsumer<bool>(
                         streamData: viewModel.isRunning,
@@ -220,11 +297,7 @@ class SequentialApiFlowPage extends DependencyViewModelWidget<SequentialApiViewM
                                 padding: const EdgeInsets.symmetric(vertical: 2.0),
                                 child: Text(
                                   log,
-                                  style: TextStyle(
-                                    fontFamily: 'monospace',
-                                    color: textColor,
-                                    fontSize: 13,
-                                  ),
+                                  style: TextStyle(fontFamily: 'monospace', color: textColor, fontSize: 13),
                                 ),
                               );
                             },
@@ -258,10 +331,7 @@ class _StepTracker extends StatelessWidget {
         return Row(
           children: [
             for (var index = 0; index < apiStepDefinitions.length; index++) ...[
-              if (index > 0)
-                Expanded(
-                  child: Container(height: 2, color: Colors.white.withOpacity(0.08)),
-                ),
+              if (index > 0) Expanded(child: Container(height: 2, color: Colors.white.withOpacity(0.08))),
               _StepDot(
                 label: apiStepDefinitions[index].$2,
                 status: progress.statusOf(apiStepDefinitions[index].$1) ?? StepStatus.pending,
@@ -307,7 +377,10 @@ class _StepDot extends StatelessWidget {
           child: Icon(icon, color: color, size: 16),
         ),
         const SizedBox(height: 4),
-        Text(label, style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.w600)),
+        Text(
+          label,
+          style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.w600),
+        ),
       ],
     );
   }

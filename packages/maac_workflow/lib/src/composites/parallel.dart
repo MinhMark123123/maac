@@ -10,22 +10,22 @@ class ParallelStep<TContext> extends WorkflowStep<TContext> {
   ParallelStep({required this.id, required this.subSteps});
 
   @override
-  Future<StepResult<void>> execute(TContext context, CancellationToken token) async {
+  Future<StepResult> execute(TContext context, CancellationToken token) async {
     try {
       final futures = subSteps.map((s) async {
         final canRun = await s.canRun(context);
-        if (!canRun) return const StepSkipped<void>();
+        if (!canRun) return const StepSkipped();
         return s.execute(context, token);
       });
 
       final results = await Future.wait(futures);
-      
+
       for (final res in results) {
         if (res is StepFailure) {
           return StepFailure(res.error, res.stackTrace);
         }
       }
-      return const StepSuccess(null);
+      return const StepSuccess();
     } catch (e, stack) {
       return StepFailure(e, stack);
     }

@@ -14,7 +14,7 @@ class FetchCounterValueStep extends WorkflowStep<CounterContext> {
   String get description => 'Background API: Fetch counter data matching click index';
 
   @override
-  Future<StepResult<void>> execute(CounterContext context, CancellationToken token) async {
+  Future<StepResult> execute(CounterContext context, CancellationToken token) async {
     viewModel.logEvent('Click #${context.clickIndex} starting simulated 2-second network request...');
 
     // Simulate 2-second fetch checking cancellation token frequently
@@ -28,8 +28,9 @@ class FetchCounterValueStep extends WorkflowStep<CounterContext> {
       }
     }
 
-    context.resultValue = 'Value fetched for click #${context.clickIndex} at ${DateTime.now().toLocal().toString().split(' ')[1].substring(0, 8)}';
+    context.resultValue =
+        'Value fetched for click #${context.clickIndex} at ${DateTime.now().toLocal().toString().split(' ')[1].substring(0, 8)}';
     viewModel.logEvent('Click #${context.clickIndex} completed successfully!');
-    return const StepSuccess(null);
+    return const StepSuccess();
   }
 }

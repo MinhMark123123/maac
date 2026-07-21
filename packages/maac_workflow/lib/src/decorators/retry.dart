@@ -21,7 +21,7 @@ class RetryStepDecorator<TContext> extends WorkflowStep<TContext> {
   String get id => '${step.id}_retry';
 
   @override
-  Future<StepResult<void>> execute(TContext context, CancellationToken token) async {
+  Future<StepResult> execute(TContext context, CancellationToken token) async {
     int attempt = 0;
     Duration delay = initialDelay;
 

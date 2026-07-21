@@ -26,7 +26,7 @@ class TimeoutStepDecorator<TContext> extends WorkflowStep<TContext> {
   Future<bool> canRun(TContext context) => step.canRun(context);
 
   @override
-  Future<StepResult<void>> execute(TContext context, CancellationToken token) async {
+  Future<StepResult> execute(TContext context, CancellationToken token) async {
     final innerToken = CancellationToken();
     token.onCancel(innerToken.cancel);
 
@@ -35,7 +35,7 @@ class TimeoutStepDecorator<TContext> extends WorkflowStep<TContext> {
         timeout,
         onTimeout: () {
           innerToken.cancel();
-          return StepFailure<void>(
+          return StepFailure(
             TimeoutException('Step "${step.id}" timed out after $timeout'),
             StackTrace.current,
           );

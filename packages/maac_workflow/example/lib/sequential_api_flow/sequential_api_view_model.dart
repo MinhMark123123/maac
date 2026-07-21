@@ -5,6 +5,8 @@ import 'package:maac_workflow/maac_workflow.dart';
 
 import 'api_context.dart';
 import 'api_steps.dart';
+import 'notification_context.dart';
+import 'notification_step.dart';
 
 part 'sequential_api_view_model.g.dart';
 
@@ -17,7 +19,7 @@ const apiStepDefinitions = [
 ];
 
 @BindableViewModel()
-class SequentialApiViewModel extends ViewModel implements WorkflowListener<ApiContext> {
+class SequentialApiViewModel extends ViewModel {
   @Bind()
   late final _workflowHistory = <String>[].mtd(this);
 
@@ -31,12 +33,24 @@ class SequentialApiViewModel extends ViewModel implements WorkflowListener<ApiCo
   @Bind()
   late final _forceSyncError = false.mtd(this);
 
+  @Bind()
+  late final _forceDenyPermission = false.mtd(this);
+
   // Parameters
   int timeoutLimitSeconds = 3;
   int retryAttempts = 3;
 
   CancellationToken? _cancellationToken;
   late final ApiContext _context = ApiContext();
+  late final NotificationPermissionContext _notificationContext = NotificationPermissionContext();
+
+  // Adapters, not `implements WorkflowListener<T>` on the ViewModel itself —
+  // that would make it impossible to also listen to _notificationRunner below,
+  // since a class can't implement the same generic interface twice with two
+  // different type arguments (WorkflowListener<ApiContext> vs
+  // WorkflowListener<NotificationPermissionContext>).
+  late final _apiListener = ApiWorkflowListener(this);
+  late final _notificationListener = NotificationWorkflowListener(this);
 
   // Reassigned to a fresh WorkflowRunner on every startFlow() call, so
   // stepProgress always reflects the most recently configured decorators
@@ -47,6 +61,14 @@ class SequentialApiViewModel extends ViewModel implements WorkflowListener<ApiCo
   /// Live per-step status for the step tracker UI. Falls back to an empty,
   /// all-pending snapshot before the first run.
   ValueListenable<WorkflowProgress> get stepProgress => _runner?.progress ?? _idleProgress;
+
+  // A second, independent WorkflowRunner on the same screen, over a
+  // completely different TContext — proves multiple runners coexist fine
+  // once the ViewModel isn't itself the (single) WorkflowListener.
+  WorkflowRunner<NotificationPermissionContext>? _notificationRunner;
+  final _idleNotificationProgress = ValueNotifier<WorkflowProgress>(const WorkflowProgress());
+
+  ValueListenable<WorkflowProgress> get notificationProgress => _notificationRunner?.progress ?? _idleNotificationProgress;
 
   void logEvent(String msg) {
     final list = List<String>.from(_workflowHistory.data);
@@ -65,15 +87,20 @@ class SequentialApiViewModel extends ViewModel implements WorkflowListener<ApiCo
     _context.forceSyncFail = value;
   }
 
+  void setForceDenyPermission(bool value) {
+    _forceDenyPermission.postValue(value);
+    _notificationContext.forceDeny = value;
+  }
+
   void startFlow() async {
     _isRunning.postValue(true);
     clearLogs();
     logEvent('Initializing API Workflow Execution...');
 
     _cancellationToken = CancellationToken();
-    _context.configFetched = false;
-    _context.profileFetched = false;
-    _context.dataSynced = false;
+    _context.config = null;
+    _context.profile = null;
+    _context.syncReport = null;
     _context.syncAttempts = 0;
     _context.forceProfileDelay = _forceTimeout.data;
     _context.forceSyncFail = _forceSyncError.data;
@@ -95,7 +122,7 @@ class SequentialApiViewModel extends ViewModel implements WorkflowListener<ApiCo
           backoffFactor: 1.5,
         ),
       ],
-      listener: this,
+      listener: _apiListener,
     );
 
     final result = await _runner!.run(_context, cancellationToken: _cancellationToken);
@@ -118,36 +145,78 @@ class SequentialApiViewModel extends ViewModel implements WorkflowListener<ApiCo
     _cancellationToken?.cancel();
   }
 
-  // --- WorkflowListener ---
-  @override
-  void onWorkflowStart(ApiContext context) => logEvent('[Engine] Workflow Start');
-  @override
-  void onStepStart(String stepId, ApiContext context) => logEvent('[Engine] Step Start: $stepId');
-  @override
-  void onStepSuccess(String stepId, ApiContext context) => logEvent('[Engine] Step Success: $stepId');
-  @override
-  void onStepSkip(String stepId, ApiContext context) => logEvent('[Engine] Step Skip: $stepId');
-  @override
-  void onStepFailure(String stepId, Object error, StackTrace stackTrace, ApiContext context) =>
-      logEvent('[Engine] Step Failure: $stepId. Error: $error');
-  @override
-  void onStepRollbackStart(String stepId, ApiContext context) => logEvent('[Engine] Rollback Start: $stepId');
-  @override
-  void onStepRollbackSuccess(String stepId, ApiContext context) => logEvent('[Engine] Rollback Success: $stepId');
-  @override
-  void onStepRollbackFailure(String stepId, Object error, ApiContext context) =>
-      logEvent('[Engine] Rollback Failure: $stepId. Error: $error');
-  @override
-  void onWorkflowSuccess(ApiContext context) => logEvent('[Engine] Workflow Finished: Success');
-  @override
-  void onWorkflowFailure(Object error, StackTrace stackTrace, ApiContext context) =>
-      logEvent('[Engine] Workflow Finished: Failure');
+  void requestNotificationPermission() async {
+    _notificationContext.granted = false;
+    _notificationContext.forceDeny = _forceDenyPermission.data;
+
+    _notificationRunner = WorkflowRunner<NotificationPermissionContext>(
+      steps: [RequestNotificationPermissionStep(this)],
+      listener: _notificationListener,
+    );
+
+    await _notificationRunner!.run(_notificationContext);
+  }
 
   @override
   void onDispose() {
     _cancellationToken?.cancel();
     _runner?.dispose();
     _idleProgress.dispose();
+    _notificationRunner?.dispose();
+    _idleNotificationProgress.dispose();
     super.onDispose();
   }
+}
+
+/// Forwards `WorkflowListener<ApiContext>` callbacks to plain methods on
+/// [SequentialApiViewModel], logging under its own `[Config/Sync]` prefix.
+class ApiWorkflowListener extends WorkflowListener<ApiContext> {
+  final SequentialApiViewModel viewModel;
+  ApiWorkflowListener(this.viewModel);
+
+  @override
+  void onWorkflowStart(ApiContext context) => viewModel.logEvent('[Config/Sync] Workflow Start');
+  @override
+  void onStepStart(String stepId, ApiContext context) => viewModel.logEvent('[Config/Sync] Step Start: $stepId');
+  @override
+  void onStepSuccess(String stepId, ApiContext context) => viewModel.logEvent('[Config/Sync] Step Success: $stepId');
+  @override
+  void onStepSkip(String stepId, ApiContext context) => viewModel.logEvent('[Config/Sync] Step Skip: $stepId');
+  @override
+  void onStepFailure(String stepId, Object error, StackTrace stackTrace, ApiContext context) =>
+      viewModel.logEvent('[Config/Sync] Step Failure: $stepId. Error: $error');
+  @override
+  void onStepRollbackStart(String stepId, ApiContext context) => viewModel.logEvent('[Config/Sync] Rollback Start: $stepId');
+  @override
+  void onStepRollbackSuccess(String stepId, ApiContext context) => viewModel.logEvent('[Config/Sync] Rollback Success: $stepId');
+  @override
+  void onStepRollbackFailure(String stepId, Object error, ApiContext context) =>
+      viewModel.logEvent('[Config/Sync] Rollback Failure: $stepId. Error: $error');
+  @override
+  void onWorkflowSuccess(ApiContext context) => viewModel.logEvent('[Config/Sync] Workflow Finished: Success');
+  @override
+  void onWorkflowFailure(Object error, StackTrace stackTrace, ApiContext context) =>
+      viewModel.logEvent('[Config/Sync] Workflow Finished: Failure');
+}
+
+/// Forwards `WorkflowListener<NotificationPermissionContext>` callbacks to
+/// plain methods on [SequentialApiViewModel], logging under its own
+/// `[Notifications]` prefix. A distinct class from [ApiWorkflowListener]
+/// because its `TContext` is different — this is exactly the pattern that
+/// lets one ViewModel drive multiple `WorkflowRunner`s without itself
+/// `implements`-ing `WorkflowListener` for any of them.
+class NotificationWorkflowListener extends WorkflowListener<NotificationPermissionContext> {
+  final SequentialApiViewModel viewModel;
+  NotificationWorkflowListener(this.viewModel);
+
+  @override
+  void onWorkflowStart(NotificationPermissionContext context) => viewModel.logEvent('[Notifications] Workflow Start');
+  @override
+  void onStepFailure(String stepId, Object error, StackTrace stackTrace, NotificationPermissionContext context) =>
+      viewModel.logEvent('[Notifications] Step Failure: $stepId. Error: $error');
+  @override
+  void onWorkflowSuccess(NotificationPermissionContext context) => viewModel.logEvent('[Notifications] Workflow Finished: Success');
+  @override
+  void onWorkflowFailure(Object error, StackTrace stackTrace, NotificationPermissionContext context) =>
+      viewModel.logEvent('[Notifications] Workflow Finished: Failure');
 }

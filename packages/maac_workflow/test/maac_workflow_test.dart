@@ -19,9 +19,9 @@ class LogStep extends WorkflowStep<TestContext> {
   String get id => name;
 
   @override
-  Future<StepResult<void>> execute(TestContext context, CancellationToken token) async {
+  Future<StepResult> execute(TestContext context, CancellationToken token) async {
     context.logs.add('execute:$name');
-    return const StepSuccess(null);
+    return const StepSuccess();
   }
 
   @override
@@ -44,7 +44,7 @@ class FailingStep extends WorkflowStep<TestContext> {
   String get id => 'failing';
 
   @override
-  Future<StepResult<void>> execute(TestContext context, CancellationToken token) async {
+  Future<StepResult> execute(TestContext context, CancellationToken token) async {
     context.logs.add('execute:failing');
     return StepFailure(Exception('execution failed'));
   }
@@ -66,12 +66,12 @@ class WaitForCancelStep extends WorkflowStep<TestContext> {
   String get id => name;
 
   @override
-  Future<StepResult<void>> execute(TestContext context, CancellationToken token) {
+  Future<StepResult> execute(TestContext context, CancellationToken token) {
     context.logs.add('execute:$name');
-    final completer = Completer<StepResult<void>>();
+    final completer = Completer<StepResult>();
     token.onCancel(() {
       context.logs.add('cancelled:$name');
-      if (!completer.isCompleted) completer.complete(const StepSuccess(null));
+      if (!completer.isCompleted) completer.complete(const StepSuccess());
     });
     return completer.future;
   }
@@ -89,11 +89,11 @@ class SlowStep extends WorkflowStep<TestContext> {
   String get id => 'slow';
 
   @override
-  Future<StepResult<void>> execute(TestContext context, CancellationToken token) {
+  Future<StepResult> execute(TestContext context, CancellationToken token) {
     context.logs.add('execute:slow');
-    final completer = Completer<StepResult<void>>();
+    final completer = Completer<StepResult>();
     Timer(delay, () {
-      if (!completer.isCompleted) completer.complete(const StepSuccess(null));
+      if (!completer.isCompleted) completer.complete(const StepSuccess());
     });
     token.onCancel(() => tokenCancelledDuringExecute = true);
     return completer.future;
@@ -105,13 +105,13 @@ class RetryableStep extends WorkflowStep<TestContext> {
   String get id => 'retryable';
 
   @override
-  Future<StepResult<void>> execute(TestContext context, CancellationToken token) async {
+  Future<StepResult> execute(TestContext context, CancellationToken token) async {
     context.retryAttemptsCount++;
     context.logs.add('execute:retryable-$context.retryAttemptsCount');
     if (context.shouldFailStep) {
       return StepFailure(Exception('network error'));
     }
-    return const StepSuccess(null);
+    return const StepSuccess();
   }
 }
 
@@ -141,12 +141,7 @@ void main() {
   group('WorkflowRunner Execution Tests', () {
     test('Should run steps sequentially and succeed', () async {
       final context = TestContext();
-      final runner = WorkflowRunner<TestContext>(
-        steps: [
-          LogStep('step1'),
-          LogStep('step2'),
-        ],
-      );
+      final runner = WorkflowRunner<TestContext>(steps: [LogStep('step1'), LogStep('step2')]);
 
       final result = await runner.run(context);
 
@@ -159,45 +154,23 @@ void main() {
 
     test('Should rollback in LIFO order when a step fails', () async {
       final context = TestContext();
-      final runner = WorkflowRunner<TestContext>(
-        steps: [
-          LogStep('step1'),
-          LogStep('step2'),
-          FailingStep(),
-          LogStep('step3'),
-        ],
-      );
+      final runner = WorkflowRunner<TestContext>(steps: [LogStep('step1'), LogStep('step2'), FailingStep(), LogStep('step3')]);
 
       final result = await runner.run(context);
 
       expect(result, isA<WorkflowFailure<TestContext>>());
       final failure = result as WorkflowFailure<TestContext>;
       expect(failure.failedStepId, equals('failing'));
-      
+
       // step1 and step2 should be executed, then failing, then rollback step2 and step1
-      expect(
-        context.logs,
-        equals([
-          'execute:step1',
-          'execute:step2',
-          'execute:failing',
-          'rollback:step2',
-          'rollback:step1',
-        ]),
-      );
+      expect(context.logs, equals(['execute:step1', 'execute:step2', 'execute:failing', 'rollback:step2', 'rollback:step1']));
     });
   });
 
   group('Conditional & Composite Steps Tests', () {
     test('Should skip step if condition is not met', () async {
       final context = TestContext()..hasFeatureX = false;
-      final runner = WorkflowRunner<TestContext>(
-        steps: [
-          LogStep('step1'),
-          ConditionalLogStep('conditional_step'),
-          LogStep('step2'),
-        ],
-      );
+      final runner = WorkflowRunner<TestContext>(steps: [LogStep('step1'), ConditionalLogStep('conditional_step'), LogStep('step2')]);
 
       final result = await runner.run(context);
 
@@ -208,13 +181,7 @@ void main() {
 
     test('Should execute step if condition is met', () async {
       final context = TestContext()..hasFeatureX = true;
-      final runner = WorkflowRunner<TestContext>(
-        steps: [
-          LogStep('step1'),
-          ConditionalLogStep('conditional_step'),
-          LogStep('step2'),
-        ],
-      );
+      final runner = WorkflowRunner<TestContext>(steps: [LogStep('step1'), ConditionalLogStep('conditional_step'), LogStep('step2')]);
 
       final result = await runner.run(context);
 
@@ -227,11 +194,7 @@ void main() {
       final runner = WorkflowRunner<TestContext>(
         steps: [
           LogStep('step1'),
-          ConditionalStep(
-            id: 'cond',
-            condition: (ctx) => ctx.hasFeatureX,
-            step: LogStep('inner_step'),
-          ),
+          ConditionalStep(id: 'cond', condition: (ctx) => ctx.hasFeatureX, step: LogStep('inner_step')),
           LogStep('step2'),
         ],
       );
@@ -245,13 +208,7 @@ void main() {
     test('Should retry failing step and fail if error persists', () async {
       final context = TestContext()..shouldFailStep = true;
       final runner = WorkflowRunner<TestContext>(
-        steps: [
-          RetryStepDecorator(
-            step: RetryableStep(),
-            maxAttempts: 3,
-            initialDelay: Duration.zero,
-          ),
-        ],
+        steps: [RetryStepDecorator(step: RetryableStep(), maxAttempts: 3, initialDelay: Duration.zero)],
       );
 
       final result = await runner.run(context);
@@ -264,13 +221,7 @@ void main() {
       // In a real scenario, we could mock the resolution. Let's verify it retries.
       final context = TestContext()..shouldFailStep = false;
       final runner = WorkflowRunner<TestContext>(
-        steps: [
-          RetryStepDecorator(
-            step: RetryableStep(),
-            maxAttempts: 3,
-            initialDelay: Duration.zero,
-          ),
-        ],
+        steps: [RetryStepDecorator(step: RetryableStep(), maxAttempts: 3, initialDelay: Duration.zero)],
       );
 
       final result = await runner.run(context);
@@ -285,9 +236,7 @@ void main() {
       final context = TestContext();
       final slowStep = SlowStep(const Duration(milliseconds: 200));
       final runner = WorkflowRunner<TestContext>(
-        steps: [
-          TimeoutStepDecorator(step: slowStep, timeout: const Duration(milliseconds: 20)),
-        ],
+        steps: [TimeoutStepDecorator(step: slowStep, timeout: const Duration(milliseconds: 20))],
       );
 
       final result = await runner.run(context);
@@ -300,9 +249,7 @@ void main() {
     test('Should succeed when the step completes within the timeout', () async {
       final context = TestContext();
       final runner = WorkflowRunner<TestContext>(
-        steps: [
-          TimeoutStepDecorator(step: LogStep('fast'), timeout: const Duration(milliseconds: 200)),
-        ],
+        steps: [TimeoutStepDecorator(step: LogStep('fast'), timeout: const Duration(milliseconds: 200))],
       );
 
       final result = await runner.run(context);
@@ -315,9 +262,7 @@ void main() {
       final context = TestContext();
       final token = CancellationToken();
       final runner = WorkflowRunner<TestContext>(
-        steps: [
-          TimeoutStepDecorator(step: SlowStep(const Duration(milliseconds: 200)), timeout: const Duration(milliseconds: 20)),
-        ],
+        steps: [TimeoutStepDecorator(step: SlowStep(const Duration(milliseconds: 200)), timeout: const Duration(milliseconds: 20))],
       );
 
       final result = await runner.run(context, cancellationToken: token);
@@ -341,10 +286,7 @@ void main() {
       final result = await runner.run(context);
 
       expect(result, isA<WorkflowSuccess<TestContext>>());
-      expect(
-        context.logs,
-        equals(['execute:before', 'execute:inner1', 'execute:inner2', 'execute:after']),
-      );
+      expect(context.logs, equals(['execute:before', 'execute:inner1', 'execute:inner2', 'execute:after']));
     });
 
     test('Should report the group id as failedStepId, after the sub-workflow rolls back its own steps', () async {
@@ -385,16 +327,7 @@ void main() {
 
       expect(result, isA<WorkflowFailure<TestContext>>());
       expect((result as WorkflowFailure<TestContext>).failedStepId, equals('failing'));
-      expect(
-        context.logs,
-        equals([
-          'execute:inner1',
-          'execute:inner2',
-          'execute:failing',
-          'rollback:inner2',
-          'rollback:inner1',
-        ]),
-      );
+      expect(context.logs, equals(['execute:inner1', 'execute:inner2', 'execute:failing', 'rollback:inner2', 'rollback:inner1']));
     });
   });
 
@@ -402,9 +335,7 @@ void main() {
     test('Should cancel the previous run when a new run starts, and cancel() should stop the active one', () async {
       final context1 = TestContext();
       final context2 = TestContext();
-      final singleFlight = SingleFlightWorkflowRunner<TestContext>(
-        WorkflowRunner<TestContext>(steps: [WaitForCancelStep('watch')]),
-      );
+      final singleFlight = SingleFlightWorkflowRunner<TestContext>(WorkflowRunner<TestContext>(steps: [WaitForCancelStep('watch')]));
 
       final firstRunFuture = singleFlight.run(context1);
       await Future.delayed(Duration.zero); // let the first run start listening
@@ -445,21 +376,12 @@ void main() {
       await runner.run(context);
 
       // First snapshot resets both steps to pending with no current step.
-      expect(
-        snapshots.first.stepStatuses,
-        equals({'step1': StepStatus.pending, 'step2': StepStatus.pending}),
-      );
+      expect(snapshots.first.stepStatuses, equals({'step1': StepStatus.pending, 'step2': StepStatus.pending}));
       expect(snapshots.first.currentStepId, isNull);
 
       // Each step was reported as the current, running step at some point.
-      expect(
-        snapshots.any((s) => s.currentStepId == 'step1' && s.statusOf('step1') == StepStatus.running),
-        isTrue,
-      );
-      expect(
-        snapshots.any((s) => s.currentStepId == 'step2' && s.statusOf('step2') == StepStatus.running),
-        isTrue,
-      );
+      expect(snapshots.any((s) => s.currentStepId == 'step1' && s.statusOf('step1') == StepStatus.running), isTrue);
+      expect(snapshots.any((s) => s.currentStepId == 'step2' && s.statusOf('step2') == StepStatus.running), isTrue);
 
       final last = runner.progress.value;
       expect(last.currentStepId, isNull);

@@ -31,13 +31,13 @@ class WorkflowStepGroup<TContext> extends WorkflowStep<TContext> {
   });
 
   @override
-  Future<StepResult<void>> execute(TContext context, CancellationToken token) async {
+  Future<StepResult> execute(TContext context, CancellationToken token) async {
     final runner = WorkflowRunner<TContext>(steps: steps, listener: listener);
     final result = await runner.run(context, cancellationToken: token);
 
     switch (result) {
       case WorkflowSuccess():
-        return const StepSuccess(null);
+        return const StepSuccess();
       case WorkflowFailure(:final error, :final stackTrace):
         return StepFailure(error, stackTrace);
       case WorkflowCancelled():
