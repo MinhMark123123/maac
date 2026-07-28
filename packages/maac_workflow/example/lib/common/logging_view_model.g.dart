@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'single_flight_view_model.dart';
+part of 'logging_view_model.dart';
 
 // **************************************************************************
 // BindableViewModelGenerator
 // **************************************************************************
 
-extension $SingleFlightViewModel on SingleFlightViewModel {
+extension $LoggingViewModel on LoggingViewModel {
   /// This getter is used to access the stream of data
-  /// associated with the private field _trackers.
-  StreamData<List<ExecutionTracker>> get trackers => _trackers.streamData;
+  /// associated with the private field _eventLog.
+  StreamData<List<String>> get eventLog => _eventLog.streamData;
 }

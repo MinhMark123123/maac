@@ -1,4 +1,5 @@
 import '../cancellation_token.dart';
+import '../flow_context.dart';
 import '../result.dart';
 import '../runner.dart';
 import '../step.dart';
@@ -15,7 +16,7 @@ import '../step.dart';
 /// rolls back every sub-step in reverse (LIFO) order, relying on the same
 /// convention as the rest of the package: a step's [WorkflowStep.rollback] must be
 /// a safe no-op if that step never actually ran (see [ConditionalStep.rollback]).
-class WorkflowStepGroup<TContext> extends WorkflowStep<TContext> {
+class WorkflowStepGroup<TContext extends FlowContext> extends WorkflowStep<TContext> {
   @override
   final String id;
   @override
@@ -51,8 +52,15 @@ class WorkflowStepGroup<TContext> extends WorkflowStep<TContext> {
 
   @override
   Future<void> rollback(TContext context) async {
+    // Unlike the forward path (which delegates to an inner WorkflowRunner
+    // that manages this itself), rollback iterates steps directly — so each
+    // inner step's active-step id must be set/cleared explicitly here for
+    // FlowContext's scoped-immutability tracking to attribute its
+    // rollback-time writes to the right step, not to this group's own id.
     for (final step in steps.reversed) {
+      context.setActiveStepId(step.id);
       await step.rollback(context);
     }
+    context.setActiveStepId(id);
   }
 }

@@ -15,6 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
   async: ^2.11.0
+  meta: ^1.15.0
 
 dev_dependencies:
   flutter_test:

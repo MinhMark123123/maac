@@ -1,5 +1,7 @@
+import 'package:maac_workflow/maac_workflow.dart';
+
 /// Shared state passed to a single simulated "fetch counter value" run.
-class CounterContext {
+class CounterContext extends FlowContext {
   final int clickIndex;
   String? resultValue;
 

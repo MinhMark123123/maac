@@ -35,4 +35,9 @@ class ParallelStep<TContext> extends WorkflowStep<TContext> {
   Future<void> rollback(TContext context) async {
     await Future.wait(subSteps.map((s) => s.rollback(context)));
   }
+
+  @override
+  Future<void> onDeactivateOrCancel(TContext context) async {
+    await Future.wait(subSteps.map((s) => s.onDeactivateOrCancel(context)));
+  }
 }

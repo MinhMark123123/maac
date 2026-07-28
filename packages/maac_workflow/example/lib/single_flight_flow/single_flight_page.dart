@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maac_mvvm_with_get_it/maac_mvvm_with_get_it.dart';
+import 'package:maac_workflow_example/common/logging_view_model.dart';
 
 import 'counter_context.dart';
 import 'single_flight_view_model.dart';
@@ -12,7 +13,10 @@ class SingleFlightFlowPage extends DependencyViewModelWidget<SingleFlightViewMod
     return Scaffold(
       backgroundColor: const Color(0xFF0F0F12),
       appBar: AppBar(
-        title: const Text('SingleFlight Execution Showcase', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+        title: const Text(
+          'SingleFlight Execution Showcase',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
         backgroundColor: const Color(0xFF16161B),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -72,7 +76,10 @@ class SingleFlightFlowPage extends DependencyViewModelWidget<SingleFlightViewMod
                         ),
                       ),
                       const SizedBox(height: 24),
-                      const Text('Visual Flight Status Monitor:', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Visual Flight Status Monitor:',
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
                       const SizedBox(height: 12),
                       Expanded(
                         child: StreamDataConsumer<List<ExecutionTracker>>(
@@ -152,7 +159,7 @@ class SingleFlightFlowPage extends DependencyViewModelWidget<SingleFlightViewMod
                         border: Border.all(color: Colors.white.withOpacity(0.05)),
                       ),
                       child: StreamDataConsumer<List<String>>(
-                        streamData: viewModel.workflowHistory,
+                        streamData: viewModel.eventLog,
                         builder: (context, logs) {
                           if (logs.isEmpty) {
                             return const Center(
@@ -175,11 +182,7 @@ class SingleFlightFlowPage extends DependencyViewModelWidget<SingleFlightViewMod
                                 padding: const EdgeInsets.symmetric(vertical: 2.0),
                                 child: Text(
                                   log,
-                                  style: TextStyle(
-                                    fontFamily: 'monospace',
-                                    color: textColor,
-                                    fontSize: 13,
-                                  ),
+                                  style: TextStyle(fontFamily: 'monospace', color: textColor, fontSize: 13),
                                 ),
                               );
                             },
@@ -233,19 +236,13 @@ class SingleFlightFlowPage extends DependencyViewModelWidget<SingleFlightViewMod
                   style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  tracker.result ?? 'Simulated backend fetch in progress...',
-                  style: TextStyle(color: Colors.grey[400], fontSize: 12),
-                ),
+                Text(tracker.result ?? 'Simulated backend fetch in progress...', style: TextStyle(color: Colors.grey[400], fontSize: 12)),
               ],
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: statusColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
+            decoration: BoxDecoration(color: statusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
             child: Text(
               statusText,
               style: TextStyle(color: statusColor, fontSize: 11, fontWeight: FontWeight.bold),

@@ -1,11 +1,13 @@
 import 'package:maac_workflow/maac_workflow.dart';
 
+import '../common/callbacks.dart';
+import '../data/api_repository.dart';
 import 'api_context.dart';
-import 'sequential_api_view_model.dart';
 
 class FetchConfigStep extends WorkflowStep<ApiContext> {
-  final SequentialApiViewModel viewModel;
-  FetchConfigStep(this.viewModel);
+  final LogEvent logEvent;
+  final ApiRepository apiRepository;
+  FetchConfigStep({required this.logEvent, required this.apiRepository});
 
   @override
   String get id => 'fetch_config';
@@ -15,19 +17,19 @@ class FetchConfigStep extends WorkflowStep<ApiContext> {
 
   @override
   Future<StepResult> execute(ApiContext context, CancellationToken token) async {
-    viewModel.logEvent('Step 1 [Fetch Config]: Retrieving configurations...');
-    await Future.delayed(const Duration(milliseconds: 1000));
+    logEvent('Step 1 [Fetch Config]: Retrieving configurations...');
+    context.config = await apiRepository.fetchConfig();
     token.throwIfCancelled();
 
-    context.config = const RemoteConfig(apiVersion: 'v3.4.0', maintenanceMode: false);
-    viewModel.logEvent('Step 1 [Fetch Config]: Downloaded configs (apiVersion=${context.config!.apiVersion}).');
+    logEvent('Step 1 [Fetch Config]: Downloaded configs (apiVersion=${context.config!.apiVersion}).');
     return const StepSuccess();
   }
 }
 
 class FetchUserProfileStep extends WorkflowStep<ApiContext> {
-  final SequentialApiViewModel viewModel;
-  FetchUserProfileStep(this.viewModel);
+  final LogEvent logEvent;
+  final ApiRepository apiRepository;
+  FetchUserProfileStep({required this.logEvent, required this.apiRepository});
 
   @override
   String get id => 'fetch_user_profile';
@@ -37,28 +39,19 @@ class FetchUserProfileStep extends WorkflowStep<ApiContext> {
 
   @override
   Future<StepResult> execute(ApiContext context, CancellationToken token) async {
-    viewModel.logEvent('Step 2 [Fetch User Profile]: Fetching user metadata...');
+    logEvent('Step 2 [Fetch User Profile]: Fetching user metadata...');
 
-    // Simulate delay. If forceProfileDelay is true, simulate a long response (e.g. 5 seconds)
-    final delayMs = context.forceProfileDelay ? 5000 : 1000;
-    final interval = 200;
-    int elapsed = 0;
+    context.profile = await apiRepository.fetchUserProfile(token, forceDelay: context.forceProfileDelay);
 
-    while (elapsed < delayMs) {
-      await Future.delayed(Duration(milliseconds: interval));
-      token.throwIfCancelled();
-      elapsed += interval;
-    }
-
-    context.profile = const UserProfile(displayName: 'Jane Doe', tier: 'gold');
-    viewModel.logEvent('Step 2 [Fetch User Profile]: Loaded profile (${context.profile!.displayName}, tier=${context.profile!.tier}).');
+    logEvent('Step 2 [Fetch User Profile]: Loaded profile (${context.profile!.displayName}, tier=${context.profile!.tier}).');
     return const StepSuccess();
   }
 }
 
 class SyncDataStep extends WorkflowStep<ApiContext> {
-  final SequentialApiViewModel viewModel;
-  SyncDataStep(this.viewModel);
+  final LogEvent logEvent;
+  final ApiRepository apiRepository;
+  SyncDataStep({required this.logEvent, required this.apiRepository});
 
   @override
   String get id => 'sync_data';
@@ -69,18 +62,20 @@ class SyncDataStep extends WorkflowStep<ApiContext> {
   @override
   Future<StepResult> execute(ApiContext context, CancellationToken token) async {
     context.syncAttempts++;
-    viewModel.logEvent('Step 3 [Sync Data]: Syncing files. Attempt #${context.syncAttempts}...');
+    logEvent('Step 3 [Sync Data]: Syncing files. Attempt #${context.syncAttempts}...');
 
-    await Future.delayed(const Duration(milliseconds: 1200));
+    final SyncReport report;
+    try {
+      report = await apiRepository.syncData(forceFail: context.forceSyncFail);
+    } catch (e, stack) {
+      token.throwIfCancelled(); // cancellation, not a business failure — let it propagate as such
+      logEvent('Step 3 [Sync Data]: Attempt failed due to server connection issues.');
+      return StepFailure(e, stack);
+    }
     token.throwIfCancelled();
 
-    if (context.forceSyncFail) {
-      viewModel.logEvent('Step 3 [Sync Data]: Attempt failed due to server connection issues.');
-      return StepFailure(Exception('Sync failed (forced sync failure)'));
-    }
-
-    context.syncReport = SyncReport(syncedRecords: 128, syncedAt: DateTime.now());
-    viewModel.logEvent('Step 3 [Sync Data]: Sync finalized (${context.syncReport!.syncedRecords} records).');
+    context.syncReport = report;
+    logEvent('Step 3 [Sync Data]: Sync finalized (${context.syncReport!.syncedRecords} records).');
     return const StepSuccess();
   }
 }

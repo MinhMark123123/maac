@@ -8,10 +8,6 @@ part of 'sequential_api_view_model.dart';
 
 extension $SequentialApiViewModel on SequentialApiViewModel {
   /// This getter is used to access the stream of data
-  /// associated with the private field _workflowHistory.
-  StreamData<List<String>> get workflowHistory => _workflowHistory.streamData;
-
-  /// This getter is used to access the stream of data
   /// associated with the private field _isRunning.
   StreamData<bool> get isRunning => _isRunning.streamData;
 

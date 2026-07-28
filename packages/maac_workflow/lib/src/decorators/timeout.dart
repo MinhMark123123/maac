@@ -48,4 +48,7 @@ class TimeoutStepDecorator<TContext> extends WorkflowStep<TContext> {
 
   @override
   Future<void> rollback(TContext context) => step.rollback(context);
+
+  @override
+  Future<void> onDeactivateOrCancel(TContext context) => step.onDeactivateOrCancel(context);
 }

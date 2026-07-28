@@ -62,6 +62,9 @@ enum StepStatus {
   /// The step hasn't been reached yet.
   pending,
   running,
+  /// The step is an [InteractiveStep] paused, waiting for an external
+  /// signal (e.g. a UI form submission) via `WorkflowRunner.submit`/`.fail`.
+  awaitingInput,
   success,
   failed,
   skipped,

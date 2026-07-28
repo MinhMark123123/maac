@@ -1,11 +1,13 @@
 import 'package:maac_workflow/maac_workflow.dart';
 
+import '../common/callbacks.dart';
+import '../data/notification_repository.dart';
 import 'notification_context.dart';
-import 'sequential_api_view_model.dart';
 
 class RequestNotificationPermissionStep extends WorkflowStep<NotificationPermissionContext> {
-  final SequentialApiViewModel viewModel;
-  RequestNotificationPermissionStep(this.viewModel);
+  final LogEvent logEvent;
+  final NotificationRepository notificationRepository;
+  RequestNotificationPermissionStep({required this.logEvent, required this.notificationRepository});
 
   @override
   String get id => 'request_notification_permission';
@@ -15,17 +17,18 @@ class RequestNotificationPermissionStep extends WorkflowStep<NotificationPermiss
 
   @override
   Future<StepResult> execute(NotificationPermissionContext context, CancellationToken token) async {
-    viewModel.logEvent('[Notifications] Requesting permission...');
-    await Future.delayed(const Duration(milliseconds: 800));
+    logEvent('[Notifications] Requesting permission...');
+    try {
+      await notificationRepository.requestPermission(forceDeny: context.forceDeny);
+    } catch (e, stack) {
+      token.throwIfCancelled();
+      logEvent('[Notifications] User denied the permission prompt.');
+      return StepFailure(e, stack);
+    }
     token.throwIfCancelled();
 
-    if (context.forceDeny) {
-      viewModel.logEvent('[Notifications] User denied the permission prompt.');
-      return StepFailure(Exception('Notification permission denied'));
-    }
-
     context.granted = true;
-    viewModel.logEvent('[Notifications] Permission granted!');
+    logEvent('[Notifications] Permission granted!');
     return const StepSuccess();
   }
 }

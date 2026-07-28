@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'di/service_locator.dart';
 import 'sequential_api_flow/sequential_api_page.dart';
-import 'signup_flow/signup_page.dart';
+import 'signup_flow/pages/basic_info_page.dart';
+import 'signup_flow/pages/failed_page.dart';
+import 'signup_flow/pages/loading_page.dart';
+import 'signup_flow/pages/optional_details_page.dart';
+import 'signup_flow/pages/review_page.dart';
+import 'signup_flow/pages/success_page.dart';
+import 'signup_flow/pages/welcome_page.dart';
+import 'signup_flow/signup_flow_shell.dart';
+import 'signup_flow/signup_routes.dart';
 import 'single_flight_flow/single_flight_page.dart';
 
 void main() {
@@ -10,12 +19,42 @@ void main() {
   runApp(const MyApp());
 }
 
+/// go_router builds every nested `GoRoute.builder` *before* `ShellRoute`'s own
+/// builder runs (it needs the built child to pass into the shell), i.e.
+/// before `SignupFlowShell` is mounted and its coordinator is available. Each
+/// step route is wrapped in a `Builder` so `SignupFlowScope.of(context)` is
+/// only evaluated once actually built as a descendant of the shell — see
+/// `SignupFlowScope`'s doc comment in `signup_flow_shell.dart`.
+final GoRouter _appRouter = GoRouter(
+  initialLocation: '/',
+  routes: [
+    GoRoute(path: '/', builder: (context, state) => const DashboardPage()),
+    GoRoute(path: '/sequential-api', builder: (context, state) => const SequentialApiFlowPage()),
+    GoRoute(path: '/single-flight', builder: (context, state) => const SingleFlightFlowPage()),
+    ShellRoute(
+      builder: (context, state, child) => SignupFlowShell(state: state, child: child),
+      routes: [
+        GoRoute(path: SignupRoutes.root, builder: (context, state) => Builder(builder: (c) => WelcomePage(coordinator: SignupFlowScope.of(c)))),
+        GoRoute(path: SignupRoutes.basicInfo, builder: (context, state) => Builder(builder: (c) => BasicInfoPage(coordinator: SignupFlowScope.of(c)))),
+        GoRoute(path: SignupRoutes.loading, builder: (context, state) => const LoadingPage()),
+        GoRoute(
+          path: SignupRoutes.optionalDetails,
+          builder: (context, state) => Builder(builder: (c) => OptionalDetailsPage(coordinator: SignupFlowScope.of(c))),
+        ),
+        GoRoute(path: SignupRoutes.review, builder: (context, state) => Builder(builder: (c) => ReviewPage(coordinator: SignupFlowScope.of(c)))),
+        GoRoute(path: SignupRoutes.success, builder: (context, state) => Builder(builder: (c) => SuccessPage(coordinator: SignupFlowScope.of(c)))),
+        GoRoute(path: SignupRoutes.failed, builder: (context, state) => Builder(builder: (c) => FailedPage(coordinator: SignupFlowScope.of(c)))),
+      ],
+    ),
+  ],
+);
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'MAAC Workflow Engine Showcase',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -30,7 +69,7 @@ class MyApp extends StatelessWidget {
           bodyMedium: TextStyle(color: Colors.white70),
         ),
       ),
-      home: const DashboardPage(),
+      routerConfig: _appRouter,
     );
   }
 }
@@ -85,7 +124,7 @@ class DashboardPage extends StatelessWidget {
                         icon: Icons.account_tree_outlined,
                         title: 'Signup Wizard Flow',
                         description: 'A 3-step interactive screen stepper demonstrating dynamic navigation, conditional execution, and LIFO transaction rollback on failure.',
-                        destination: const SignupFlowPage(),
+                        destination: SignupRoutes.root,
                       ),
                     ),
                     const SizedBox(width: 20),
@@ -95,7 +134,7 @@ class DashboardPage extends StatelessWidget {
                         icon: Icons.sync_alt,
                         title: 'Sequential APIs',
                         description: 'Simulates API chains with step-level Timeout decorators and Exponential Backoff Auto-Retry policy settings.',
-                        destination: const SequentialApiFlowPage(),
+                        destination: '/sequential-api',
                       ),
                     ),
                     const SizedBox(width: 20),
@@ -104,8 +143,8 @@ class DashboardPage extends StatelessWidget {
                         context: context,
                         icon: Icons.electric_bolt_outlined,
                         title: 'Single-Flight Run',
-                        description: 'Demonstrates SingleFlightWorkflowRunner by mashing click events, automatically cancelling active runs to finish only the latest.',
-                        destination: const SingleFlightFlowPage(),
+                        description: 'Demonstrates ManagedWorkflowRunner(strategy: cancelExisting()) by mashing click events, automatically cancelling active runs to finish only the latest.',
+                        destination: '/single-flight',
                       ),
                     ),
                   ],
@@ -128,7 +167,7 @@ class DashboardPage extends StatelessWidget {
     required IconData icon,
     required String title,
     required String description,
-    required Widget destination,
+    required String destination,
   }) {
     return Card(
       elevation: 6,
@@ -172,11 +211,7 @@ class DashboardPage extends StatelessWidget {
                   side: const BorderSide(color: Colors.cyanAccent, width: 0.8),
                 ),
               ),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => destination),
-                );
-              },
+              onPressed: () => context.go(destination),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

@@ -28,4 +28,9 @@ class ConditionalStep<TContext> extends WorkflowStep<TContext> {
   Future<void> rollback(TContext context) {
     return step.rollback(context);
   }
+
+  @override
+  Future<void> onDeactivateOrCancel(TContext context) {
+    return step.onDeactivateOrCancel(context);
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:maac_mvvm_with_get_it/maac_mvvm_with_get_it.dart';
 import 'package:maac_workflow/maac_workflow.dart';
+import 'package:maac_workflow_example/common/logging_view_model.dart';
 
 import 'sequential_api_view_model.dart';
 
@@ -272,7 +273,7 @@ class SequentialApiFlowPage extends DependencyViewModelWidget<SequentialApiViewM
                         border: Border.all(color: Colors.white.withOpacity(0.05)),
                       ),
                       child: StreamDataConsumer<List<String>>(
-                        streamData: viewModel.workflowHistory,
+                        streamData: viewModel.eventLog,
                         builder: (context, logs) {
                           if (logs.isEmpty) {
                             return const Center(
@@ -357,6 +358,7 @@ class _StepDot extends StatelessWidget {
     final (Color color, IconData icon) = switch (status) {
       StepStatus.pending => (Colors.white24, Icons.circle_outlined),
       StepStatus.running || StepStatus.rollbackRunning => (Colors.cyanAccent, Icons.autorenew),
+      StepStatus.awaitingInput => (Colors.amberAccent, Icons.pause_circle_outline),
       StepStatus.success || StepStatus.rollbackSuccess => (Colors.greenAccent, Icons.check_circle),
       StepStatus.failed || StepStatus.rollbackFailed => (Colors.redAccent, Icons.cancel),
       StepStatus.skipped => (Colors.grey, Icons.remove_circle_outline),

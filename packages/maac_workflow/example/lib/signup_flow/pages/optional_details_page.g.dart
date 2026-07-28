@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'single_flight_view_model.dart';
+part of 'optional_details_page.dart';
 
 // **************************************************************************
 // BindableViewModelGenerator
 // **************************************************************************
 
-extension $SingleFlightViewModel on SingleFlightViewModel {
+extension $OptionalDetailsViewModel on OptionalDetailsViewModel {
   /// This getter is used to access the stream of data
-  /// associated with the private field _trackers.
-  StreamData<List<ExecutionTracker>> get trackers => _trackers.streamData;
+  /// associated with the private field _selectedAvatar.
+  StreamData<String?> get selectedAvatar => _selectedAvatar.streamData;
 }
