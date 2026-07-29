@@ -115,11 +115,24 @@ class WaitForCancelStep extends WorkflowStep<TestContext> {
 /// Records every `onContextWrite` call it receives, in order.
 class RecordingListener extends WorkflowListener<TestContext> {
   final List<(String, Object?, String?)> writes = [];
+  final List<String> stepEvents = [];
 
   @override
   void onContextWrite(String key, Object? value, String? writerStepId, TestContext context) {
     writes.add((key, value, writerStepId));
   }
+
+  @override
+  void onStepStart(String stepId, TestContext context) => stepEvents.add('start:$stepId');
+
+  @override
+  void onStepSuccess(String stepId, TestContext context) => stepEvents.add('success:$stepId');
+
+  @override
+  void onStepFailure(String stepId, Object error, StackTrace stackTrace, TestContext context) => stepEvents.add('failure:$stepId');
+
+  @override
+  void onStepSkip(String stepId, TestContext context) => stepEvents.add('skip:$stepId');
 }
 
 /// A step that takes [delay] to complete, and records whether its token was
@@ -373,6 +386,56 @@ void main() {
       expect(result, isA<WorkflowFailure<TestContext>>());
       expect((result as WorkflowFailure<TestContext>).failedStepId, equals('failing'));
       expect(context.logs, equals(['execute:inner1', 'execute:inner2', 'execute:failing', 'rollback:inner2', 'rollback:inner1']));
+    });
+  });
+
+  group('ParallelStepGroup Tests', () {
+    test('Should run all sub-steps concurrently and succeed as a single step', () async {
+      final context = TestContext();
+      final runner = WorkflowRunner<TestContext>(
+        steps: [
+          LogStep('before'),
+          ParallelStepGroup(id: 'group', subSteps: [LogStep('a'), LogStep('b')]),
+          LogStep('after'),
+        ],
+      );
+
+      final result = await runner.run(context);
+
+      expect(result, isA<WorkflowSuccess<TestContext>>());
+      expect(context.logs, containsAll(['execute:before', 'execute:a', 'execute:b', 'execute:after']));
+    });
+
+    test('Should report the group id as failedStepId when a sub-step fails', () async {
+      final context = TestContext();
+      final runner = WorkflowRunner<TestContext>(
+        steps: [
+          ParallelStepGroup(id: 'group', subSteps: [LogStep('a'), FailingStep()]),
+        ],
+      );
+
+      final result = await runner.run(context);
+
+      expect(result, isA<WorkflowFailure<TestContext>>());
+      expect((result as WorkflowFailure<TestContext>).failedStepId, equals('group'));
+    });
+
+    test('listener receives per-sub-step lifecycle events, not just the group\'s own id', () async {
+      final context = TestContext();
+      final listener = RecordingListener();
+      final runner = WorkflowRunner<TestContext>(
+        steps: [
+          ParallelStepGroup(id: 'group', subSteps: [LogStep('a'), FailingStep()], listener: listener),
+        ],
+        listener: listener,
+      );
+
+      await runner.run(context);
+
+      // The parent-level listener only ever sees the group's own id directly...
+      expect(listener.stepEvents, containsAll(['start:group', 'failure:group']));
+      // ...but the group's own `listener` param surfaces each sub-step individually.
+      expect(listener.stepEvents, containsAll(['start:a', 'success:a', 'start:failing', 'failure:failing']));
     });
   });
 
@@ -654,14 +717,14 @@ void main() {
       expect(interactive.deactivated, isTrue);
     });
 
-    test('onDeactivateOrCancel delegates through ParallelStep to every sub-step', () async {
+    test('onDeactivateOrCancel delegates through ParallelStepGroup to every sub-step', () async {
       final context = TestContext();
       final first = InteractiveTestStep('first');
       final second = InteractiveTestStep('second');
       final token = CancellationToken();
       final runner = WorkflowRunner<TestContext>(
         steps: [
-          ParallelStep(id: 'parallel', subSteps: [first, second]),
+          ParallelStepGroup(id: 'parallel', subSteps: [first, second]),
         ],
       );
 
@@ -783,6 +846,106 @@ void main() {
 
       expect(result, isA<WorkflowSuccess<TestContext>>());
       expect(context.logs, equals(['execute:grouped_action']));
+    });
+  });
+
+  group('SustainedWorkflowStep / WorkflowStep.sustained Tests', () {
+    test('start runs, then execute stays pending until the token is cancelled', () async {
+      final context = TestContext();
+      final token = CancellationToken();
+      var stopped = false;
+      final step = WorkflowStep<TestContext>.sustained(
+        id: 'sustained',
+        start: (ctx, fail) => ctx.logs.add('start:sustained'),
+        stop: (ctx) {
+          stopped = true;
+          ctx.logs.add('stop:sustained');
+        },
+      );
+      final runner = WorkflowRunner<TestContext>(steps: [step]);
+
+      final resultFuture = runner.run(context, cancellationToken: token);
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+      expect(context.logs, equals(['start:sustained']));
+      expect(stopped, isFalse);
+
+      token.cancel();
+      final result = await resultFuture;
+
+      expect(result, isA<WorkflowCancelled<TestContext>>());
+      expect(stopped, isTrue);
+      expect(context.logs, equals(['start:sustained', 'stop:sustained']));
+    });
+
+    test('cancelling a superseding ManagedWorkflowRunner run calls stop via onDeactivateOrCancel', () async {
+      final logs = <String>[];
+      final managed = ManagedWorkflowRunner<TestContext>(
+        createRunner: () => WorkflowRunner<TestContext>(
+          steps: [
+            WorkflowStep<TestContext>.sustained(
+              id: 'sustained',
+              start: (ctx, fail) => logs.add('start'),
+              stop: (ctx) => logs.add('stop'),
+            ),
+          ],
+        ),
+        strategy: const ConcurrencyStrategy.cancelExisting(),
+      );
+
+      final firstRun = managed.run(TestContext());
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+      expect(logs, equals(['start']));
+
+      // The step never resolves on its own, so this second run stays pending
+      // too — only await the first run's now-settled result.
+      final secondRunFuture = managed.run(TestContext());
+      final firstResult = await firstRun;
+      // `_start()` for the second run is scheduled via a microtask chained
+      // off the first run settling — give the event loop a turn to run it
+      // before asserting on `logs`.
+      await Future<void>.delayed(Duration.zero);
+
+      expect(firstResult, isA<WorkflowCancelled<TestContext>>());
+      expect(logs, equals(['start', 'stop', 'start']));
+
+      managed.cancel(); // let the second run settle too, so nothing leaks past the test
+      await secondRunFuture;
+    });
+
+    test('the fail callback resolves the step as a StepFailure and still runs stop', () async {
+      final context = TestContext();
+      var stopped = false;
+      final step = WorkflowStep<TestContext>.sustained(
+        id: 'sustained',
+        start: (ctx, fail) => fail(Exception('stream errored')),
+        stop: (ctx) {
+          stopped = true;
+          ctx.logs.add('stop:sustained');
+        },
+      );
+      final runner = WorkflowRunner<TestContext>(steps: [step]);
+
+      final result = await runner.run(context);
+
+      expect(result, isA<WorkflowFailure<TestContext>>());
+      expect((result as WorkflowFailure<TestContext>).error, isA<Exception>());
+      // stop() is fire-and-forget from `fail`, so give it a tick to land.
+      await Future<void>.delayed(Duration.zero);
+      expect(stopped, isTrue);
+    });
+
+    test('a synchronous throw inside start resolves the step as a StepFailure', () async {
+      final context = TestContext();
+      final step = WorkflowStep<TestContext>.sustained(
+        id: 'sustained',
+        start: (ctx, fail) => throw Exception('setup failed'),
+        stop: (ctx) {},
+      );
+      final runner = WorkflowRunner<TestContext>(steps: [step]);
+
+      final result = await runner.run(context);
+
+      expect(result, isA<WorkflowFailure<TestContext>>());
     });
   });
 
@@ -918,7 +1081,9 @@ void main() {
         final second = managed.run(TestContext()); // fills the 1-slot queue
         final third = managed.run(TestContext()); // queue already full -> rejected
 
-        await expectLater(third, throwsStateError);
+        final thirdResult = await third;
+        expect(thirdResult, isA<WorkflowFailure<TestContext>>());
+        expect((thirdResult as WorkflowFailure<TestContext>).error, isA<QueueFullException>());
 
         managed.cancel(); // unblocks 'first' and drops 'second' from the queue
         expect(await first, isA<WorkflowCancelled<TestContext>>());

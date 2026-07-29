@@ -6,11 +6,8 @@ import 'package:maac_workflow/maac_workflow.dart';
 import '../common/logging_view_model.dart';
 import '../common/logging_workflow_listener.dart';
 import '../data/api_repository.dart';
-import '../data/notification_repository.dart';
 import 'api_context.dart';
 import 'api_steps.dart';
-import 'notification_context.dart';
-import 'notification_step.dart';
 
 part 'sequential_api_view_model.g.dart';
 
@@ -30,27 +27,16 @@ class SequentialApiViewModel extends LoggingViewModel {
   @Bind()
   late final _forceSyncError = false.mtd(this);
 
-  @Bind()
-  late final _forceDenyPermission = false.mtd(this);
-
   // Parameters
   int timeoutLimitSeconds = 3;
   int retryAttempts = 3;
 
   CancellationToken? _cancellationToken;
   late final ApiContext _context = ApiContext();
-  late final NotificationPermissionContext _notificationContext = NotificationPermissionContext();
 
   final apiRepository = ApiRepository();
-  final notificationRepository = NotificationRepository();
 
-  // Adapters, not `implements WorkflowListener<T>` on the ViewModel itself —
-  // that would make it impossible to also listen to _notificationRunner below,
-  // since a class can't implement the same generic interface twice with two
-  // different type arguments (WorkflowListener<ApiContext> vs
-  // WorkflowListener<NotificationPermissionContext>).
   late final _apiListener = LoggingWorkflowListener<ApiContext>(prefix: '[Config/Sync]', logEvent: logEvent);
-  late final _notificationListener = LoggingWorkflowListener<NotificationPermissionContext>(prefix: '[Notifications]', logEvent: logEvent);
 
   // Reassigned to a fresh WorkflowRunner on every startFlow() call, so
   // stepProgress always reflects the most recently configured decorators
@@ -62,24 +48,11 @@ class SequentialApiViewModel extends LoggingViewModel {
   /// all-pending snapshot before the first run.
   ValueListenable<WorkflowProgress> get stepProgress => _runner?.progress ?? _idleProgress;
 
-  // A second, independent WorkflowRunner on the same screen, over a
-  // completely different TContext — proves multiple runners coexist fine
-  // once the ViewModel isn't itself the (single) WorkflowListener.
-  WorkflowRunner<NotificationPermissionContext>? _notificationRunner;
-  final _idleNotificationProgress = ValueNotifier<WorkflowProgress>(const WorkflowProgress());
-
-  ValueListenable<WorkflowProgress> get notificationProgress => _notificationRunner?.progress ?? _idleNotificationProgress;
-
   void setForceTimeout(bool value) => _forceTimeout.postValue(value);
 
   void setForceSyncError(bool value) {
     _forceSyncError.postValue(value);
     _context.forceSyncFail = value;
-  }
-
-  void setForceDenyPermission(bool value) {
-    _forceDenyPermission.postValue(value);
-    _notificationContext.forceDeny = value;
   }
 
   void startFlow() async {
@@ -135,25 +108,11 @@ class SequentialApiViewModel extends LoggingViewModel {
     _cancellationToken?.cancel();
   }
 
-  void requestNotificationPermission() async {
-    _notificationContext.granted = false;
-    _notificationContext.forceDeny = _forceDenyPermission.data;
-
-    _notificationRunner = WorkflowRunner<NotificationPermissionContext>(
-      steps: [RequestNotificationPermissionStep(logEvent: logEvent, notificationRepository: notificationRepository)],
-      listener: _notificationListener,
-    );
-
-    await _notificationRunner!.run(_notificationContext);
-  }
-
   @override
   void onDispose() {
     _cancellationToken?.cancel();
     _runner?.dispose();
     _idleProgress.dispose();
-    _notificationRunner?.dispose();
-    _idleNotificationProgress.dispose();
     super.onDispose();
   }
 }

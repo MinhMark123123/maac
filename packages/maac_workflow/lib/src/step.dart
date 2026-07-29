@@ -1,6 +1,7 @@
 import 'action_step.dart';
 import 'cancellation_token.dart';
 import 'result.dart';
+import 'sustained_step.dart';
 
 abstract class WorkflowStep<TContext> {
   // Declaring the WorkflowStep.action factory below suppresses the implicit
@@ -48,4 +49,17 @@ abstract class WorkflowStep<TContext> {
     canRunIf: canRun,
     onDeactivate: onDeactivateOrCancel,
   );
+
+  /// Defines a step whose work has no natural completion of its own — a
+  /// live stream subscription, an open connection, a polling loop — instead
+  /// of resolving once [start] returns, this step runs until it's cancelled
+  /// or deactivated, at which point [stop] tears the work down. See
+  /// [SustainedWorkflowStep].
+  factory WorkflowStep.sustained({
+    required String id,
+    required SustainedStepStart<TContext> start,
+    required SustainedStepStop<TContext> stop,
+    String description = '',
+    StepCanRunFn<TContext>? canRun,
+  }) => SustainedWorkflowStep<TContext>(id: id, start: start, stop: stop, description: description, canRunIf: canRun);
 }

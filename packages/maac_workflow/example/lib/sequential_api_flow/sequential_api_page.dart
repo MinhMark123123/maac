@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:maac_mvvm_with_get_it/maac_mvvm_with_get_it.dart';
 import 'package:maac_workflow/maac_workflow.dart';
 import 'package:maac_workflow_example/common/logging_view_model.dart';
@@ -137,60 +138,6 @@ class SequentialApiFlowPage extends DependencyViewModelWidget<SequentialApiViewM
                                   ),
                                 ],
                               ),
-
-                              const Divider(color: Colors.white10, height: 32),
-
-                              // Independent runner demo
-                              const Text(
-                                'Bonus: Independent Runner',
-                                style: TextStyle(color: Colors.cyanAccent, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 4),
-                              const Text(
-                                'A second WorkflowRunner<NotificationPermissionContext> on the same screen — a different '
-                                'TContext than the pipeline above. The ViewModel doesn\'t implement WorkflowListener itself, '
-                                'so both runners coexist via separate listener adapters.',
-                                style: TextStyle(color: Colors.grey, fontSize: 12),
-                              ),
-                              const SizedBox(height: 8),
-                              StreamDataConsumer<bool>(
-                                streamData: viewModel.forceDenyPermission,
-                                builder: (context, val) {
-                                  return SwitchListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    title: const Text('Force Deny Permission', style: TextStyle(color: Colors.white, fontSize: 14)),
-                                    value: val,
-                                    onChanged: viewModel.setForceDenyPermission,
-                                    activeColor: Colors.cyanAccent,
-                                  );
-                                },
-                              ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: OutlinedButton.icon(
-                                      style: OutlinedButton.styleFrom(
-                                        foregroundColor: Colors.cyanAccent,
-                                        side: const BorderSide(color: Colors.cyanAccent),
-                                      ),
-                                      onPressed: viewModel.requestNotificationPermission,
-                                      icon: const Icon(Icons.notifications_active_outlined),
-                                      label: const Text('Request Permission'),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  ValueListenableBuilder<WorkflowProgress>(
-                                    valueListenable: viewModel.notificationProgress,
-                                    builder: (context, progress, _) {
-                                      return _StepDot(
-                                        label: 'Push',
-                                        status: progress.statusOf('request_notification_permission') ?? StepStatus.pending,
-                                        isCurrent: progress.currentStepId == 'request_notification_permission',
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
                             ],
                           ),
                         ),
@@ -257,9 +204,19 @@ class SequentialApiFlowPage extends DependencyViewModelWidget<SequentialApiViewM
                           ),
                         ],
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.delete_outline, color: Colors.grey, size: 20),
-                        onPressed: viewModel.clearLogs,
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.copy_all_outlined, color: Colors.grey, size: 20),
+                            tooltip: 'Copy logs',
+                            onPressed: () => _copyLogs(context, viewModel.eventLog.data),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline, color: Colors.grey, size: 20),
+                            onPressed: viewModel.clearLogs,
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -314,6 +271,11 @@ class SequentialApiFlowPage extends DependencyViewModelWidget<SequentialApiViewM
         ],
       ),
     );
+  }
+
+  void _copyLogs(BuildContext context, List<String> logs) {
+    Clipboard.setData(ClipboardData(text: logs.join('\n')));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logs copied to clipboard'), duration: Duration(seconds: 2)));
   }
 }
 

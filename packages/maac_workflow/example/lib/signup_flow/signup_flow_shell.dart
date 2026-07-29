@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:maac_mvvm_with_get_it/maac_mvvm_with_get_it.dart';
 import 'package:maac_workflow/maac_workflow.dart';
@@ -110,9 +111,19 @@ class SignupFlowShell extends DependencyViewModelWidget<SignupFlowViewModel> {
                                 ),
                               ],
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.delete_outline, color: Colors.grey, size: 20),
-                              onPressed: viewModel.clearLogs,
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.copy_all_outlined, color: Colors.grey, size: 20),
+                                  tooltip: 'Copy logs',
+                                  onPressed: () => _copyLogs(context, viewModel.eventLog.data),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete_outline, color: Colors.grey, size: 20),
+                                  onPressed: viewModel.clearLogs,
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -174,6 +185,11 @@ class SignupFlowShell extends DependencyViewModelWidget<SignupFlowViewModel> {
         ],
       ),
     );
+  }
+
+  void _copyLogs(BuildContext context, List<String> logs) {
+    Clipboard.setData(ClipboardData(text: logs.join('\n')));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logs copied to clipboard'), duration: Duration(seconds: 2)));
   }
 }
 

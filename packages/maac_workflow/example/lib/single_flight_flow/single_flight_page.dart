@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:maac_mvvm_with_get_it/maac_mvvm_with_get_it.dart';
 import 'package:maac_workflow_example/common/logging_view_model.dart';
 
@@ -71,7 +72,7 @@ class SingleFlightFlowPage extends DependencyViewModelWidget<SingleFlightViewMod
                         onPressed: viewModel.triggerClick,
                         icon: const Icon(Icons.touch_app, size: 28),
                         label: const Text(
-                          'MASH ME / FETCH COUNTER',
+                          'MASH ME / WATCH TICKS',
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1),
                         ),
                       ),
@@ -143,9 +144,19 @@ class SingleFlightFlowPage extends DependencyViewModelWidget<SingleFlightViewMod
                           ),
                         ],
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.delete_outline, color: Colors.grey, size: 20),
-                        onPressed: viewModel.clearLogs,
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.copy_all_outlined, color: Colors.grey, size: 20),
+                            tooltip: 'Copy logs',
+                            onPressed: () => _copyLogs(context, viewModel.eventLog.data),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline, color: Colors.grey, size: 20),
+                            onPressed: viewModel.clearLogs,
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -200,6 +211,11 @@ class SingleFlightFlowPage extends DependencyViewModelWidget<SingleFlightViewMod
     );
   }
 
+  void _copyLogs(BuildContext context, List<String> logs) {
+    Clipboard.setData(ClipboardData(text: logs.join('\n')));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logs copied to clipboard'), duration: Duration(seconds: 2)));
+  }
+
   Widget _buildTrackerTile(ExecutionTracker tracker) {
     Color statusColor = Colors.cyanAccent;
     IconData statusIcon = Icons.hourglass_empty;
@@ -236,7 +252,7 @@ class SingleFlightFlowPage extends DependencyViewModelWidget<SingleFlightViewMod
                   style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                 ),
                 const SizedBox(height: 4),
-                Text(tracker.result ?? 'Simulated backend fetch in progress...', style: TextStyle(color: Colors.grey[400], fontSize: 12)),
+                Text(tracker.result ?? 'Waiting for first tick...', style: TextStyle(color: Colors.grey[400], fontSize: 12)),
               ],
             ),
           ),

@@ -1,12 +1,11 @@
 import 'package:maac_mvvm/maac_mvvm.dart';
 import 'package:maac_mvvm_annotation/maac_mvvm_annotation.dart';
 import 'package:maac_workflow/maac_workflow.dart';
+import 'package:maac_workflow_example/data/ticker_repository.dart';
 
 import '../common/logging_view_model.dart';
 import '../common/logging_workflow_listener.dart';
-import '../data/counter_repository.dart';
 import 'counter_context.dart';
-import 'counter_step.dart';
 
 part 'single_flight_view_model.g.dart';
 
@@ -17,11 +16,26 @@ class SingleFlightViewModel extends LoggingViewModel {
 
   int _clickCount = 0;
 
-  final counterRepository = CounterRepository();
+  final _tickerRepository = TickerRepository();
 
-  late final _singleFlightRunner = ManagedWorkflowRunner<CounterContext>(
-    createRunner: () => WorkflowRunner<CounterContext>(
-      steps: [FetchCounterValueStep(logEvent: logEvent, counterRepository: counterRepository)],
+  late final _singleFlightRunner = ManagedWorkflowRunner<SimpleStreamContext>(
+    createRunner: () => WorkflowRunner<SimpleStreamContext>(
+      steps: [
+        WorkflowStep.sustained(
+          id: 'watch_ticks',
+          start: (context, fail) {
+            context.subscription = _tickerRepository.watchTicks().listen((tick) {
+              logEvent('Click #${context.clickIndex} tick #$tick');
+              _updateTrackerResult(context.clickIndex, 'Tick #$tick');
+            }, onError: fail);
+            logEvent('Click #${context.clickIndex} now listening for ticks.');
+          },
+          stop: (context) {
+            logEvent('Click #${context.clickIndex} stream stopped.');
+            context.subscription?.cancel();
+          },
+        ),
+      ],
       listener: SingleFlightListener(this),
     ),
     strategy: const ConcurrencyStrategy.cancelExisting(),
@@ -45,33 +59,17 @@ class SingleFlightViewModel extends LoggingViewModel {
     currentTrackers.insert(0, tracker); // Newest on top
     _trackers.postValue(currentTrackers);
 
-    // Run in SingleFlight mode
-    final context = CounterContext(index);
-    final result = await _singleFlightRunner.run(context);
-
-    // Update tracker status based on result
-    _updateTracker(index, result);
+    // Run in SingleFlight mode: starting a new click cancels the previous
+    // click's still-ticking subscription before this one starts.
+    await _singleFlightRunner.run(SimpleStreamContext(index));
+    _singleFlightRunner.cancel();
   }
 
-  void _updateTracker(int index, WorkflowResult<CounterContext> result) {
+  void _updateTrackerResult(int index, String result) {
     final list = List<ExecutionTracker>.from(_trackers.data);
     final idx = list.indexWhere((t) => t.clickIndex == index);
     if (idx != -1) {
-      final tracker = list[idx];
-      switch (result) {
-        case WorkflowSuccess():
-          tracker.status = ExecutionStatus.completed;
-          tracker.result = result.context.resultValue;
-          break;
-        case WorkflowFailure(:final error):
-          tracker.status = ExecutionStatus.cancelled; // Any step failure under cancellation resolves here
-          tracker.result = 'Failed: $error';
-          break;
-        case WorkflowCancelled():
-          tracker.status = ExecutionStatus.cancelled;
-          tracker.result = 'Cancelled by SingleFlight runner';
-          break;
-      }
+      list[idx].result = result;
       _trackers.postValue(list);
     }
   }
@@ -89,6 +87,7 @@ class SingleFlightViewModel extends LoggingViewModel {
   @override
   void onDispose() {
     clearLogs();
+    _singleFlightRunner.cancel();
     super.onDispose();
   }
 }
@@ -96,19 +95,16 @@ class SingleFlightViewModel extends LoggingViewModel {
 /// Logs every lifecycle event via [LoggingWorkflowListener], overriding the
 /// workflow-level ones to include the click index, and to mark this click's
 /// UI tracker as cancelled when a run is superseded by a newer click.
-class SingleFlightListener extends LoggingWorkflowListener<CounterContext> {
+class SingleFlightListener extends LoggingWorkflowListener<SimpleStreamContext> {
   final SingleFlightViewModel viewModel;
 
   SingleFlightListener(this.viewModel) : super(prefix: '[SingleFlight]', logEvent: viewModel.logEvent);
 
   @override
-  void onWorkflowStart(CounterContext context) => logEvent('[SingleFlight] Run starting for click #${context.clickIndex}...');
+  void onWorkflowStart(SimpleStreamContext context) => logEvent('[SingleFlight] Run starting for click #${context.clickIndex}...');
 
   @override
-  void onWorkflowSuccess(CounterContext context) => logEvent('[SingleFlight] Run success for click #${context.clickIndex}!');
-
-  @override
-  void onWorkflowFailure(Object error, StackTrace stackTrace, CounterContext context) {
+  void onWorkflowFailure(Object error, StackTrace stackTrace, SimpleStreamContext context) {
     if (error is WorkflowCancelledException) {
       logEvent('[SingleFlight] Run cancelled/aborted for click #${context.clickIndex}.');
       viewModel._markTrackerAsCancelled(context.clickIndex);

@@ -20,7 +20,10 @@ sealed class ConcurrencyStrategy {
   const factory ConcurrencyStrategy.cancelExisting() = _CancelExistingStrategy;
 
   /// Queue the new call; it starts once every call ahead of it in the queue
-  /// has finished (success, failure, or cancellation).
+  /// has finished (success, failure, or cancellation). If [maxQueueLength]
+  /// is already full, the call is rejected — resolving immediately with a
+  /// [WorkflowFailure] carrying a [QueueFullException] (never thrown to the
+  /// caller) — without disturbing the rest of the queue.
   const factory ConcurrencyStrategy.enqueue({int? maxQueueLength}) = _EnqueueStrategy;
 }
 
@@ -35,6 +38,19 @@ class _CancelExistingStrategy extends ConcurrencyStrategy {
 class _EnqueueStrategy extends ConcurrencyStrategy {
   final int? maxQueueLength;
   const _EnqueueStrategy({this.maxQueueLength});
+}
+
+/// The [WorkflowFailure.error] a call resolves with when
+/// [ConcurrencyStrategy.enqueue]'s `maxQueueLength` is already full — the
+/// call is rejected, not queued, but (like every other outcome in this
+/// package) reported by resolving normally rather than throwing to the
+/// caller.
+class QueueFullException implements Exception {
+  final int maxQueueLength;
+  const QueueFullException(this.maxQueueLength);
+
+  @override
+  String toString() => 'QueueFullException: queue is already at its max length ($maxQueueLength).';
 }
 
 class _EnqueuedRun<TContext extends FlowContext> {
@@ -135,7 +151,13 @@ class ManagedWorkflowRunner<TContext extends FlowContext> {
   Future<WorkflowResult<TContext>> _runEnqueue(TContext context, CancellationToken? cancellationToken, int? maxQueueLength) {
     final entry = _EnqueuedRun<TContext>(context, cancellationToken ?? CancellationToken());
     if (maxQueueLength != null && _queue.length >= maxQueueLength) {
-      entry.completer.completeError(StateError('Queue is full (max $maxQueueLength).'));
+      entry.completer.complete(WorkflowFailure<TContext>(
+        context: context,
+        failedStepId: '',
+        error: QueueFullException(maxQueueLength),
+        stackTrace: StackTrace.current,
+        history: const <WorkflowStepEvent>[],
+      ));
       return entry.completer.future;
     }
     _queue.add(entry);

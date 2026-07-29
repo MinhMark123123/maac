@@ -23,12 +23,13 @@ In modern Flutter applications, business processes such as **multi-step signup f
 * **🛡️ Type-Safe sealed Outcomes**: Uses Dart 3 sealed classes (`WorkflowSuccess`, `WorkflowFailure`, `WorkflowCancelled`) to enforce compile-time exhaustive checking in UI/ViewModel.
 * **⚡ Declarative Orchestration**:
   * `ConditionalStep` to branch flows cleanly using dynamic predicates.
-  * `ParallelStep` to run independent asynchronous steps concurrently.
+  * `ParallelStepGroup` to run independent asynchronous steps concurrently as a single step — the concurrent counterpart to `WorkflowStepGroup`, with an optional `listener` to observe each sub-step's own lifecycle individually.
   * `RetryStepDecorator` to automatically retry brittle steps with custom delay policies (e.g., Exponential Backoff).
   * `TimeoutStepDecorator` to fail a step that runs longer than expected, without cancelling the whole workflow.
   * `WorkflowStepGroup` to embed a whole sub-pipeline as a single step, so large flows compose out of smaller, named, independently testable ones.
 * **⏸️ Interactive Steps**: `InteractiveStep` pauses a workflow to wait for an external signal — typically UI input — without any step author hand-rolling a `Completer`. Resume it from outside via `WorkflowRunner.submit`/`.fail`.
 * **🪶 Flexible Step Definition**: Define a step by passing its handler functions straight into `WorkflowStep.action(...)` — no subclass required for simple steps — fully interoperable with every decorator/composite above.
+* **🔂 Sustained Steps**: `WorkflowStep.sustained(...)` models work with no natural completion of its own — a live stream subscription, an open connection, a polling loop — that runs until the step is cancelled or deactivated, without hand-rolling a `Completer`/`CancellationToken` dance per step.
 * **🔒 Scoped Immutability**: `FlowContext`, the required base for every workflow's shared state, is a key-value store that makes data written by one step strictly read-only to every step that runs after it — enforced by the engine, not by convention.
 * **🛑 Integrated Cancellation**: Simple cancellation tokens to abort workflows mid-flight when a user navigates away or manually cancels. `WorkflowStep.onDeactivateOrCancel` gives the actively-running step an immediate cleanup hook.
 * **🔀 Concurrency Strategies**: `ManagedWorkflowRunner` governs what happens when a workflow is triggered again while already running — `ignore`, `cancelExisting`, or `enqueue` — plus `ParallelWorkflowRunner` for fully independent concurrent runs and `SharedWorkflowRunner` for merging multiple callers into one shared session.
@@ -468,42 +469,30 @@ time. Start watching when the screen is shown, stop when it's paused or disposed
 the target changes (e.g. switching chat rooms), cancel the previous subscription *before*
 starting the new one — never let two run concurrently.
 
-Model the subscription itself as a `WorkflowStep` that never completes on its own — its
-`execute` future only resolves once the `CancellationToken` passed into it is cancelled:
+Model the subscription itself as a `WorkflowStep.sustained` — a step whose work has no
+natural completion of its own. Unlike a regular step, it doesn't resolve once `start`
+returns; it keeps running until the step is cancelled or deactivated, at which point
+`stop` tears it down. Neither `start` nor `stop` ever see a raw `CancellationToken` —
+cancellation is exactly what ends the step, so there's nothing left to poll; `stop` *is*
+the reaction to it. The only thing `start` can actively report is failure, via the `fail`
+callback it's handed (e.g. a stream's `onError`) — there's no matching "succeed now",
+since a step with no natural completion has no natural "succeeded now" moment:
 
 ```dart
 class OrderTrackingContext extends FlowContext {
   final String orderId;
   final void Function(OrderStatus) onStatusChanged;
+  StreamSubscription<OrderStatus>? subscription;
   OrderTrackingContext({required this.orderId, required this.onStatusChanged});
 }
 
-class WatchOrderStatusStep extends WorkflowStep<OrderTrackingContext> {
-  @override
-  String get id => 'watch_order_status';
-
-  @override
-  Future<StepResult> execute(OrderTrackingContext context, CancellationToken token) {
-    final completer = Completer<StepResult>();
-    late final StreamSubscription<OrderStatus> subscription;
-
-    // Stop listening the instant the token is cancelled — either because the screen
-    // paused/disposed, or a newer subscription superseded this one.
-    token.onCancel(() {
-      subscription.cancel();
-      if (!completer.isCompleted) completer.complete(const StepSuccess());
-    });
-
-    subscription = orderRepository.watchStatus(context.orderId).listen(
-      context.onStatusChanged,
-      onError: (e, stack) {
-        if (!completer.isCompleted) completer.complete(StepFailure(e, stack));
-      },
-    );
-
-    return completer.future;
-  }
-}
+final watchOrderStatusStep = WorkflowStep<OrderTrackingContext>.sustained(
+  id: 'watch_order_status',
+  start: (context, fail) {
+    context.subscription = orderRepository.watchStatus(context.orderId).listen(context.onStatusChanged, onError: fail);
+  },
+  stop: (context) => context.subscription?.cancel(),
+);
 ```
 
 Then use `ManagedWorkflowRunner` with `ConcurrencyStrategy.cancelExisting()` to get the
@@ -517,7 +506,7 @@ runs can never safely share:
 ```dart
 class OrderTrackingViewModel extends ViewModel {
   final _watchOrder = ManagedWorkflowRunner<OrderTrackingContext>(
-    createRunner: () => WorkflowRunner(steps: [WatchOrderStatusStep()]),
+    createRunner: () => WorkflowRunner(steps: [watchOrderStatusStep]),
     strategy: const ConcurrencyStrategy.cancelExisting(),
   );
 
@@ -570,8 +559,9 @@ ManagedWorkflowRunner<TContext>({
   it to fully settle (rollback included), then start fresh.
 * **`ConcurrencyStrategy.enqueue({int? maxQueueLength})`** — queue the new call; it runs
   once every call ahead of it has finished (success, failure, or cancellation), strictly
-  FIFO. Exceeding `maxQueueLength` fails only the excess call, without disturbing the
-  existing queue.
+  FIFO. Exceeding `maxQueueLength` rejects only the excess call — like every other
+  outcome in this package, by resolving immediately with a `WorkflowFailure` carrying a
+  `QueueFullException` (never a thrown exception) — without disturbing the existing queue.
 
 All three share the same `run(context) -> Future<WorkflowResult<TContext>>` shape, so
 switching strategies at a call site is just swapping the `strategy:` argument.
