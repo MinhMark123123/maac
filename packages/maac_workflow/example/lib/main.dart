@@ -1,6 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'basics/basics_page.dart';
+import 'basics/composites/conditional_step_basic_example.dart';
+import 'basics/composites/parallel_step_group_basic_example.dart';
+import 'basics/composites/retry_decorator_basic_example.dart';
+import 'basics/composites/timeout_decorator_basic_example.dart';
+import 'basics/composites/workflow_step_group_basic_example.dart';
+import 'basics/concurrency/managed_workflow_runner_basic_example.dart';
+import 'basics/concurrency/parallel_workflow_runner_basic_example.dart';
+import 'basics/concurrency/shared_workflow_runner_basic_example.dart';
+import 'basics/core/basic_run_example.dart';
+import 'basics/core/cancellation_basic_example.dart';
+import 'basics/core/flow_context_basic_example.dart';
+import 'basics/core/listener_basic_example.dart';
+import 'basics/progress/progress_basic_example.dart';
+import 'basics/step_definitions/action_step_basic_example.dart';
+import 'basics/step_definitions/interactive_step_basic_example.dart';
+import 'basics/step_definitions/sustained_step_basic_example.dart';
 import 'di/service_locator.dart';
 import 'sequential_api_flow/sequential_api_page.dart';
 import 'signup_flow/pages/basic_info_page.dart';
@@ -31,6 +48,23 @@ final GoRouter _appRouter = GoRouter(
     GoRoute(path: '/', builder: (context, state) => const DashboardPage()),
     GoRoute(path: '/sequential-api', builder: (context, state) => const SequentialApiFlowPage()),
     GoRoute(path: '/single-flight', builder: (context, state) => const SingleFlightFlowPage()),
+    GoRoute(path: '/basics', builder: (context, state) => const BasicsPage()),
+    GoRoute(path: '/basics/flow-context', builder: (context, state) => const FlowContextBasicExamplePage()),
+    GoRoute(path: '/basics/basic-run', builder: (context, state) => const BasicRunExamplePage()),
+    GoRoute(path: '/basics/cancellation', builder: (context, state) => const CancellationBasicExamplePage()),
+    GoRoute(path: '/basics/listener', builder: (context, state) => const ListenerBasicExamplePage()),
+    GoRoute(path: '/basics/action-step', builder: (context, state) => const ActionStepBasicExamplePage()),
+    GoRoute(path: '/basics/sustained-step', builder: (context, state) => const SustainedStepBasicExamplePage()),
+    GoRoute(path: '/basics/interactive-step', builder: (context, state) => const InteractiveStepBasicExamplePage()),
+    GoRoute(path: '/basics/conditional-step', builder: (context, state) => const ConditionalStepBasicExamplePage()),
+    GoRoute(path: '/basics/workflow-step-group', builder: (context, state) => const WorkflowStepGroupBasicExamplePage()),
+    GoRoute(path: '/basics/parallel-step-group', builder: (context, state) => const ParallelStepGroupBasicExamplePage()),
+    GoRoute(path: '/basics/retry-decorator', builder: (context, state) => const RetryDecoratorBasicExamplePage()),
+    GoRoute(path: '/basics/timeout-decorator', builder: (context, state) => const TimeoutDecoratorBasicExamplePage()),
+    GoRoute(path: '/basics/progress', builder: (context, state) => const ProgressBasicExamplePage()),
+    GoRoute(path: '/basics/managed-workflow-runner', builder: (context, state) => const ManagedWorkflowRunnerBasicExamplePage()),
+    GoRoute(path: '/basics/parallel-workflow-runner', builder: (context, state) => const ParallelWorkflowRunnerBasicExamplePage()),
+    GoRoute(path: '/basics/shared-workflow-runner', builder: (context, state) => const SharedWorkflowRunnerBasicExamplePage()),
     ShellRoute(
       builder: (context, state, child) => SignupFlowShell(state: state, child: child),
       routes: [
@@ -112,6 +146,19 @@ class DashboardPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 48),
+              Container(
+                constraints: const BoxConstraints(maxWidth: 850),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: _buildShowcaseCard(
+                    context: context,
+                    icon: Icons.school_outlined,
+                    title: 'Basics',
+                    description: 'One minimal, focused example per package concept — FlowContext, cancellation, listeners, and more.',
+                    destination: '/basics',
+                  ),
+                ),
+              ),
               Container(
                 constraints: const BoxConstraints(maxWidth: 850),
                 child: Row(
