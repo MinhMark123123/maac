@@ -1,5 +1,7 @@
 # maac_workflow
 
+[![pub package](https://img.shields.io/pub/v/maac_workflow.svg)](https://pub.dev/packages/maac_workflow)
+
 A highly resilient, stateful, and declarative asynchronous workflow and step pipeline orchestration engine for Dart & Flutter.
 
 ---
@@ -192,12 +194,12 @@ context.write('userId', otherId);          // throws StateError
 A step overwriting its *own* key is always allowed — this is what lets a
 step's own `rollback()` reset the same key it wrote during `execute()`. Writes
 made with no step active (before a run starts, or between runs — e.g. seeding
-input from a ViewModel) are always unrestricted and reset that key's
-ownership, since this rule is about steps not stepping on each other, not
-about the code that configures a run:
+input from whatever code configures the run) are always unrestricted and
+reset that key's ownership, since this rule is about steps not stepping on
+each other, not about the code that configures a run:
 
 ```dart
-class SignupViewModel extends ViewModel {
+class SignupController {
   final _context = SignupContext();
 
   void startFlow() {
@@ -631,7 +633,7 @@ ManagedWorkflowRunner<TContext>({
   subscription at a time" screens:
 
   ```dart
-  class OrderTrackingViewModel extends ViewModel {
+  class OrderTrackingController {
     final _watchOrder = ManagedWorkflowRunner<OrderTrackingContext>(
       createRunner: () => WorkflowRunner(steps: [watchOrderStatusStep]),
       strategy: const ConcurrencyStrategy.cancelExisting(),
@@ -643,16 +645,15 @@ ManagedWorkflowRunner<TContext>({
       _watchOrder.run(OrderTrackingContext(orderId: orderId, onStatusChanged: _handleStatusChanged));
     }
 
-    @override
-    void onResume() {
-      watchOrder(currentOrderId); // Screen visible again: (re)start the subscription.
-      super.onResume();
+    // Wire these to whatever lifecycle hooks your screen/controller already
+    // has (e.g. a StatefulWidget's didChangeAppLifecycleState, or a
+    // ViewModel's onResume/onPause if you're using maac_mvvm).
+    void onScreenVisible() {
+      watchOrder(currentOrderId); // (Re)start the subscription.
     }
 
-    @override
-    void onPause() {
-      _watchOrder.cancel(); // Screen no longer visible: stop it. onResume() restarts it.
-      super.onPause();
+    void onScreenHidden() {
+      _watchOrder.cancel(); // Stop it. onScreenVisible() restarts it.
     }
   }
   ```
@@ -744,3 +745,22 @@ not for a result multiple callers actually depend on.
   as "just the API".
 - **Example app → Signup / Sequential API / Single-Flight flows** — fuller showcases
   combining several concepts into one realistic screen.
+
+---
+
+## 🧭 Documentation
+
+For the wider MAAC ecosystem this package is part of — install guides, architecture
+philosophy, and specs for the other MAAC packages — see the centralized documentation hub:
+
+👉 [**MAAC Documentation Hub**](https://github.com/MinhMark123123/maac/blob/main/docs/README.md)
+
+### Specific Guides:
+- 🔀 [**`maac_workflow` Spec**](https://github.com/MinhMark123123/maac/blob/main/docs/spec_workflow.md)
+- 🏗️ [**Architecture Philosophy**](https://github.com/MinhMark123123/maac/blob/main/docs/README.md#architecture-philosophy)
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please visit the [main repository](https://github.com/MinhMark123123/maac) for more information.

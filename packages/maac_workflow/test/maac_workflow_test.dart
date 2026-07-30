@@ -257,7 +257,7 @@ void main() {
         ],
       );
 
-      final result = await runner.run(context);
+      await runner.run(context);
       expect(context.logs, equals(['execute:step1', 'execute:step2']));
     });
   });
@@ -658,9 +658,7 @@ void main() {
     test('fail(stepId, error) resolves the step as a failure and triggers LIFO rollback', () async {
       final context = TestContext();
       final interactive = InteractiveTestStep('interactive');
-      final runner = WorkflowRunner<TestContext>(
-        steps: [LogStep('before'), interactive],
-      );
+      final runner = WorkflowRunner<TestContext>(steps: [LogStep('before'), interactive]);
 
       final future = runner.run(context);
       await Future.delayed(Duration.zero);
@@ -796,10 +794,7 @@ void main() {
 
     test('Composes with TimeoutStepDecorator', () async {
       final context = TestContext();
-      final never = WorkflowStep<TestContext>.action(
-        id: 'never',
-        execute: (ctx, token) => Completer<StepResult>().future,
-      );
+      final never = WorkflowStep<TestContext>.action(id: 'never', execute: (ctx, token) => Completer<StepResult>().future);
       final runner = WorkflowRunner<TestContext>(
         steps: [TimeoutStepDecorator(step: never, timeout: const Duration(milliseconds: 20))],
       );
@@ -839,7 +834,9 @@ void main() {
         },
       );
       final runner = WorkflowRunner<TestContext>(
-        steps: [WorkflowStepGroup(id: 'group', steps: [actionStep])],
+        steps: [
+          WorkflowStepGroup(id: 'group', steps: [actionStep]),
+        ],
       );
 
       final result = await runner.run(context);
@@ -882,11 +879,7 @@ void main() {
       final managed = ManagedWorkflowRunner<TestContext>(
         createRunner: () => WorkflowRunner<TestContext>(
           steps: [
-            WorkflowStep<TestContext>.sustained(
-              id: 'sustained',
-              start: (ctx, fail) => logs.add('start'),
-              stop: (ctx) => logs.add('stop'),
-            ),
+            WorkflowStep<TestContext>.sustained(id: 'sustained', start: (ctx, fail) => logs.add('start'), stop: (ctx) => logs.add('stop')),
           ],
         ),
         strategy: const ConcurrencyStrategy.cancelExisting(),
@@ -1094,9 +1087,7 @@ void main() {
 
   group('ParallelWorkflowRunner Tests', () {
     test('two concurrent handles have distinct runner instances and mutually untouched contexts', () async {
-      final parallel = ParallelWorkflowRunner<TestContext>(
-        createRunner: () => WorkflowRunner<TestContext>(steps: [LogStep('a')]),
-      );
+      final parallel = ParallelWorkflowRunner<TestContext>(createRunner: () => WorkflowRunner<TestContext>(steps: [LogStep('a')]));
 
       final context1 = TestContext();
       final context2 = TestContext();
@@ -1112,9 +1103,7 @@ void main() {
     });
 
     test('activeRuns drops each handle independently as it settles', () async {
-      final parallel = ParallelWorkflowRunner<TestContext>(
-        createRunner: () => WorkflowRunner<TestContext>(steps: [LogStep('a')]),
-      );
+      final parallel = ParallelWorkflowRunner<TestContext>(createRunner: () => WorkflowRunner<TestContext>(steps: [LogStep('a')]));
 
       final handle1 = parallel.run(TestContext());
       expect(parallel.activeRuns, contains(handle1));
