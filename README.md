@@ -17,6 +17,7 @@ We have moved all detailed specifications and guides to our centralized document
 - ✨ [**Annotations & Generator**](./docs/spec_annotations.md)
 - 💉 [**DI Integration (GetIt)**](./docs/spec_di_get_it.md)
 - 🌊 [**Riverpod Integration**](./docs/spec_riverpod.md)
+- 🔀 [**`maac_workflow` (Step Pipelines)**](./docs/spec_workflow.md)
 
 ---
 
@@ -29,6 +30,7 @@ We have moved all detailed specifications and guides to our centralized document
 | **`maac_mvvm_generator`** | [![pub package](https://img.shields.io/pub/v/maac_mvvm_generator.svg)](https://pub.dev/packages/maac_mvvm_generator) | Boilerplate Code Generator |
 | **`maac_mvvm_with_get_it`** | [![pub package](https://img.shields.io/pub/v/maac_mvvm_with_get_it.svg)](https://pub.dev/packages/maac_mvvm_with_get_it) | DI Support (GetIt) |
 | **`maac_mvvm_with_riverpod`** | [![pub package](https://img.shields.io/pub/v/maac_mvvm_with_riverpod.svg)](https://pub.dev/packages/maac_mvvm_with_riverpod) | Riverpod Support |
+| **`maac_workflow`** | [![pub package](https://img.shields.io/pub/v/maac_workflow.svg)](https://pub.dev/packages/maac_workflow) | Step-Pipeline Orchestration (Rollback, Cancellation, Concurrency) |
 
 ---
 

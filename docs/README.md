@@ -15,6 +15,7 @@ The MAAC ecosystem is composed of several specialized packages:
 | **`maac_mvvm_generator`** | The build_runner code generator. | [**Generator Spec**](./spec_annotations.md) |
 | **`maac_mvvm_with_get_it`** | Dependency Injection integration. | [**GetIt Spec**](./spec_di_get_it.md) |
 | **`maac_mvvm_with_riverpod`** | Riverpod state management integration. | [**Riverpod Spec**](./spec_riverpod.md) |
+| **`maac_workflow`** | Step-pipeline orchestration (rollback, cancellation, retries, concurrency) for multi-step business logic. | [**Workflow Spec**](./spec_workflow.md) |
 
 ---
 
@@ -63,6 +64,7 @@ We recommend following our step-by-step tiered tutorials:
 - 🟢 [**Level 1: Core Essentials**](./01_tutorial_basic_mvvm.md) - Master `ViewModel`, `StreamData`, and basic lifecycles.
 - 🟡 [**Level 2: Dependency Injection**](./02_tutorial_di_integration.md) - Integrate `GetIt` for cleaner architecture.
 - 🔴 [**Level 3: Full Power**](./03_tutorial_full_power.md) - Use annotations and generators to eliminate boilerplate.
+- 🟣 [**`maac_workflow`**](./spec_workflow.md) - Once your `ViewModel` methods grow multi-step (rollback, cancellation, retries), orchestrate them with a `WorkflowRunner` instead of hand-rolled try/catch.
 
 ---
 
@@ -72,6 +74,7 @@ MAAC is built on the belief that:
 - **UI should be passive**: All logic belongs in the `ViewModel`.
 - **Lifecycles matter**: Flutter widgets should have clear `onResume`, `onPause`, and `onDispose` hooks that synchronize automatically with business logic.
 - **Boilerplate is the enemy**: Code generation should handle the repetitive parts of data binding.
+- **Multi-step logic deserves its own layer**: Once a `ViewModel` method needs rollback, cancellation, or concurrency handling, that's `maac_workflow`'s job, not the `ViewModel`'s.
 
 ---
 

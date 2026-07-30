@@ -1,0 +1,11 @@
+{
+    "name": "maac_workflow_example",
+    "short_name": "maac_workflow_example",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#121212",
+    "theme_color": "#121212",
+    "description": "maac_workflow Flutter Web Example",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false
+}
