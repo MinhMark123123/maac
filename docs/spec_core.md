@@ -85,6 +85,29 @@ StreamDataConsumer<T>(
 - **Automatic Subscription**: No need for `StreamBuilder` boilerplate.
 - **Automatic Cleanup**: Unsubscribes when the widget is disposed.
 - **Value-based rebuilds**: Only rebuilds when the value actually changes (default behavior).
+- **Cache control**: An optional `useCache` predicate skips rebuilding for values that
+  shouldn't visually change the UI, reusing the previously built child instead.
+
+### Combining Multiple Sources
+
+Reach for `StreamDataConsumer2`/`StreamDataConsumer3` instead of nesting a `StreamDataConsumer`
+inside another one — each source's latest value is passed straight into `builder`, fully typed:
+
+```dart
+StreamDataConsumer2<bool, List<NewsArticle>>(
+  streamData1: viewModel.isLoading,
+  streamData2: viewModel.newsState,
+  builder: (context, isLoading, news) {
+    if (isLoading) return const CircularProgressIndicator();
+    return NewsList(news: news);
+  },
+)
+```
+
+For more than 3 sources, drop down to `MergeStreamDataConsumer` — the primitive
+`StreamDataConsumer2`/`3` are built on. It only signals "something changed, rebuild"; read
+whichever `StreamData.data` you need directly inside the builder. All of these rebuild
+whenever **any** source emits — there's no pairing/waiting between sources.
 
 ---
 

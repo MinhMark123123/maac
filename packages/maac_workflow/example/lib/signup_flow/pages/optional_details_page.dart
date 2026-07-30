@@ -51,7 +51,10 @@ class OptionalDetailsPage extends ViewModelWidget<OptionalDetailsViewModel> {
         children: [
           signupWizardHeader(2, 'Personal Profile (Conditional Step)', 'Select a cute avatar and enter code.'),
           const SizedBox(height: 20),
-          const Text('Choose Avatar:', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          const Text(
+            'Choose Avatar:',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 12),
           StreamDataConsumer<String?>(
             streamData: viewModel.selectedAvatar,
@@ -74,7 +77,7 @@ class OptionalDetailsPage extends ViewModelWidget<OptionalDetailsViewModel> {
             decoration: InputDecoration(
               labelText: 'Referral Code (Optional)',
               labelStyle: const TextStyle(color: Colors.grey),
-              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white.withOpacity(0.1))),
+              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1))),
               focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.cyanAccent)),
             ),
           ),
@@ -92,7 +95,7 @@ class OptionalDetailsPage extends ViewModelWidget<OptionalDetailsViewModel> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.cyanAccent.withOpacity(0.15) : const Color(0xFF22222E),
+          color: isSelected ? Colors.cyanAccent.withValues(alpha: 0.15) : const Color(0xFF22222E),
           border: Border.all(color: isSelected ? Colors.cyanAccent : Colors.transparent),
           borderRadius: BorderRadius.circular(12),
         ),

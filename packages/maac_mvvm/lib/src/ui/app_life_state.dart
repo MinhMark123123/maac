@@ -2,9 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:maac_mvvm/maac_mvvm.dart';
 
 abstract class ViewStatefulWidget extends StatefulWidget {
-  const ViewStatefulWidget({
-    Key? key,
-  }) : super(key: key);
+  const ViewStatefulWidget({super.key});
 
   @override
   ViewState createState();
@@ -14,6 +12,7 @@ abstract class ViewState<T extends ViewStatefulWidget> extends State<T> {
   List<ViewModel>? _viewModels;
   LifeCycleManager? _lifeCycleManager;
   final String _uniqueKey = UniqueKey().toString();
+
   String get uniqueKey => _uniqueKey;
 
   List<ViewModel> get viewModels {
@@ -42,11 +41,7 @@ abstract class ViewState<T extends ViewStatefulWidget> extends State<T> {
 
   @override
   void didUpdateWidget(covariant T oldWidget) {
-    lifeCycleManager.widgetDidUpdateWidget(
-      lifeOwnerKey: _uniqueKey,
-      widget: widget,
-      oldWidget: oldWidget,
-    );
+    lifeCycleManager.widgetDidUpdateWidget(lifeOwnerKey: _uniqueKey, widget: widget, oldWidget: oldWidget);
     super.didUpdateWidget(oldWidget);
   }
 

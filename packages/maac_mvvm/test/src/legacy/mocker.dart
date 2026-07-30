@@ -22,8 +22,7 @@ class TestViewModel extends ViewModel {
 class TestViewStatefulWidget extends ViewStatefulWidget {
   final MockLifeCycleManager lifeCycleManager;
 
-  const TestViewStatefulWidget({Key? key, required this.lifeCycleManager})
-      : super(key: key);
+  const TestViewStatefulWidget({super.key, required this.lifeCycleManager});
 
   @override
   ViewState createState() => TestViewState();
@@ -87,19 +86,14 @@ class TestViewModelsWidget extends ViewModelsWidget {
 
   @override
   Widget build(BuildContext context, List<ViewModel> viewModels) {
-    return Column(
-      children: [
-        Text('ViewModel 1: ${viewModels[0].hashCode}'),
-        Text('ViewModel 2: ${viewModels[1].hashCode}'),
-      ],
-    );
+    return Column(children: [Text('ViewModel 1: ${viewModels[0].hashCode}'), Text('ViewModel 2: ${viewModels[1].hashCode}')]);
   }
 }
 
-Widget mockStreamWidget(StreamData<int> mockStream,
-    {bool Function(int value)? useCache}) {
+Widget mockStreamWidget(StreamData<int> mockStream, {bool Function(int value)? useCache}) {
   return StreamDataConsumer<int>(
     streamData: mockStream,
+    useCache: useCache,
     builder: (context, data) {
       return Text('Value: $data', textDirection: TextDirection.ltr);
     },

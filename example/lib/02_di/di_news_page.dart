@@ -12,19 +12,17 @@ class DiNewsPage extends DependencyViewModelWidget<DiNewsViewModel> {
   Widget build(BuildContext context, DiNewsViewModel viewModel) {
     return Scaffold(
       appBar: AppBar(title: const Text('Space News (DI)'), centerTitle: false, backgroundColor: Colors.transparent, elevation: 0),
-      body: StreamDataConsumer<bool>(
-        streamData: viewModel.isLoading,
-        builder: (context, isLoading) {
+      body: StreamDataConsumer2<bool, List<NewsArticle>>(
+        streamData1: viewModel.isLoading,
+        streamData2: viewModel.newsState,
+        builder: (context, isLoading, news) {
           if (isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          return StreamDataConsumer<List<NewsArticle>>(
-            streamData: viewModel.newsState,
-            builder: (context, news) => ListView.builder(
-              padding: const EdgeInsets.all(20),
-              itemCount: news.length,
-              itemBuilder: (context, index) => NewsCard(article: news[index], detailRoute: AppRoutes.diDetail),
-            ),
+          return ListView.builder(
+            padding: const EdgeInsets.all(20),
+            itemCount: news.length,
+            itemBuilder: (context, index) => NewsCard(article: news[index], detailRoute: AppRoutes.diDetail),
           );
         },
       ),

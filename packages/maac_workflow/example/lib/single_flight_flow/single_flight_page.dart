@@ -33,7 +33,7 @@ class SingleFlightFlowPage extends DependencyViewModelWidget<SingleFlightViewMod
                 color: const Color(0xFF181822),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
-                  side: BorderSide(color: Colors.white.withOpacity(0.08)),
+                  side: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
                 ),
                 elevation: 8,
                 child: Padding(
@@ -91,9 +91,9 @@ class SingleFlightFlowPage extends DependencyViewModelWidget<SingleFlightViewMod
                                 child: Container(
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.02),
+                                    color: Colors.white.withValues(alpha: 0.02),
                                     borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: Colors.white.withOpacity(0.05)),
+                                    border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
                                   ),
                                   child: const Text(
                                     'Click the button above multiple times to begin.',
@@ -125,7 +125,7 @@ class SingleFlightFlowPage extends DependencyViewModelWidget<SingleFlightViewMod
             child: Container(
               decoration: BoxDecoration(
                 color: const Color(0xFF14141B),
-                border: Border(left: BorderSide(color: Colors.white.withOpacity(0.05))),
+                border: Border(left: BorderSide(color: Colors.white.withValues(alpha: 0.05))),
               ),
               padding: const EdgeInsets.all(24.0),
               child: Column(
@@ -167,7 +167,7 @@ class SingleFlightFlowPage extends DependencyViewModelWidget<SingleFlightViewMod
                       decoration: BoxDecoration(
                         color: const Color(0xFF0B0B0E),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
                       ),
                       child: StreamDataConsumer<List<String>>(
                         streamData: viewModel.eventLog,
@@ -237,7 +237,7 @@ class SingleFlightFlowPage extends DependencyViewModelWidget<SingleFlightViewMod
       decoration: BoxDecoration(
         color: const Color(0xFF1E1E28),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: statusColor.withOpacity(0.2)),
+        border: Border.all(color: statusColor.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -258,7 +258,7 @@ class SingleFlightFlowPage extends DependencyViewModelWidget<SingleFlightViewMod
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(color: statusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: statusColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(20)),
             child: Text(
               statusText,
               style: TextStyle(color: statusColor, fontSize: 11, fontWeight: FontWeight.bold),

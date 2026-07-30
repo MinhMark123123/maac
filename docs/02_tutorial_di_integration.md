@@ -53,14 +53,12 @@ class DiNewsPage extends DependencyViewModelWidget<DiNewsViewModel> {
   Widget build(BuildContext context, DiNewsViewModel viewModel) {
     return Scaffold(
       appBar: AppBar(title: const Text('Level 2: Space News (DI)')),
-      body: StreamDataConsumer<bool>(
-        streamData: viewModel.isLoading,
-        builder: (context, isLoading) {
+      body: StreamDataConsumer2<bool, List<NewsArticle>>(
+        streamData1: viewModel.isLoading,
+        streamData2: viewModel.newsState,
+        builder: (context, isLoading, news) {
           if (isLoading) return const CircularProgressIndicator();
-          return StreamDataConsumer<List<NewsArticle>>(
-            streamData: viewModel.newsState,
-            builder: (context, news) => NewsList(news: news),
-          );
+          return NewsList(news: news);
         },
       ),
     );
@@ -98,14 +96,12 @@ class DiNewsDetailPage extends DependencyViewModelWidget<DiNewsDetailViewModel> 
   @override
   Widget build(BuildContext context, DiNewsDetailViewModel viewModel) {
     return Scaffold(
-      body: StreamDataConsumer<bool>(
-        streamData: viewModel.isLoading,
-        builder: (context, isLoading) {
+      body: StreamDataConsumer2<bool, NewsArticle?>(
+        streamData1: viewModel.isLoading,
+        streamData2: viewModel.article,
+        builder: (context, isLoading, article) {
           if (isLoading) return const CircularProgressIndicator();
-          return StreamDataConsumer(
-            streamData: viewModel.article,
-            builder: (context, article) => NewsDetailContent(article: article!),
-          );
+          return NewsDetailContent(article: article!);
         },
       ),
     );

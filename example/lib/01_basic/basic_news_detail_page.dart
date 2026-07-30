@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:maac_example/01_basic/basic_news_detail_view_model.dart';
 import 'package:maac_example/data/api/news_api.dart';
 import 'package:maac_example/data/news_repository.dart';
+import 'package:maac_example/models/news_article.dart';
 import 'package:maac_example/ui/shared/news_detail_content.dart';
 import 'package:maac_mvvm/maac_mvvm.dart';
 
@@ -22,21 +23,17 @@ class BasicNewsDetailPage extends ViewModelWidget<BasicNewsDetailViewModel> {
   @override
   Widget build(BuildContext context, BasicNewsDetailViewModel viewModel) {
     return Scaffold(
-      body: StreamDataConsumer<bool>(
-        streamData: viewModel.isLoading,
-        builder: (context, isLoading) {
+      body: StreamDataConsumer2<bool, NewsArticle?>(
+        streamData1: viewModel.isLoading,
+        streamData2: viewModel.article,
+        builder: (context, isLoading, article) {
           if (isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          return StreamDataConsumer(
-            streamData: viewModel.article,
-            builder: (context, article) {
-              if (article == null) {
-                return const Center(child: Text('Article not found'));
-              }
-              return NewsDetailContent(article: article);
-            },
-          );
+          if (article == null) {
+            return const Center(child: Text('Article not found'));
+          }
+          return NewsDetailContent(article: article);
         },
       ),
     );

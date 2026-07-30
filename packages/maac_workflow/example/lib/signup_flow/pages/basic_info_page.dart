@@ -10,8 +10,12 @@ class BasicInfoViewModel extends ViewModel {
   final SignupFlowViewModel coordinator;
   BasicInfoViewModel(this.coordinator);
 
-  late final emailController = TextEditingController(text: coordinator.context.email.isNotEmpty ? coordinator.context.email : 'test@maac.com');
-  late final passwordController = TextEditingController(text: coordinator.context.password.isNotEmpty ? coordinator.context.password : 'password123');
+  late final emailController = TextEditingController(
+    text: coordinator.context.email.isNotEmpty ? coordinator.context.email : 'test@maac.com',
+  );
+  late final passwordController = TextEditingController(
+    text: coordinator.context.password.isNotEmpty ? coordinator.context.password : 'password123',
+  );
 
   void submit() {
     coordinator.context.email = emailController.text;
@@ -50,7 +54,7 @@ class BasicInfoPage extends ViewModelWidget<BasicInfoViewModel> {
             decoration: InputDecoration(
               labelText: 'Email Address',
               labelStyle: const TextStyle(color: Colors.grey),
-              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white.withOpacity(0.1))),
+              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1))),
               focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.cyanAccent)),
             ),
           ),
@@ -62,7 +66,7 @@ class BasicInfoPage extends ViewModelWidget<BasicInfoViewModel> {
             decoration: InputDecoration(
               labelText: 'Password',
               labelStyle: const TextStyle(color: Colors.grey),
-              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white.withOpacity(0.1))),
+              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1))),
               focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.cyanAccent)),
             ),
           ),
