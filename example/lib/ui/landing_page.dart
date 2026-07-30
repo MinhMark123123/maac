@@ -88,7 +88,7 @@ class _TutorialCard extends StatelessWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: color.withOpacity(0.1), width: 2),
+        side: BorderSide(color: color.withValues(alpha: 0.1), width: 2),
       ),
       child: InkWell(
         onTap: onTap,
@@ -99,7 +99,7 @@ class _TutorialCard extends StatelessWidget {
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(color: color.withOpacity(0.1), shape: BoxShape.circle),
+                decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
                 child: Icon(icon, color: color, size: 32),
               ),
               const SizedBox(width: 20),

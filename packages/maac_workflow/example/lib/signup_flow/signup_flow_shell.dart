@@ -92,7 +92,7 @@ class SignupFlowShell extends DependencyViewModelWidget<SignupFlowViewModel> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: const Color(0xFF14141B),
-                      border: Border(left: BorderSide(color: Colors.white.withOpacity(0.05))),
+                      border: Border(left: BorderSide(color: Colors.white.withValues(alpha: 0.05))),
                     ),
                     padding: const EdgeInsets.all(24.0),
                     child: Column(
@@ -134,7 +134,7 @@ class SignupFlowShell extends DependencyViewModelWidget<SignupFlowViewModel> {
                             decoration: BoxDecoration(
                               color: const Color(0xFF0B0B0E),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.white.withOpacity(0.05)),
+                              border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
                             ),
                             child: StreamDataConsumer<List<String>>(
                               streamData: viewModel.eventLog,
@@ -158,7 +158,7 @@ class SignupFlowShell extends DependencyViewModelWidget<SignupFlowViewModel> {
                                     } else if (log.contains('Skip')) {
                                       textColor = Colors.grey;
                                     } else if (log.contains('[Engine]')) {
-                                      textColor = Colors.cyanAccent.withOpacity(0.9);
+                                      textColor = Colors.cyanAccent.withValues(alpha: 0.9);
                                     } else if (log.contains('Step')) {
                                       textColor = Colors.white70;
                                     }
@@ -208,7 +208,7 @@ class _StepTracker extends StatelessWidget {
         return Row(
           children: [
             for (var index = 0; index < signupStepDefinitions.length; index++) ...[
-              if (index > 0) Expanded(child: Container(height: 2, color: Colors.white.withOpacity(0.08))),
+              if (index > 0) Expanded(child: Container(height: 2, color: Colors.white.withValues(alpha: 0.08))),
               _StepDot(
                 label: signupStepDefinitions[index].$2,
                 status: progress.statusOf(signupStepDefinitions[index].$1) ?? StepStatus.pending,
@@ -249,7 +249,7 @@ class _StepDot extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: color.withOpacity(0.12),
+            color: color.withValues(alpha: 0.12),
             border: Border.all(color: color, width: isCurrent ? 2 : 1),
           ),
           child: Icon(icon, color: color, size: 16),

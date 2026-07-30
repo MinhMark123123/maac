@@ -72,18 +72,14 @@ class BasicNewsPage extends ViewModelWidget<BasicNewsViewModel> {
   Widget build(BuildContext context, BasicNewsViewModel viewModel) {
     return Scaffold(
       appBar: AppBar(title: const Text('Level 1: Space News')),
-      body: StreamDataConsumer<bool>(
-        streamData: viewModel.isLoading,
-        builder: (context, isLoading) {
+      body: StreamDataConsumer2<bool, List<NewsArticle>>(
+        streamData1: viewModel.isLoading,
+        streamData2: viewModel.newsState,
+        builder: (context, isLoading, news) {
           if (isLoading) return const CircularProgressIndicator();
-          return StreamDataConsumer<List<NewsArticle>>(
-            streamData: viewModel.newsState,
-            builder: (context, news) {
-              return ListView.builder(
-                itemCount: news.length,
-                itemBuilder: (context, index) => NewsCard(article: news[index]),
-              );
-            },
+          return ListView.builder(
+            itemCount: news.length,
+            itemBuilder: (context, index) => NewsCard(article: news[index]),
           );
         },
       ),
@@ -91,6 +87,11 @@ class BasicNewsPage extends ViewModelWidget<BasicNewsViewModel> {
   }
 }
 ```
+
+> `StreamDataConsumer2` rebuilds whenever *either* `isLoading` or `newsState` emits, passing
+> both of their latest values into `builder` — no need to nest a `StreamDataConsumer` inside
+> another one. A `StreamDataConsumer3` exists for a 3rd source, and `MergeStreamDataConsumer`
+> for combining any number of them.
 
 ---
 
@@ -138,14 +139,12 @@ class BasicNewsDetailPage extends ViewModelWidget<BasicNewsDetailViewModel> {
   @override
   Widget build(BuildContext context, BasicNewsDetailViewModel viewModel) {
     return Scaffold(
-      body: StreamDataConsumer<bool>(
-        streamData: viewModel.isLoading,
-        builder: (context, isLoading) {
+      body: StreamDataConsumer2<bool, NewsArticle?>(
+        streamData1: viewModel.isLoading,
+        streamData2: viewModel.article,
+        builder: (context, isLoading, article) {
           if (isLoading) return const CircularProgressIndicator();
-          return StreamDataConsumer(
-            streamData: viewModel.article,
-            builder: (context, article) => NewsDetailContent(article: article!),
-          );
+          return NewsDetailContent(article: article!);
         },
       ),
     );

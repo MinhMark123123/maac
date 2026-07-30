@@ -12,7 +12,7 @@ class SignupStepCard extends StatelessWidget {
       color: const Color(0xFF181822),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: Colors.white.withOpacity(0.08)),
+        side: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
       ),
       elevation: 8,
       child: Padding(padding: const EdgeInsets.all(28.0), child: child),
@@ -25,9 +25,15 @@ Widget signupWizardHeader(int step, String title, String subtitle) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text('STEP $step OF 3', style: const TextStyle(color: Colors.cyanAccent, fontWeight: FontWeight.w600, letterSpacing: 1.2, fontSize: 12)),
+      Text(
+        'STEP $step OF 3',
+        style: const TextStyle(color: Colors.cyanAccent, fontWeight: FontWeight.w600, letterSpacing: 1.2, fontSize: 12),
+      ),
       const SizedBox(height: 4),
-      Text(title, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+      Text(
+        title,
+        style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+      ),
       const SizedBox(height: 4),
       Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 13)),
       const SizedBox(height: 12),

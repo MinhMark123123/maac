@@ -38,7 +38,7 @@ class ReviewPage extends ViewModelWidget<ReviewViewModel> {
             decoration: BoxDecoration(
               color: const Color(0xFF0F0F14),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.white.withOpacity(0.05)),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
             ),
             child: Column(
               children: [
@@ -55,7 +55,10 @@ class ReviewPage extends ViewModelWidget<ReviewViewModel> {
             builder: (context, fail) {
               return SwitchListTile(
                 title: const Text('Force Register API to Fail', style: TextStyle(color: Colors.white, fontSize: 14)),
-                subtitle: const Text('Will trigger LIFO Rollback. Watch it delete the user database ID!', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                subtitle: const Text(
+                  'Will trigger LIFO Rollback. Watch it delete the user database ID!',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                ),
                 value: fail,
                 onChanged: viewModel.setForceFail,
                 activeColor: Colors.cyanAccent,
@@ -76,7 +79,10 @@ class ReviewPage extends ViewModelWidget<ReviewViewModel> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: const TextStyle(color: Colors.grey)),
-          Text(value, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+          Text(
+            value,
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+          ),
         ],
       ),
     );

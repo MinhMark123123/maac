@@ -67,14 +67,12 @@ class FullPowerNewsPage extends DependencyViewModelWidget<FullPowerNewsViewModel
   Widget build(BuildContext context, FullPowerNewsViewModel viewModel) {
     return Scaffold(
       appBar: AppBar(title: const Text('Level 3: Full Power')),
-      body: StreamDataConsumer<bool>(
-        streamData: viewModel.isLoading, // Using generated getter
-        builder: (context, isLoading) {
+      body: StreamDataConsumer2<bool, List<NewsArticle>>(
+        streamData1: viewModel.isLoading, // Using generated getter
+        streamData2: viewModel.newsState, // Using generated getter
+        builder: (context, isLoading, news) {
           if (isLoading) return const CircularProgressIndicator();
-          return StreamDataConsumer<List<NewsArticle>>(
-            streamData: viewModel.newsState, // Using generated getter
-            builder: (context, news) => NewsList(news: news),
-          );
+          return NewsList(news: news);
         },
       ),
     );
@@ -111,16 +109,13 @@ class FullPowerNewsDetailPage extends DependencyViewModelWidget<FullPowerNewsDet
   @override
   Widget build(BuildContext context, FullPowerNewsDetailViewModel viewModel) {
     return Scaffold(
-      body: StreamDataConsumer<bool>(
-        // Use the generated getter 'isLoading'
-        streamData: viewModel.isLoading,
-        builder: (context, isLoading) {
+      body: StreamDataConsumer2<bool, NewsArticle?>(
+        // Use the generated getters 'isLoading'/'article'
+        streamData1: viewModel.isLoading,
+        streamData2: viewModel.article,
+        builder: (context, isLoading, article) {
           if (isLoading) return const CircularProgressIndicator();
-          return StreamDataConsumer(
-            // Use the generated getter 'article'
-            streamData: viewModel.article,
-            builder: (context, article) => NewsDetailContent(article: article!),
-          );
+          return NewsDetailContent(article: article!);
         },
       ),
     );

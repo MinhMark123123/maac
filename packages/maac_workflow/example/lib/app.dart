@@ -62,16 +62,31 @@ final GoRouter appRouter = GoRouter(
     ShellRoute(
       builder: (context, state, child) => SignupFlowShell(state: state, child: child),
       routes: [
-        GoRoute(path: SignupRoutes.root, builder: (context, state) => Builder(builder: (c) => WelcomePage(coordinator: SignupFlowScope.of(c)))),
-        GoRoute(path: SignupRoutes.basicInfo, builder: (context, state) => Builder(builder: (c) => BasicInfoPage(coordinator: SignupFlowScope.of(c)))),
+        GoRoute(
+          path: SignupRoutes.root,
+          builder: (context, state) => Builder(builder: (c) => WelcomePage(coordinator: SignupFlowScope.of(c))),
+        ),
+        GoRoute(
+          path: SignupRoutes.basicInfo,
+          builder: (context, state) => Builder(builder: (c) => BasicInfoPage(coordinator: SignupFlowScope.of(c))),
+        ),
         GoRoute(path: SignupRoutes.loading, builder: (context, state) => const LoadingPage()),
         GoRoute(
           path: SignupRoutes.optionalDetails,
           builder: (context, state) => Builder(builder: (c) => OptionalDetailsPage(coordinator: SignupFlowScope.of(c))),
         ),
-        GoRoute(path: SignupRoutes.review, builder: (context, state) => Builder(builder: (c) => ReviewPage(coordinator: SignupFlowScope.of(c)))),
-        GoRoute(path: SignupRoutes.success, builder: (context, state) => Builder(builder: (c) => SuccessPage(coordinator: SignupFlowScope.of(c)))),
-        GoRoute(path: SignupRoutes.failed, builder: (context, state) => Builder(builder: (c) => FailedPage(coordinator: SignupFlowScope.of(c)))),
+        GoRoute(
+          path: SignupRoutes.review,
+          builder: (context, state) => Builder(builder: (c) => ReviewPage(coordinator: SignupFlowScope.of(c))),
+        ),
+        GoRoute(
+          path: SignupRoutes.success,
+          builder: (context, state) => Builder(builder: (c) => SuccessPage(coordinator: SignupFlowScope.of(c))),
+        ),
+        GoRoute(
+          path: SignupRoutes.failed,
+          builder: (context, state) => Builder(builder: (c) => FailedPage(coordinator: SignupFlowScope.of(c))),
+        ),
       ],
     ),
   ],
@@ -89,9 +104,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         primaryColor: Colors.cyanAccent,
         scaffoldBackgroundColor: const Color(0xFF0F0F12),
-        cardTheme: const CardThemeData(
-          color: Color(0xFF181822),
-        ),
+        cardTheme: const CardThemeData(color: Color(0xFF181822)),
         textTheme: const TextTheme(
           bodyLarge: TextStyle(color: Colors.white),
           bodyMedium: TextStyle(color: Colors.white70),
@@ -116,28 +129,16 @@ class DashboardPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.alt_route,
-                size: 72,
-                color: Colors.cyanAccent,
-              ),
+              const Icon(Icons.alt_route, size: 72, color: Colors.cyanAccent),
               const SizedBox(height: 16),
               const Text(
                 'MAAC Workflow Engine',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold, letterSpacing: 0.5),
               ),
               const SizedBox(height: 8),
               const Text(
                 'Interactive verification dashboard for the Step Pipeline Engine',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: Colors.grey, fontSize: 16),
               ),
               const SizedBox(height: 48),
               Container(
@@ -164,7 +165,8 @@ class DashboardPage extends StatelessWidget {
                         context: context,
                         icon: Icons.account_tree_outlined,
                         title: 'Signup Wizard Flow',
-                        description: 'A 3-step interactive screen stepper demonstrating dynamic navigation, conditional execution, and LIFO transaction rollback on failure.',
+                        description:
+                            'A 3-step interactive screen stepper demonstrating dynamic navigation, conditional execution, and LIFO transaction rollback on failure.',
                         destination: SignupRoutes.root,
                       ),
                     ),
@@ -174,7 +176,8 @@ class DashboardPage extends StatelessWidget {
                         context: context,
                         icon: Icons.sync_alt,
                         title: 'Sequential APIs',
-                        description: 'Simulates API chains with step-level Timeout decorators and Exponential Backoff Auto-Retry policy settings.',
+                        description:
+                            'Simulates API chains with step-level Timeout decorators and Exponential Backoff Auto-Retry policy settings.',
                         destination: '/sequential-api',
                       ),
                     ),
@@ -184,7 +187,8 @@ class DashboardPage extends StatelessWidget {
                         context: context,
                         icon: Icons.electric_bolt_outlined,
                         title: 'Single-Flight Run',
-                        description: 'Demonstrates ManagedWorkflowRunner(strategy: cancelExisting()) by mashing click events, automatically cancelling active runs to finish only the latest.',
+                        description:
+                            'Demonstrates ManagedWorkflowRunner(strategy: cancelExisting()) by mashing click events, automatically cancelling active runs to finish only the latest.',
                         destination: '/single-flight',
                       ),
                     ),
@@ -214,7 +218,7 @@ class DashboardPage extends StatelessWidget {
       elevation: 6,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.white.withOpacity(0.06)),
+        side: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -226,21 +230,10 @@ class DashboardPage extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            Text(
-              description,
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 13,
-                height: 1.4,
-              ),
-            ),
+            Text(description, style: const TextStyle(color: Colors.grey, fontSize: 13, height: 1.4)),
             const SizedBox(height: 24),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
