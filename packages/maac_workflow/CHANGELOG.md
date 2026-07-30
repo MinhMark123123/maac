@@ -1,3 +1,7 @@
+## 0.1.1
+
+ - **FEAT**: implement merge consumer (#50).
+
 ## 0.1.0
 
 * Initial release: `WorkflowRunner`/`WorkflowStep` sequential pipeline with LIFO rollback, `FlowContext` scoped immutability, `CancellationToken`, and `WorkflowListener`.

@@ -1,6 +1,6 @@
 name: maac_workflow
 description: maac_workflow is a resilient, stateful, and declarative asynchronous workflow and step pipeline engine for Dart & Flutter.
-version: 0.1.0
+version: 0.1.1
 homepage: https://github.com/MinhMark123123/maac
 repository: https://github.com/MinhMark123123/maac
 issue_tracker: https://github.com/MinhMark123123/maac/issues

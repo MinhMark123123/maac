@@ -3,6 +3,45 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-07-30
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`maac_mvvm` - `v0.2.3`](#maac_mvvm---v023)
+ - [`maac_workflow` - `v0.1.1`](#maac_workflow---v011)
+ - [`maac_mvvm_annotation` - `v0.0.3+1`](#maac_mvvm_annotation---v0031)
+ - [`maac_mvvm_generator` - `v0.0.4+1`](#maac_mvvm_generator---v0041)
+ - [`maac_mvvm_with_get_it` - `v0.2.2+1`](#maac_mvvm_with_get_it---v0221)
+ - [`maac_mvvm_with_riverpod` - `v0.2.1+1`](#maac_mvvm_with_riverpod---v0211)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `maac_mvvm_annotation` - `v0.0.3+1`
+ - `maac_mvvm_generator` - `v0.0.4+1`
+ - `maac_mvvm_with_get_it` - `v0.2.2+1`
+ - `maac_mvvm_with_riverpod` - `v0.2.1+1`
+
+---
+
+#### `maac_mvvm` - `v0.2.3`
+
+ - **FEAT**: implement merge consumer (#50).
+
+#### `maac_workflow` - `v0.1.1`
+
+ - **FEAT**: implement merge consumer (#50).
+
+
 ## 2026-04-29
 
 ### Changes

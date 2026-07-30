@@ -30,12 +30,12 @@ dependencies:
   # route navigation
   go_router: ^17.2.2
   url_launcher: ^6.3.1
-  maac_mvvm: ^0.2.2
-  maac_mvvm_annotation: ^0.0.3
-  maac_mvvm_with_get_it: ^0.2.2
-  maac_mvvm_with_riverpod: ^0.2.1
+  maac_mvvm: ^0.2.3
+  maac_mvvm_annotation: ^0.0.3+1
+  maac_mvvm_with_get_it: ^0.2.2+1
+  maac_mvvm_with_riverpod: ^0.2.1+1
 dev_dependencies:
-  maac_mvvm_generator: ^0.0.4
+  maac_mvvm_generator: ^0.0.4+1
   retrofit_generator: ^10.2.5
   json_serializable: ^6.6.2
   flutter_test:

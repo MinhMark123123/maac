@@ -32,7 +32,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   #frameworks
-  maac_mvvm: ^0.2.2
+  maac_mvvm: ^0.2.3
   visibility_detector: ^0.4.0+2
 
 dev_dependencies:

@@ -13,10 +13,10 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  maac_workflow: ^0.1.0
-  maac_mvvm: ^0.2.2
-  maac_mvvm_annotation: ^0.0.3
-  maac_mvvm_with_get_it: ^0.2.2
+  maac_workflow: ^0.1.1
+  maac_mvvm: ^0.2.3
+  maac_mvvm_annotation: ^0.0.3+1
+  maac_mvvm_with_get_it: ^0.2.2+1
   get_it: ^9.2.1
   async: ^2.11.0
   go_router: ^17.2.2
@@ -26,7 +26,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
   build_runner: ^2.4.15
-  maac_mvvm_generator: ^0.0.4
+  maac_mvvm_generator: ^0.0.4+1
 
 flutter:
   uses-material-design: true

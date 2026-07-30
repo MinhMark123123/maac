@@ -16,7 +16,7 @@ dependencies:
 
   cupertino_icons: ^1.0.2
   get_it: ^9.2.1
-  maac_mvvm_with_get_it: ^0.2.2
+  maac_mvvm_with_get_it: ^0.2.2+1
   visibility_detector: ^0.4.0+2
 dev_dependencies:
   flutter_test:

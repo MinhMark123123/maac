@@ -1,3 +1,7 @@
+## 0.2.3
+
+ - **FEAT**: implement merge consumer (#50).
+
 ## 0.2.2
 
  - **FEAT**: overhaul architecture add documentation and enhance examples (#48).
